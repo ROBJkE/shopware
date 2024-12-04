@@ -62,13 +62,7 @@ class PromotionIndividualCodeRedeemerTest extends TestCase
 
         $context = Generator::createSalesChannelContext();
 
-        $event = new CheckoutOrderPlacedEvent(
-            $context->getContext(),
-            $order,
-            $context->getSalesChannelId(),
-            null,
-            $context
-        );
+        $event = new CheckoutOrderPlacedEvent($context, $order);
 
         $redeemer->onOrderPlaced($event);
     }
@@ -122,13 +116,7 @@ class PromotionIndividualCodeRedeemerTest extends TestCase
 
         $context = Generator::createSalesChannelContext();
 
-        $event = new CheckoutOrderPlacedEvent(
-            $context->getContext(),
-            $order,
-            $context->getSalesChannelId(),
-            null,
-            $context
-        );
+        $event = new CheckoutOrderPlacedEvent($context, $order);
 
         $redeemer->onOrderPlaced($event);
 

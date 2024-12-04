@@ -64,13 +64,7 @@ class AppFlowActionProviderTest extends TestCase
 
         $context = Generator::createSalesChannelContext();
 
-        $awareEvent = new CheckoutOrderPlacedEvent(
-            $context->getContext(),
-            $order,
-            $context->getSalesChannelId(),
-            null,
-            $context
-        );
+        $awareEvent = new CheckoutOrderPlacedEvent($context, $order);
 
         $orderStorer = new OrderStorer($orderRepo, $this->createMock(EventDispatcherInterface::class));
 

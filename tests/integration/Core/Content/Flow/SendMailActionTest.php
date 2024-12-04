@@ -118,13 +118,7 @@ class SendMailActionTest extends TestCase
         $criteria->addAssociation('transactions.stateMachineState');
         /** @var OrderEntity $order */
         $order = $orderRepository->search($criteria, $context->getContext())->first();
-        $event = new CheckoutOrderPlacedEvent(
-            $context->getContext(),
-            $order,
-            $context->getSalesChannelId(),
-            null,
-            $context
-        );
+        $event = new CheckoutOrderPlacedEvent($context, $order);
 
         $documentIdOlder = null;
         $documentIdNewer = null;
@@ -430,13 +424,7 @@ class SendMailActionTest extends TestCase
 
         $order = static::getContainer()->get('order.repository')->search($criteria, $context->getContext())->get($orderId);
         static::assertInstanceOf(OrderEntity::class, $order);
-        $event = new CheckoutOrderPlacedEvent(
-            $context->getContext(),
-            $order,
-            $context->getSalesChannelId(),
-            null,
-            $context
-        );
+        $event = new CheckoutOrderPlacedEvent($context, $order);
 
         $mailService = new TestEmailService();
         $subscriber = new SendMailAction(

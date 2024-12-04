@@ -32,13 +32,7 @@ class FlowFactoryTest extends TestCase
 
         $context = Generator::createSalesChannelContext();
 
-        $awareEvent = new CheckoutOrderPlacedEvent(
-            $context->getContext(),
-            $order,
-            $context->getSalesChannelId(),
-            null,
-            $context
-        );
+        $awareEvent = new CheckoutOrderPlacedEvent($context, $order);
 
         $orderStorer = new OrderStorer($this->createMock(EntityRepository::class), $this->createMock(EventDispatcherInterface::class));
         $flowFactory = new FlowFactory([$orderStorer]);
@@ -67,13 +61,7 @@ class FlowFactoryTest extends TestCase
 
         $context = Generator::createSalesChannelContext();
 
-        $awareEvent = new CheckoutOrderPlacedEvent(
-            $context->getContext(),
-            $order,
-            $context->getSalesChannelId(),
-            null,
-            $context
-        );
+        $awareEvent = new CheckoutOrderPlacedEvent($context, $order);
 
         $orderStorer = new OrderStorer($orderRepo, $this->createMock(EventDispatcherInterface::class));
         $flowFactory = new FlowFactory([$orderStorer]);

@@ -1,6 +1,6 @@
 ---
 title: Improve CheckoutOrderPlacedEvent with SalesChannelContext
-issue: NEXT-00000
+issue: NEXT-39898
 author: Benjamin Wittwer
 author_email: benjamin.wittwer@a-k-f.de
 author_github: akf-bw

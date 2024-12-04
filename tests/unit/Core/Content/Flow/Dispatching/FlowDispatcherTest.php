@@ -287,12 +287,6 @@ class FlowDispatcherTest extends TestCase
     {
         $context = Generator::createSalesChannelContext();
 
-        return new CheckoutOrderPlacedEvent(
-            $context->getContext(),
-            $order,
-            $context->getSalesChannelId(),
-            null,
-            $context
-        );
+        return new CheckoutOrderPlacedEvent($context, $order);
     }
 }

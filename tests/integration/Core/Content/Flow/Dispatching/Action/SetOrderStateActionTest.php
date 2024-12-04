@@ -199,13 +199,7 @@ class SetOrderStateActionTest extends TestCase
 
         static::assertInstanceOf(OrderEntity::class, $order);
 
-        $event = new CheckoutOrderPlacedEvent(
-            $context->getContext(),
-            $order,
-            $context->getSalesChannelId(),
-            null,
-            $context
-        );
+        $event = new CheckoutOrderPlacedEvent($context, $order);
 
         $subscriber = new SetOrderStateAction(
             static::getContainer()->get(Connection::class),
@@ -248,13 +242,7 @@ class SetOrderStateActionTest extends TestCase
 
         static::assertInstanceOf(OrderEntity::class, $order);
 
-        $event = new CheckoutOrderPlacedEvent(
-            $context->getContext(),
-            $order,
-            $context->getSalesChannelId(),
-            null,
-            $context
-        );
+        $event = new CheckoutOrderPlacedEvent($context, $order);
 
         $subscriber = new SetOrderStateAction(
             static::getContainer()->get(Connection::class),
