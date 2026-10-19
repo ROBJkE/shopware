@@ -21,7 +21,7 @@ describe('AjaxModalPlugin tests', () => {
             document.body.appendChild(el);
         });
 
-        // init ajax modal plugins
+        // init ajax dialog plugins
         ajaxModalPlugin = new AjaxModalPlugin(mockElement);
     });
 
@@ -29,7 +29,7 @@ describe('AjaxModalPlugin tests', () => {
         ajaxModalPlugin = undefined;
     });
 
-    test('ajax modal plugin exists', () => {
+    test('ajax dialog plugin exists', () => {
         expect(typeof ajaxModalPlugin).toBe('object');
     });
 
@@ -63,7 +63,7 @@ describe('AjaxModalPlugin tests', () => {
 
         expect(window.PluginManager.initializePluginsInParentElement).toHaveBeenCalled();
 
-        expect(ajaxModalPlugin.$emitter.publish).toHaveBeenCalledWith('ajaxModalOpen', { modal: element });
+        expect(ajaxModalPlugin.$emitter.publish).toHaveBeenCalledWith('ajaxModalOpen', { dialog: element });
     });
 
     test('_openModal will fetch classes and execute _onModalOpen ', () => {
@@ -82,30 +82,30 @@ describe('AjaxModalPlugin tests', () => {
         expect(ajaxModalPlugin._onModalOpen.bind).toHaveBeenCalledWith(ajaxModalPlugin, pseudoModalUtil, ['foo', 'bar']);
     });
 
-    test('_onClickHandleAjaxModal will create a modal window and load its content', () => {
+    test('_onClickHandleAjaxModal will create a dialog window and load its content', () => {
         document.body.innerHTML = `
-            <!-- This is the modal trigger -->
+            <!-- This is the dialog trigger -->
             <a
                 data-ajax-modal="true"
                 data-url="/widgets/cms/contact-form-id"
                 data-prev-url="/widgets/cms/prev-id"
                 href="/widgets/cms/contact-form-id"
             >
-                Open ajax modal
+                Open ajax dialog
             </a>
 
             <div class="js-pseudo-modal-template">
-                <div class="modal modal-lg fade" tabindex="-1" role="dialog">
-                    <div class="modal-dialog">
-                        <div class="modal-content">
-                            <div class="modal-header only-close">
-                                <div class="modal-title js-pseudo-modal-template-title-element h5">Modal Title</div>
-                                <button type="button" class="btn-close close" data-bs-dismiss="modal" aria-label="Close"></button>
+                <dialog class="dialog dialog-lg fade" tabindex="-1" role="dialog">
+                    <div>
+                        <div>
+                            <div class="dialog-header only-close">
+                                <div class="dialog-title js-pseudo-modal-template-title-element h5">Modal Title</div>
+                                <button type="button" class="btn-close close" data-bs-dismiss="dialog" aria-label="Close"></button>
                             </div>
-                            <div class="modal-body js-pseudo-modal-template-content-element">Modal Content</div>
+                            <div class="dialog-body js-pseudo-modal-template-content-element">Modal Content</div>
                         </div>
                     </div>
-                </div>
+                </dialog>
             </div>
         `;
 
@@ -124,7 +124,7 @@ describe('AjaxModalPlugin tests', () => {
         ajaxModalPlugin._onClickHandleAjaxModal(event);
 
         const pseudoModal = document.querySelector('.js-pseudo-modal');
-        const modalBody = pseudoModal.querySelector('.modal-body');
+        const modalBody = pseudoModal.querySelector('.dialog-body');
 
         expect(modalBody.classList).toContain('foo');
 
@@ -157,7 +157,7 @@ describe('AjaxModalPlugin tests', () => {
         expect(element.classList).toContain('text-center');
     });
 
-    test('_processResponse will remove the loading indicator, remove loading classes and update the modal content', () => {
+    test('_processResponse will remove the loading indicator, remove loading classes and update the dialog content', () => {
         const response = new XMLHttpRequest();
 
         const loadingIndicatorUtil = new LoadingIndicatorUtil(document.createElement('div'));
@@ -176,40 +176,40 @@ describe('AjaxModalPlugin tests', () => {
         expect(element.classList).not.toContain('text-center');
     });
 
-    test('renders back button when previous modal url is set', () => {
+    test('renders back button when previous dialog url is set', () => {
         document.body.innerHTML = `
-            <!-- This is the modal trigger -->
+            <!-- This is the dialog trigger -->
             <a
                 data-ajax-modal="true"
                 data-url="/widgets/cms/contact-form-id"
                 data-prev-url="/widgets/cms/prev-id"
                 href="/widgets/cms/contact-form-id"
             >
-                Open ajax modal
+                Open ajax dialog
             </a>
 
             <div class="js-pseudo-modal-template">
-                <div class="modal modal-lg fade" tabindex="-1" role="dialog">
-                    <div class="modal-dialog" role="document">
-                        <div class="modal-content">
-                            <div class="modal-header only-close">
-                                <div class="modal-title js-pseudo-modal-template-title-element h5"></div>
-                                <button type="button" class="btn-close close" data-bs-dismiss="modal" aria-label="Close"></button>
+                <dialog class="dialog dialog-lg fade" tabindex="-1" role="dialog">
+                    <div  role="document">
+                        <div>
+                            <div class="dialog-header only-close">
+                                <div class="dialog-title js-pseudo-modal-template-title-element h5"></div>
+                                <button type="button" class="btn-close close" data-bs-dismiss="dialog" aria-label="Close"></button>
                             </div>
-                            <div class="modal-body js-pseudo-modal-template-content-element">
+                            <div class="dialog-body js-pseudo-modal-template-content-element">
                             </div>
                         </div>
                     </div>
                     <template class="js-pseudo-modal-back-btn-template">
-                        <button class="js-pseudo-modal-back-btn btn btn-outline-primary" data-ajax-modal="true" data-url="#" href="#">
+                        <button class="js-pseudo-modal-back-btn btn btn-outline theme-primary" data-ajax-modal="true" data-url="#" href="#">
                            Back
                         </button>
                     </template>
-                </div>
+                </dialog>
             </div>
         `;
 
-        // Overwrite the ajax modal instance to consider additional attributes
+        // Overwrite the ajax dialog instance to consider additional attributes
         ajaxModalPlugin = new AjaxModalPlugin(document.querySelector('[data-ajax-modal]'));
 
         const response = '<div class="cms-page">Contact form content</div>';
@@ -218,7 +218,7 @@ describe('AjaxModalPlugin tests', () => {
 
         const pseudoModalUtil = new PseudoModalUtil();
         pseudoModalUtil.updateContent = jest.fn((response, callback) => callback());
-        pseudoModalUtil._modal = document.querySelector('.modal');
+        pseudoModalUtil._modal = document.querySelector('.dialog');
 
         ajaxModalPlugin._processResponse(
             response,

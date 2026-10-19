@@ -21,7 +21,7 @@ describe('AddToCartPlugin tests', () => {
         document.body.innerHTML = `
             <div class="form-wrapper">
                 <form action="/checkout/line-item/add" method="post">
-                    <input type="hidden" name="redirectTo" value="frontend.cart.offcanvas">
+                    <input type="hidden" name="redirectTo" value="frontend.cart.drawer">
                     <input type="hidden" name="redirectParameters" data-redirect-parameters="true" value="{ productId: '36250993b62e49319546ba869b84da77' }" disabled>
 
                     <button type="submit" class="btn-buy">Add to shopping cart</button>
@@ -42,7 +42,7 @@ describe('AddToCartPlugin tests', () => {
             return [];
         });
 
-        // Default: offcanvas is enabled
+        // Default: drawer is enabled
         window.openOffcanvasAfterAddToCart = '1';
 
         pluginInstance = new AddToCartPlugin(document.querySelector('form'));
@@ -65,7 +65,7 @@ describe('AddToCartPlugin tests', () => {
         expect(typeof pluginInstance).toBe('object');
     });
 
-    test('should fire events and open offcanvas when submitting form with offcanvas enabled', () => {
+    test('should fire events and open drawer when submitting form with drawer enabled', () => {
         window.openOffcanvasAfterAddToCart = '1';
 
         const button = document.querySelector('button');
@@ -75,7 +75,7 @@ describe('AddToCartPlugin tests', () => {
         expect(pluginInstance.$emitter.publish).toHaveBeenNthCalledWith(2, 'openOffCanvasCart');
     });
 
-    test('should add to cart without offcanvas when offcanvas is disabled', async () => {
+    test('should add to cart without drawer when drawer is disabled', async () => {
         window.openOffcanvasAfterAddToCart = '0';
 
         const button = document.querySelector('button');
@@ -93,7 +93,7 @@ describe('AddToCartPlugin tests', () => {
         expect(pluginInstance.$emitter.publish).toHaveBeenCalledWith('addToCartWithoutOffcanvas');
     });
 
-    test('should show success alert when adding to cart without offcanvas', async () => {
+    test('should show success alert when adding to cart without drawer', async () => {
         window.openOffcanvasAfterAddToCart = '0';
 
         const button = document.querySelector('button');
@@ -149,7 +149,7 @@ describe('AddToCartPlugin tests', () => {
         expect(pluginInstance._shouldOpenOffcanvas()).toBe(true);
     });
 
-    test('should fall back to offcanvas when fetch fails', async () => {
+    test('should fall back to drawer when fetch fails', async () => {
         window.openOffcanvasAfterAddToCart = '0';
         global.fetch = jest.fn(() => Promise.resolve({ ok: false }));
 
@@ -165,7 +165,7 @@ describe('AddToCartPlugin tests', () => {
         expect(openOffCanvasSpy).toHaveBeenCalled();
     });
 
-    test('should fall back to offcanvas when fetch throws network error', async () => {
+    test('should fall back to drawer when fetch throws network error', async () => {
         window.openOffcanvasAfterAddToCart = '0';
         global.fetch = jest.fn(() => Promise.reject(new Error('Network error')));
 
@@ -243,7 +243,7 @@ describe('AddToCartPlugin tests', () => {
         const form = document.querySelector('form');
         form.insertAdjacentHTML('beforeend', `
             <template class="js-quantity-stock-adjusted-template">
-                <div class="alert alert-warning"><div class="alert-content-container"></div></div>
+                <div class="alert theme-warning"><div class="alert-content-container"></div></div>
             </template>
         `);
         pluginInstance.options.stockAdjustedText = 'Your quantity has been updated to %quantity%.';
@@ -259,7 +259,7 @@ describe('AddToCartPlugin tests', () => {
         const form = document.querySelector('form');
         form.insertAdjacentHTML('beforeend', `
             <template class="js-quantity-stock-adjusted-template">
-                <div class="alert alert-warning"><div class="alert-content-container"></div></div>
+                <div class="alert theme-warning"><div class="alert-content-container"></div></div>
             </template>
         `);
         pluginInstance.options.outOfStockText = 'The product is no longer available.';
@@ -276,7 +276,7 @@ describe('AddToCartPlugin tests', () => {
         const form = document.querySelector('form');
         form.insertAdjacentHTML('beforeend', `
             <template class="js-quantity-stock-adjusted-template">
-                <div class="alert alert-warning"><div class="alert-content-container"></div></div>
+                <div class="alert theme-warning"><div class="alert-content-container"></div></div>
             </template>
         `);
         pluginInstance.options.stockAdjustedText = 'Your quantity has been updated to %quantity%.';
@@ -298,7 +298,7 @@ describe('AddToCartPlugin tests', () => {
         expect(document.querySelector('.quantity-stock-adjusted-alert')).toBeNull();
     });
 
-    test('should disable the buy button until the offcanvas is opened', () => {
+    test('should disable the buy button until the drawer is opened', () => {
         window.openOffcanvasAfterAddToCart = '1';
 
         let openOffCanvasCallback;
@@ -331,7 +331,7 @@ describe('AddToCartPlugin tests', () => {
         expect(openOffCanvas).toHaveBeenCalledTimes(1);
     });
 
-    test('should enable the buy button again when adding to cart without offcanvas', async () => {
+    test('should enable the buy button again when adding to cart without drawer', async () => {
         window.openOffcanvasAfterAddToCart = '0';
 
         const button = document.querySelector('button');
@@ -379,7 +379,7 @@ describe('AddToCartPlugin tests', () => {
         expect(button.innerHTML).toBe(buttonLabel);
     });
 
-    test('should enable the buy button again when no offcanvas cart is present', () => {
+    test('should enable the buy button again when no drawer cart is present', () => {
         window.openOffcanvasAfterAddToCart = '1';
         window.PluginManager.getPluginInstances = jest.fn(() => []);
 

@@ -1,6 +1,19 @@
+import Menu from 'bootstrap/js/dist/menu.js';
 import DeviceDetection from 'src/helper/device-detection.helper';
 import FocusHandler from 'src/helper/focus-handler.helper';
 import NavbarPlugin from 'src/plugin/navbar/navbar.plugin';
+
+jest.mock('bootstrap/js/dist/menu.js', () => {
+    const Menu = jest.fn();
+    Menu.getInstance = jest.fn();
+    Menu.getOrCreateInstance = jest.fn();
+    Menu.Default = { offset: [0, 0] };
+
+    return {
+        __esModule: true,
+        default: Menu,
+    };
+});
 
 describe('NavbarPlugin', () => {
     let navbarPlugin;
@@ -75,7 +88,7 @@ describe('NavbarPlugin', () => {
         const mockLink = {
             href: 'https://example.com',
             target: '_blank',
-            classList: { contains: jest.fn().mockReturnValue(true) },
+            getAttribute: jest.fn().mockReturnValue('menu'),
         };
 
         navbarPlugin._navigateToLinkOnClick(mockLink, mockEventClick);
@@ -88,7 +101,7 @@ describe('NavbarPlugin', () => {
         const mockLink = {
             href: 'https://example.com',
             target: '_blank',
-            classList: { contains: jest.fn().mockReturnValue(false) },
+            getAttribute: jest.fn().mockReturnValue(null),
         };
 
         navbarPlugin._navigateToLinkOnClick(mockLink, mockEventClick);
@@ -103,12 +116,12 @@ describe('NavbarPlugin', () => {
         const mockLink = {
             href: 'https://example.com/abc',
             target: '_self',
-            classList: { contains: jest.fn().mockReturnValue(true) },
+            getAttribute: jest.fn().mockReturnValue('menu'),
         };
 
         navbarPlugin._navigateToLinkOnClick(mockLink, mockEventClick);
 
-        expect(mockLink.classList.contains).toHaveBeenCalledWith('dropdown-toggle');
+        expect(mockLink.getAttribute).toHaveBeenCalledWith('data-bs-toggle');
         expect(navigateToSpy).toHaveBeenCalledWith('https://example.com/abc');
     });
 
@@ -119,12 +132,12 @@ describe('NavbarPlugin', () => {
         const mockLink = {
             href: 'https://example.com/abc',
             target: '_self',
-            classList: { contains: jest.fn().mockReturnValue(false) },
+            getAttribute: jest.fn().mockReturnValue(null),
         };
 
         navbarPlugin._navigateToLinkOnClick(mockLink, mockEventClick);
 
-        expect(mockLink.classList.contains).toHaveBeenCalledWith('dropdown-toggle');
+        expect(mockLink.getAttribute).toHaveBeenCalledWith('data-bs-toggle');
         expect(navigateToSpy).not.toHaveBeenCalled();
     });
 
@@ -133,10 +146,8 @@ describe('NavbarPlugin', () => {
         const mockDropdown1 = {hide: jest.fn(), _menu: {classList: {contains: jest.fn().mockReturnValue(true)}}};
         const mockDropdown2 = {hide: jest.fn(), _menu: {classList: {contains: jest.fn().mockReturnValue(true)}}};
 
-        // Mock window.bootstrap.Dropdown.getInstance to return the mock dropdown instances
-        window.bootstrap = {Dropdown: {getInstance: jest.fn()}};
-        window.bootstrap.Dropdown.getInstance.mockReturnValueOnce(mockDropdown1);
-        window.bootstrap.Dropdown.getInstance.mockReturnValueOnce(mockDropdown2);
+        Menu.getInstance.mockReturnValueOnce(mockDropdown1);
+        Menu.getInstance.mockReturnValueOnce(mockDropdown2);
 
         // Mock _topLevelLinks to return two links
         navbarPlugin._topLevelLinks = [mockLink, mockLink];
@@ -156,12 +167,8 @@ describe('NavbarPlugin', () => {
             hide: jest.fn(),
             _menu: { classList: { contains: jest.fn().mockReturnValue(false) } },
         };
-        window.bootstrap = {
-            Dropdown: {
-                getOrCreateInstance: jest.fn().mockReturnValue(mockDropdown),
-                getInstance: jest.fn().mockReturnValue(mockDropdown),
-            },
-        };
+        Menu.getOrCreateInstance.mockReturnValue(mockDropdown);
+        Menu.getInstance.mockReturnValue(mockDropdown);
 
         // At this point in time, the callback passed to _debounce should not have been called yet
         expect(mockDropdown.show).not.toHaveBeenCalled();
@@ -195,11 +202,7 @@ describe('NavbarPlugin', () => {
     test('_toggleNavbar should set _isMouseOver to true on mouseenter', () => {
         const mockEventEnter = {type: 'mouseenter'};
         const mockDropdown = {_menu: {classList: {contains: jest.fn().mockReturnValue(false)}}};
-        window.bootstrap = {
-            Dropdown: {
-                getOrCreateInstance: jest.fn().mockReturnValue(mockDropdown),
-            },
-        };
+        Menu.getOrCreateInstance.mockReturnValue(mockDropdown);
 
         navbarPlugin._toggleNavbar(mockLink, mockEventEnter);
         expect(navbarPlugin._isMouseOver).toBe(true);
@@ -208,11 +211,7 @@ describe('NavbarPlugin', () => {
     test('_toggleNavbar should call _debounce on mouseenter', () => {
         const mockEventEnter = {type: 'mouseenter'};
         const mockDropdown = {_menu: {classList: {contains: jest.fn().mockReturnValue(false)}}};
-        window.bootstrap = {
-            Dropdown: {
-                getOrCreateInstance: jest.fn().mockReturnValue(mockDropdown),
-            },
-        };
+        Menu.getOrCreateInstance.mockReturnValue(mockDropdown);
         navbarPlugin._debounce = jest.fn();
         navbarPlugin._toggleNavbar(mockLink, mockEventEnter);
         expect(navbarPlugin._debounce).toHaveBeenCalled();
@@ -350,12 +349,8 @@ describe('NavbarPlugin', () => {
             hide: jest.fn(),
             _menu: null, // simulate no dropdown menu
         };
-        window.bootstrap = {
-            Dropdown: {
-                getOrCreateInstance: (link) => link.noDropdown ? mockNoDropdown : mockDropdown,
-                getInstance: (link) => link.noDropdown ? mockNoDropdown : mockDropdown,
-            },
-        };
+        Menu.getOrCreateInstance.mockImplementation((link) => link.noDropdown ? mockNoDropdown : mockDropdown);
+        Menu.getInstance.mockImplementation((link) => link.noDropdown ? mockNoDropdown : mockDropdown);
         jest.spyOn(navbarPlugin, '_closeAllDropdowns');
 
         // toggle link with dropdown
@@ -388,12 +383,8 @@ describe('NavbarPlugin', () => {
             hide: jest.fn(),
             _menu: {classList: {contains: jest.fn().mockReturnValue(false)}},
         };
-        window.bootstrap = {
-            Dropdown: {
-                getOrCreateInstance: jest.fn().mockReturnValue(mockDropdown),
-                getInstance: jest.fn().mockReturnValue(mockDropdown),
-            },
-        };
+        Menu.getOrCreateInstance.mockReturnValue(mockDropdown);
+        Menu.getInstance.mockReturnValue(mockDropdown);
         mockLink.blur = jest.fn();
 
         navbarPlugin._toggleNavbar(mockLink, mockEventEnter);

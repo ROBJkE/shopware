@@ -80,7 +80,7 @@ export default class AddToWishlistPlugin extends Plugin {
             !CookieStorageHelper?.getItem('wishlist-enabled')
         ) {
             document.$emitter.publish('CookieConfiguration/requestConsent', {
-                route: `${window.router['frontend.cookie.consent.offcanvas']}?featureName=wishlist&cookieName=wishlist-enabled`,
+                route: `${window.router['frontend.cookie.consent.drawer']}?featureName=wishlist&cookieName=wishlist-enabled`,
                 cookieName: 'wishlist-enabled',
             });
             return;

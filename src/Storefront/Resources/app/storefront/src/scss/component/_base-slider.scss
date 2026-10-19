@@ -5,6 +5,7 @@ Styling for base slider component.
 Contains minimal styling for a slider with arrow and/or dot navigation.
 based on: https://github.com/ganlanyuan/tiny-slider
 */
+@use 'abstract/bootstrap-mixins' as *;
 
 .base-slider {
     position: relative;

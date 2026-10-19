@@ -1,9 +1,10 @@
 /*
-Zoom modal
+Zoom dialog
 ==============================================
-Styling for zoom modal component.
-Displays a single image or a gallery slider in a zoom modal with zoom functions.
+Styling for zoom dialog component.
+Displays a single image or a gallery slider in a zoom dialog with zoom functions.
 */
+@use 'abstract/bootstrap-mixins' as *;
 
 .zoom-modal-wrapper {
     position: absolute;
@@ -12,7 +13,7 @@ Displays a single image or a gallery slider in a zoom modal with zoom functions.
     overflow: hidden;
 }
 
-.modal.zoom-modal {
+.dialog.zoom-modal {
     overflow: hidden;
 
     .zoom-modal-actions,
@@ -32,15 +33,15 @@ Displays a single image or a gallery slider in a zoom modal with zoom functions.
         right: 0;
     }
 
-    .modal-dialog {
-        .modal-content,
-        .modal-body {
+    .dialog {
+        .dialog,
+        .dialog-body {
             padding: 0;
             overflow: hidden;
         }
     }
 
-    .modal-footer {
+    .dialog-footer {
         display: none;
         position: absolute;
         bottom: 0;
@@ -110,12 +111,12 @@ Displays a single image or a gallery slider in a zoom modal with zoom functions.
 }
 
 @include media-breakpoint-up(md) {
-    .modal.zoom-modal {
+    .dialog.zoom-modal {
         .gallery-slider {
             bottom: 100px;
         }
 
-        .modal-footer {
+        .dialog-footer {
             display: flex;
         }
     }

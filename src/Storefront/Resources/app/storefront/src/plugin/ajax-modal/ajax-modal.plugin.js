@@ -7,10 +7,10 @@ import PseudoModalUtil from 'src/utility/modal-extension/pseudo-modal.util';
 const PSEUDO_MODAL_TEMPLATE_CONTENT_CLASS = 'js-pseudo-modal-template-content-element';
 
 /**
- * This class extends the Bootstrap modal functionality by
- * adding an event listener to modal triggers that contain
+ * This class extends the Bootstrap dialog functionality by
+ * adding an event listener to dialog triggers that contain
  * a special "data-url" attribute which is needed to load
- * the modal content by AJAX
+ * the dialog content by AJAX
  *
  * Notice: The response template needs to have the markup as defined in the Bootstrap docs
  * https://getbootstrap.com/docs/5.2/components/modal/#live-demo
@@ -54,9 +54,9 @@ export default class AjaxModalPlugin extends Plugin {
     }
 
     /**
-     * When clicking/touching the modal trigger the button shall
+     * When clicking/touching the dialog trigger the button shall
      * show a loading indicator and an AJAX request needs to be triggered.
-     * The response then has to be placed inside the modal which will show up.
+     * The response then has to be placed inside the dialog which will show up.
      * @param {Event} event
      * @private
      */
@@ -72,7 +72,7 @@ export default class AjaxModalPlugin extends Plugin {
 
         this._openModal(pseudoModal);
 
-        pseudoModal.getModal().addEventListener('hidden.bs.modal', () => {
+        pseudoModal.getModal().addEventListener('hidden.bs.dialog', () => {
             window.focusHandler.resumeFocusState('ajax-modal');
         });
 
@@ -83,7 +83,7 @@ export default class AjaxModalPlugin extends Plugin {
     }
 
     /**
-     * Opens the modal and triggers the initialising process by calling _onOpen
+     * Opens the dialog and triggers the initialising process by calling _onOpen
      * This does not contain content yet!
      *
      * @param {PseudoModalUtil} pseudoModalUtil
@@ -96,7 +96,7 @@ export default class AjaxModalPlugin extends Plugin {
 
     /**
      * Sets up a loading indicator into the given modalBodyEl, sends a request to load the HTML content
-     * and sets the new content into the modal.
+     * and sets the new content into the dialog.
      *
      * @param {PseudoModalUtil} pseudoModalUtil
      * @param {HTMLElement} modalBodyEl
@@ -118,7 +118,7 @@ export default class AjaxModalPlugin extends Plugin {
     }
 
     /**
-     * Processes the response by removing the loading indicator, updating the modal content and removing the "loading"
+     * Processes the response by removing the loading indicator, updating the dialog content and removing the "loading"
      * class, which centers the loading indicator.
      *
      * @param {string} response
@@ -131,17 +131,17 @@ export default class AjaxModalPlugin extends Plugin {
         loadingIndicatorUtil.remove();
         pseudoModalUtil.updateContent(response, this._renderBackButton.bind(this, pseudoModalUtil));
         
-        // Initialize plugins only within the modal
-        const modal = pseudoModalUtil.getModal();
-        window.PluginManager.initializePluginsInParentElement(modal);
+        // Initialize plugins only within the dialog
+        const dialog = pseudoModalUtil.getModal();
+        window.PluginManager.initializePluginsInParentElement(dialog);
         
         modalBodyEl.classList.remove(this.options.centerLoadingIndicatorClass);
     }
 
     /**
-     * Renders a back button into the modal if the `data-prev-url` attribute is set.
-     * The `data-prev-url` attribute can be set if an AJAX modal link (`data-ajax-modal="true"`) is inside an already opened AJAX modal.
-     * When the new AJAX modal is opened, the back button will then re-open the previous modal.
+     * Renders a back button into the dialog if the `data-prev-url` attribute is set.
+     * The `data-prev-url` attribute can be set if an AJAX dialog link (`data-ajax-modal="true"`) is inside an already opened AJAX dialog.
+     * When the new AJAX dialog is opened, the back button will then re-open the previous dialog.
      *
      * @see https://getbootstrap.com/docs/5.3/components/modal/#toggle-between-modals
      * @param pseudoModalUtil
@@ -173,18 +173,18 @@ export default class AjaxModalPlugin extends Plugin {
     }
 
     /**
-     * Will be executed once the modal is done opening.
+     * Will be executed once the dialog is done opening.
      *
      * @param {PseudoModalUtil} pseudoModalUtil
      * @param {Array<String>} classes
      * @private
      */
     _onModalOpen(pseudoModalUtil, classes) {
-        const modal = pseudoModalUtil.getModal();
-        modal.classList.add(...classes);
+        const dialog = pseudoModalUtil.getModal();
+        dialog.classList.add(...classes);
 
-        window.PluginManager.initializePluginsInParentElement(modal);
+        window.PluginManager.initializePluginsInParentElement(dialog);
 
-        this.$emitter.publish('ajaxModalOpen', { modal });
+        this.$emitter.publish('ajaxModalOpen', { dialog });
     }
 }

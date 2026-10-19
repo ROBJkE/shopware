@@ -16,10 +16,10 @@
                         {% set country = isoCode[1] %}
 
                         <div class="languages-menu dropdown">
-                            <button class="btn dropdown-toggle top-bar-nav-btn"
+                            <button class="btn top-bar-nav-btn"
                                     type="button"
                                     id="languagesDropdown-{{ position }}"
-                                    data-bs-toggle="dropdown"
+                                    data-bs-toggle="menu" data-bs-placement="bottom-end"
                                     aria-haspopup="true"
                                     aria-expanded="false"
                                     aria-label="{{ 'header.languageTrigger'|trans({ '%lang%': context.languageInfo.name })|striptags }}">
@@ -28,13 +28,13 @@
                                         <span class="top-bar-nav-text">{{ context.languageInfo.name }}</span>
                                     {% else %}
                                         <span aria-hidden="true" class="top-bar-list-icon language-flag country-{{ country }} language-{{ language }}"></span>
-                                        <span class="top-bar-nav-text d-none d-md-inline">{{ context.languageInfo.name }}</span>
+                                        <span class="top-bar-nav-text d-none md:d-inline">{{ context.languageInfo.name }}</span>
                                     {% endif %}
                                 {% endblock %}
                             </button>
 
                             {% block layout_header_actions_languages_widget_form_items %}
-                                <ul class="top-bar-list dropdown-menu dropdown-menu-end"
+                                <ul class="top-bar-list menu"
                                     aria-label="{{ 'header.languageList'|trans|striptags }}">
                                     {% for language in header.languages %}
                                         {% set isActiveLanguage = language.id is same as(context.context.languageId) %}
@@ -45,7 +45,7 @@
                                                 {% set flagLanguage = isoCode[0] %}
                                                 {% set flagCountry = isoCode[1] %}
 
-                                                <button class="dropdown-item d-flex align-items-center gap-2{% if isActiveLanguage %} active{% endif %}" type="submit" name="languageId" id="{{ position }}-{{ language.id }}" value="{{ language.id }}">
+                                                <button class="menu-item d-flex align-items-center gap-2{% if isActiveLanguage %} active{% endif %}" type="submit" name="languageId" id="{{ position }}-{{ language.id }}" value="{{ language.id }}">
                                                     {% block layout_header_actions_languages_widget_form_items_flag_inner %}
                                                         {% if not feature('v6.8.0.0') %}
                                                             <span aria-hidden="true" class="top-bar-list-icon language-flag country-{{ flagCountry }} language-{{ flagLanguage }}"></span>
@@ -70,8 +70,8 @@
                         </div>
                     {% endblock %}
 
-                    {% if position == 'offcanvas' %}
-                        <input name="redirectParameters[offcanvas]" type="hidden" value="menu">
+                    {% if position == 'drawer' %}
+                        <input name="redirectParameters[drawer]" type="hidden" value="menu">
                     {% endif %}
                 </form>
             {% endblock %}

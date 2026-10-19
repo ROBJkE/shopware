@@ -159,7 +159,7 @@ export default class ViewportDetection {
      * @returns {boolean}
      */
     static isXXL() {
-        return (ViewportDetection.getCurrentViewport() === 'XXL');
+        return (ViewportDetection.getCurrentViewport() === '2XL');
     }
 
     /**

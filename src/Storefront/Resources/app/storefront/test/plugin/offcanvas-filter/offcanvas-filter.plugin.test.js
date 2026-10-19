@@ -29,7 +29,7 @@ describe('Offcanvas filter tests', () => {
             _removeFocusTrapGuard: jest.fn(),
         };
 
-        // mock offcanvas filter plugins
+        // mock drawer filter plugins
         mockDomElement = document.createElement('div');
         offcanvasFilter = new OffCanvasFilter(mockDomElement);
     });
@@ -58,10 +58,10 @@ describe('Offcanvas filter tests', () => {
         jest.advanceTimersByTime(350);
 
         // Verify filter offCanvas exists and is shown
-        expect(document.querySelector('.offcanvas.offcanvas-filter.show')).toBeTruthy();
+        expect(document.querySelector('.drawer.offcanvas-filter[open]')).toBeTruthy();
 
         // Verify filter-panel was moved inside OffCanvas
-        expect(document.querySelector('.offcanvas.offcanvas-filter .filter-panel').textContent).toBe('I will be moved to the OffCanvas');
+        expect(document.querySelector('.drawer.offcanvas-filter .filter-panel').textContent).toBe('I will be moved to the OffCanvas');
 
         // Verify filter-panel was removed from the inside data-attribute
         expect(document.querySelector('[data-offcanvas-filter-content] .filter-panel')).toBe(null);
@@ -75,7 +75,7 @@ describe('Offcanvas filter tests', () => {
         // Mock the function which should be called on click
         jest.spyOn(OffCanvasFilter.prototype, '_onClickOffCanvasFilter').mockImplementation(shouldBeClicked);
 
-        // create an mock offcanvas filter
+        // create an mock drawer filter
         const mockClickableDomElement = document.createElement('div');
         new OffCanvasFilter(mockClickableDomElement);
 

@@ -14,7 +14,7 @@ export default class AddToCartPlugin extends Plugin {
     static options = {
         redirectSelector: '[name="redirectTo"]',
         redirectParamSelector: '[data-redirect-parameters="true"]',
-        redirectTo: 'frontend.cart.offcanvas',
+        redirectTo: 'frontend.cart.drawer',
         alertTemplateSelector: '.js-add-to-cart-alert-template',
         alertDismissDelay: 3000,
         stockAlertTemplateSelector: '.js-quantity-stock-adjusted-template',
@@ -46,7 +46,7 @@ export default class AddToCartPlugin extends Plugin {
     /**
      * prepares the redirect values
      * fallback redirect back to detail page is deactivated
-     * offcanvas redirect is activated
+     * drawer redirect is activated
      *
      * @private
      */
@@ -88,7 +88,7 @@ export default class AddToCartPlugin extends Plugin {
      * against the storefront api and after that the current cart template needs to
      * be fetched and shown inside the OffCanvas.
      *
-     * If the "Open offcanvas after add to cart" setting is disabled, the product is
+     * If the "Open drawer after add to cart" setting is disabled, the product is
      * added silently and a success message is shown instead.
      *
      * @param {Event} event
@@ -112,7 +112,7 @@ export default class AddToCartPlugin extends Plugin {
     }
 
     /**
-     * Check if offcanvas cart should open after adding to cart
+     * Check if drawer cart should open after adding to cart
      *
      * @returns {boolean}
      * @private
@@ -122,8 +122,8 @@ export default class AddToCartPlugin extends Plugin {
     }
 
     /**
-     * Add product to cart without opening the offcanvas
-     * Used when "Open offcanvas after add to cart" setting is disabled
+     * Add product to cart without opening the drawer
+     * Used when "Open drawer after add to cart" setting is disabled
      *
      * @param {string} requestUrl
      * @param {FormData} formData
@@ -150,7 +150,7 @@ export default class AddToCartPlugin extends Plugin {
 
             this.$emitter.publish('addToCartWithoutOffcanvas');
         }).catch(() => {
-            // Fall back to offcanvas behaviour on error to show any cart errors
+            // Fall back to drawer behaviour on error to show any cart errors
             this._openOffCanvasCarts(requestUrl, formData);
         });
     }

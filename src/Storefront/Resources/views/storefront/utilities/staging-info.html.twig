@@ -2,7 +2,7 @@
 
 {% block staging_info %}
     {% if shopware.showStagingBanner and config('core.staging') %}
-        <div class="storefront-staging-info bg-secondary text-white sticky-top z-index-1000 d-flex justify-content-center align-items-center p-3">
+        <div class="storefront-staging-info bg-secondary fg-white sticky-top z-index-1000 d-flex justify-content-center align-items-center p-3">
             {% sw_icon 'eye-open' style { class : 'flex-shrink-0 me-2'} %}
 
             <p class="m-0 fw-bold">
@@ -23,7 +23,7 @@
                     {% sw_icon 'link' style { class : 'flex-shrink-0 ms-2 me-2'} %}
 
                     <p class="m-0 fw-bold">
-                        <a href="{{ quickViewUrl }}" target="_blank" class="text-white">
+                        <a href="{{ quickViewUrl }}" target="_blank" class="fg-white">
                             {{ page.metaInformation.metaTitle }}
                         </a>
                     </p>

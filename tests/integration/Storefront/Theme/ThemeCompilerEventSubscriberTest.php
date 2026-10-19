@@ -141,17 +141,32 @@ class ThemeCompilerEventSubscriberTest extends TestCase
             ],
         ]);
 
-        $this->themeCompiler->compileTheme(
-            $this->mockSalesChannelId,
-            'test-theme-id',
-            $config,
-            new StorefrontPluginConfigurationCollection(),
-            false,
-            Context::createDefaultContext()
-        );
+        $stylesheet = static::getContainer()->getParameter('kernel.project_dir') . '/src/Storefront/Resources/app/storefront/dist/css/storefront.css';
+        $createdStylesheet = false;
+        if (!is_file($stylesheet)) {
+            $io = new \Symfony\Component\Filesystem\Filesystem();
+            $io->mkdir(\dirname($stylesheet));
+            $io->dumpFile($stylesheet, "body{color:#0042a0}\n");
+            $createdStylesheet = true;
+        }
 
-        // Check that enriched variables were written
-        $variablesContent = $this->tempFilesystem->read('theme-variables.scss');
-        static::assertStringContainsString('$mock-variable-black: #000000', $variablesContent);
+        try {
+            $this->themeCompiler->compileTheme(
+                $this->mockSalesChannelId,
+                'test-theme-id',
+                $config,
+                new StorefrontPluginConfigurationCollection(),
+                false,
+                Context::createDefaultContext()
+            );
+
+            $themePrefix = (new MD5ThemePathBuilder())->assemblePath($this->mockSalesChannelId, 'test-theme-id');
+            static::assertSame((string) file_get_contents($stylesheet), $this->filesystem->read('theme/' . $themePrefix . '/css/all.css'));
+            static::assertFalse($this->tempFilesystem->fileExists('theme-variables.scss'));
+        } finally {
+            if ($createdStylesheet) {
+                (new \Symfony\Component\Filesystem\Filesystem())->remove($stylesheet);
+            }
+        }
     }
 }

@@ -36,7 +36,7 @@
             {% block component_review_form_details %}
                 <div class="row g-2">
                     {% block component_review_form_rating %}
-                        <div class="form-group col-md-4 product-detail-review-form-rating">
+                        <div class="form-group md:col-4 product-detail-review-form-rating">
                             <label for="#review-form-rating">
                                 {{ 'detail.reviewFormRatingLabel'|trans|sw_sanitize }}{{ 'general.required'|trans|sw_sanitize }}
                             </label>
@@ -121,7 +121,7 @@
                     <div class="product-detail-review-form-actions">
                         {% block component_review_form_cancel %}
                             <a href="#"
-                               class="btn btn-outline-secondary product-detail-review-cancel"
+                               class="btn btn-outline theme-secondary product-detail-review-cancel"
                                data-bs-toggle="collapse"
                                data-bs-target=".multi-collapse"
                                aria-expanded="false"
@@ -132,7 +132,7 @@
 
                         {% block component_review_form_submit %}
                             <button type="submit"
-                                    class="btn btn-primary btn-review-submit">
+                                    class="btn btn-solid theme-primary btn-review-submit">
                                 {{ 'detail.reviewFormSubmitText'|trans|sw_sanitize }}
                             </button>
                         {% endblock %}

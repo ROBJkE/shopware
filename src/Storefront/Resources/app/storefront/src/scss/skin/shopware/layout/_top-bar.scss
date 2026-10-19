@@ -10,22 +10,22 @@ The top bar contains e.g. the language switcher, the currency switcher and the s
 }
 
 .top-bar-nav-btn.btn {
-    --#{$prefix}btn-focus-box-shadow: #{$input-btn-focus-box-shadow};
-    --#{$prefix}btn-color: #{$body-color};
-    --#{$prefix}btn-font-weight: #{$font-weight-normal};
-    --#{$prefix}btn-border-width: 0;
-    --#{$prefix}btn-border-color: transparent;
-    --#{$prefix}btn-padding-x: 0;
-    --#{$prefix}btn-padding-y: 0;
-    --#{$prefix}btn-hover-color: #{$primary};
-    --#{$prefix}btn-line-height: 2rem;
+    --btn-focus-box-shadow: #{$input-btn-focus-box-shadow};
+    --btn-color: #{$body-color};
+    --btn-font-weight: #{$font-weight-normal};
+    --btn-border-width: 0;
+    --btn-border-color: transparent;
+    --btn-padding-x: 0;
+    --btn-padding-y: 0;
+    --btn-hover-color: #{$primary};
+    --btn-line-height: 2rem;
 }
 
 .top-bar-list {
-    --#{$prefix}dropdown-link-hover-bg: transparent;
-    --#{$prefix}dropdown-link-hover-color: #{$primary};
-    --#{$prefix}dropdown-link-active-color: #{$primary};
-    --#{$prefix}dropdown-link-active-bg: transparent;
+    --dropdown-link-hover-bg: transparent;
+    --dropdown-link-hover-color: #{$primary};
+    --dropdown-link-active-color: #{$primary};
+    --dropdown-link-active-bg: transparent;
 }
 
 .top-bar-list-item-currency-symbol {

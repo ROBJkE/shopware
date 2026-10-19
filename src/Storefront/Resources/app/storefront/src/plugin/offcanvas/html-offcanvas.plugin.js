@@ -6,7 +6,7 @@ import OffCanvas from 'src/plugin/offcanvas/offcanvas.plugin';
 export default class HtmlOffCanvas extends OffCanvas {
 
     /**
-     * Open an offcanvas with HTML content from any given selector
+     * Open an drawer with HTML content from any given selector
      * @param {string} selector
      * @param {function|null} callback
      * @param {'left'|'right'} position

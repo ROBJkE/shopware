@@ -11,7 +11,7 @@
                 {% set mainContentBlocks = section.blocks.filterBySectionPosition('main') %}
 
                 {% block section_sidebar_content %}
-                    <div class="cms-section-sidebar-sidebar-content col-lg-4 col-xl-3">
+                    <div class="cms-section-sidebar-sidebar-content lg:col-4 xl:col-3">
 
                         {% for block in sidebarBlocks %}
                             {% block section_sidebar_content_block %}
@@ -22,7 +22,7 @@
                 {% endblock %}
 
                 {% block section_main_content %}
-                    <div class="cms-section-sidebar-main-content col-lg-8 col-xl-9">
+                    <div class="cms-section-sidebar-main-content lg:col-8 xl:col-9">
 
                         {% for block in mainContentBlocks %}
                             {% block section_main_content_block %}

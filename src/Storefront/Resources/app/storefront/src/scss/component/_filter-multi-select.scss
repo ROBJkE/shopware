@@ -32,7 +32,7 @@ This filter item should only be used inside a filter panel.
     width: 100%;
 
     &:hover {
-        color: var(--#{$prefix}primary);
+        color: var(--primary);
     }
 }
 

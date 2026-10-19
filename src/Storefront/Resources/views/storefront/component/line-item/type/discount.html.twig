@@ -15,7 +15,7 @@
 
 {% set lineItemClasses = 'line-item line-item-' ~ lineItem.type ~ ' is-' ~ displayMode %}
 
-{% if displayMode === 'offcanvas' %}
+{% if displayMode === 'drawer' %}
     {% set lineItemClasses = lineItemClasses ~ ' js-cart-item' %}
 {% endif %}
 

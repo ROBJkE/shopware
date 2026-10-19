@@ -3,7 +3,7 @@
 
     <button
         type="submit"
-        class="btn btn-primary float-end"
+        class="btn btn-solid theme-primary float-end"
         {% if attributes is not empty %}
             {% for key, value in attributes %}
                 {% if value is not empty %}{{ key }}="{{ value }}"{% else %}{{ key }}{% endif %}

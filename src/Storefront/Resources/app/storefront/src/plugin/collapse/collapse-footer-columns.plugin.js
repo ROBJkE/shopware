@@ -1,3 +1,4 @@
+import Collapse from 'bootstrap/js/dist/collapse.js';
 import Plugin from 'src/plugin-system/plugin.class';
 import ViewportDetection from 'src/helper/viewport-detection.helper';
 
@@ -61,9 +62,7 @@ export default class CollapseFooterColumnsPlugin extends Plugin {
             return;
         }
 
-        new bootstrap.Collapse(collapseEl, {
-            toggle: false,
-        });
+        new Collapse(collapseEl);
     }
 
     /**
@@ -78,7 +77,7 @@ export default class CollapseFooterColumnsPlugin extends Plugin {
             return;
         }
 
-        const collapse = bootstrap.Collapse.getInstance(collapseEl);
+        const collapse = Collapse.getInstance(collapseEl);
 
         if (collapse) {
             collapse.dispose();

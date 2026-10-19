@@ -1,15 +1,15 @@
 /*
 Modal
 ==============================================
-Custom skin styling for bootstrap modal component.
+Custom skin styling for bootstrap dialog component.
 
 https://getbootstrap.com/docs/5.2/components/modal
 */
 
-.modal-content {
-    box-shadow: var(--#{$prefix}modal-box-shadow);
+.dialog {
+    box-shadow: var(--modal-box-shadow);
 
-    .modal-title {
+    .dialog-title {
         margin: 0;
         line-height: $modal-title-line-height;
     }

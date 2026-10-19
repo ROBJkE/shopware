@@ -1,0 +1,14 @@
+/*
+Bootstrap mixins used by Storefront partials.
+Only mixins are forwarded, so Shopware variables are not replaced by Bootstrap's.
+
+@sw-package framework
+*/
+
+@forward 'bootstrap/scss/layout/breakpoints' show media-breakpoint-up, media-breakpoint-down,
+    media-breakpoint-only, media-breakpoint-between;
+@forward 'bootstrap/scss/mixins/grid' show make-row, make-col, make-col-ready, make-col-offset,
+    make-col-auto;
+@forward 'bootstrap/scss/layout/containers' show make-container;
+@forward 'bootstrap/scss/mixins/visually-hidden' show visually-hidden;
+@forward 'bootstrap/scss/mixins/transition' show transition;

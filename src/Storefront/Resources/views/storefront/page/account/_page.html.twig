@@ -4,7 +4,7 @@
     {% block page_account %}
         <div class="account account-content row">
             {% block page_account_sidebar %}
-                <div class="account-content-aside col-lg-3 col-xl-2 d-none d-lg-block">
+                <div class="account-content-aside lg:col-3 xl:col-2 d-none lg:d-block">
                     {% if context.customer and not context.customer.guest %}
                         {% sw_include '@Storefront/storefront/page/account/sidebar.html.twig' %}
                     {% endif %}
@@ -12,7 +12,7 @@
             {% endblock %}
 
             {% block page_account_main %}
-                <div class="account-content-main col-lg-9 col-xl-10">
+                <div class="account-content-main lg:col-9 xl:col-10">
                     {% block page_account_main_content %}{% endblock %}
                 </div>
             {% endblock %}

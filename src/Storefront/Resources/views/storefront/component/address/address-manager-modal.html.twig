@@ -1,5 +1,5 @@
 <div class="js-pseudo-modal-template-root-element address-manager-modal">
-    <div class="modal-header pb-0 align-items-start">
+    <div class="dialog-header pb-0 align-items-start">
         {% block address_manager_modal_title %}
         <h1>
             {{ 'account.addressModalTitle'|trans|sw_sanitize }}
@@ -7,10 +7,10 @@
         {% endblock %}
 
         {% block address_manager_modal_close_button %}
-            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="{{ 'global.default.close'|trans|striptags }}"></button>
+            <button type="button" class="btn-close" data-bs-dismiss="dialog" aria-label="{{ 'global.default.close'|trans|striptags }}"></button>
         {% endblock %}
     </div>
-    <div class="modal-body">
+    <div class="dialog-body">
         {% block address_manager_modal_tab_group %}
             <div
                 class="btn-group address-manager-modal-tab-navigation-list w-100 sticky-top bg-white"
@@ -25,7 +25,7 @@
                         autocomplete="off"
                         checked
                     >
-                    <label class="btn btn-outline-secondary" for="shipping-address-tab">
+                    <label class="btn btn-outline theme-secondary" for="shipping-address-tab">
                         {{ 'account.addressesTitleShippingAddress'|trans|sw_sanitize }}
                     </label>
                 {% endblock %}
@@ -38,7 +38,7 @@
                         id="billing-address-tab"
                         autocomplete="off"
                     >
-                    <label class="btn btn-outline-secondary" for="billing-address-tab">
+                    <label class="btn btn-outline theme-secondary" for="billing-address-tab">
                         {{ 'account.addressesTitleBillingAddress'|trans|sw_sanitize }}
                     </label>
                 {% endblock %}
@@ -112,9 +112,9 @@
     </div>
 
     {% block address_manager_modal_footer %}
-        <div class="modal-footer">
+        <div class="dialog-footer">
             {% block address_manager_modal_footer_close_button %}
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                <button type="button" class="btn btn-solid theme-secondary" data-bs-dismiss="dialog">
                     {{ 'global.default.close'|trans|sw_sanitize }}
                 </button>
             {% endblock %}
@@ -154,7 +154,7 @@
                     {% block address_manager_modal_footer_form_submit_button %}
                         <button
                             type="submit"
-                            class="btn btn-primary"
+                            class="btn btn-solid theme-primary"
                             id="submit-button"
                         >
                             {{ 'account.addressesChangeAddress'|trans|sw_sanitize }}

@@ -64,7 +64,7 @@
         >
             {% block component_address_form_country_field %}
                 {% sw_include '@Storefront/storefront/component/address/field/address-country-field.html.twig' with {
-                    additionalClass: 'col-md'
+                    additionalClass: 'md:col'
                 } %}
             {% endblock %}
         </div>
@@ -72,9 +72,9 @@
 
         <div class="row g-2">
             {% block component_address_form_street %}
-                {# @deprecated tag:v6.8.0 - `additionalClass` will always be 'col-md-12' #}
+                {# @deprecated tag:v6.8.0 - `additionalClass` will always be 'md:col-12' #}
                 {% sw_include '@Storefront/storefront/component/address/field/address-street-field.html.twig' with {
-                    additionalClass: isOldArrangement ? 'col-md-6' : 'col-md-12'
+                    additionalClass: isOldArrangement ? 'md:col-6' : 'md:col-12'
                 } %}
             {% endblock %}
 
@@ -92,7 +92,7 @@
 
                     {% set wrappedZipcodeField %}
                         {% block component_address_form_zipcode_field %}
-                            <div class="form-group col-md-2 col-4">
+                            <div class="form-group md:col-2 col-4">
                                 {{ zipcodeField }}
                             </div>
                         {% endblock %}
@@ -100,7 +100,7 @@
 
                     {% set wrappedCityField %}
                         {% block component_address_form_city_field %}
-                            <div class="form-group col-md-4 col-8">
+                            <div class="form-group md:col-4 col-8">
                                 {{ cityField }}
                             </div>
                         {% endblock %}
@@ -144,11 +144,11 @@
             {% block component_address_form_city_state_zipcode %}
                 {% for field in arrangement|split('-') %}
                     {% if field === 'city' %}
-                        {% sw_include '@Storefront/storefront/component/address/field/address-city-field.html.twig' with { additionalClass: 'col-md' } %}
+                        {% sw_include '@Storefront/storefront/component/address/field/address-city-field.html.twig' with { additionalClass: 'md:col' } %}
                     {% elseif field === 'state' %}
-                        {% sw_include '@Storefront/storefront/component/address/field/address-country-state-field.html.twig' with { additionalClass: 'col-md' } %}
+                        {% sw_include '@Storefront/storefront/component/address/field/address-country-state-field.html.twig' with { additionalClass: 'md:col' } %}
                     {% elseif field === 'zip' %}
-                        {% sw_include '@Storefront/storefront/component/address/field/address-zipcode-field.html.twig' with { additionalClass: 'col-md' } %}
+                        {% sw_include '@Storefront/storefront/component/address/field/address-zipcode-field.html.twig' with { additionalClass: 'md:col' } %}
                     {% endif %}
                 {% endfor %}
             {% endblock %}
@@ -172,7 +172,7 @@
                 {% block component_address_form_state_select %}
                     {% if isOldArrangement %}
                         {% sw_include '@Storefront/storefront/component/address/field/address-country-state-field.html.twig' with {
-                            additionalClass: 'col-md-6 d-none',
+                            additionalClass: 'md:col-6 d-none',
                         } %}
                     {% endif %}
                 {% endblock %}

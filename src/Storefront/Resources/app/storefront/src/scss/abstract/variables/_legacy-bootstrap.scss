@@ -1,0 +1,49 @@
+/*
+Tokens Storefront SCSS still reads after Bootstrap's variable file is no longer imported.
+Values follow the previous Storefront defaults.
+
+@sw-package framework
+*/
+
+$white: #fff !default;
+$black: #000 !default;
+$red: #c20017 !default;
+$gray-500: #adb5bd !default;
+
+$spacer: 1rem !default;
+
+$border-width: 1px !default;
+$border-style: solid !default;
+$border-radius-pill: 50rem !default;
+
+$font-weight-base: $font-weight-normal !default;
+$font-weight-bold: 700 !default;
+$font-weight-bolder: bolder !default;
+$line-height-base: 1.5 !default;
+$headings-line-height: 1.2 !default;
+
+$link-color: $primary !default;
+$btn-link-color: $link-color !default;
+$btn-link-hover-color: $link-color !default;
+$input-bg: $white !default;
+$input-btn-focus-box-shadow: $focus-ring-box-shadow !default;
+$list-group-bg: $white !default;
+$badge-color: $white !default;
+$text-muted: $gray-600 !default;
+
+$modal-title-line-height: $line-height-base !default;
+$offcanvas-horizontal-width: 400px !default;
+
+// Bootstrap 6 removed `$form-validation-states`. Keep the Storefront loop empty.
+$form-validation-states: () !default;
+
+$theme-colors: (
+    'primary': $primary,
+    'secondary': $secondary,
+    'success': $success,
+    'info': $info,
+    'warning': $warning,
+    'danger': $danger,
+    'light': $light,
+    'dark': $dark,
+) !default;

@@ -131,11 +131,11 @@ describe('FilterMultiSelect tests', () => {
     test('should render correct counter depending on current selection', () => {
         document.body.innerHTML = `
             <div class="filter-multi-select filter-multi-select-manufacturer filter-panel-item dropdown" role="listitem" data-filter-multi-select="true">
-                <button class="filter-panel-item-toggle btn" aria-expanded="false" aria-label="Filter by manufacturer" data-bs-toggle="dropdown" data-boundary="viewport" data-bs-offset="0,8" aria-haspopup="true">
+                <button class="filter-panel-item-toggle btn" aria-expanded="false" aria-label="Filter by manufacturer" data-bs-toggle="menu" data-boundary="viewport" data-bs-offset="0,8" aria-haspopup="true">
                     Manufacturer <span class="filter-multi-select-count"></span>
                 </button>
     
-                <div class="filter-multi-select-dropdown filter-panel-item-dropdown dropdown-menu" id="filter-manufacturer-1854714896">
+                <div class="filter-multi-select-dropdown filter-panel-item-dropdown menu" id="filter-manufacturer-1854714896">
                     <ul class="filter-multi-select-list" aria-label="Manufacturer">
                         <li class="filter-multi-select-list-item">
                             <div class="form-check">

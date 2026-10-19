@@ -23,7 +23,7 @@ import ButtonLoadingIndicator from 'src/utility/loading-indicator/button-loading
  *         autocomplete: 'section-personal given-name',
  *         violationPath: violationPath,
  *         validationRules: 'required',
- *         additionalClass: 'col-sm-6',
+ *         additionalClass: 'sm:col-6',
  *     } %}
  *
  *     <button type="submit">Submit</button>

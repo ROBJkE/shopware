@@ -3,6 +3,7 @@ Footer
 ==================================================
 Contains custom styles for the footer located at the bottom of the page.
 */
+@use 'abstract/bootstrap-mixins' as *;
 
 .footer-column-content-inner {
     padding-bottom: $spacer;
@@ -36,7 +37,7 @@ Contains custom styles for the footer located at the bottom of the page.
 
 .footer-column-toggle {
     padding: 0;
-    --#{$prefix}btn-line-height: 1.375;
+    --btn-line-height: 1.375;
 }
 
 .footer-link-item {

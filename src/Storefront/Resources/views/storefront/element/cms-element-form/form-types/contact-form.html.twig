@@ -12,7 +12,7 @@
             {% block cms_form_contact_select_salutation %}
                 {% sw_include '@Storefront/storefront/element/cms-element-form/form-components/cms-element-form-select-salutation.html.twig'
                     with {
-                    additionalClass: 'col-md-4',
+                    additionalClass: 'md:col-4',
                     required: true
                 }
                 %}
@@ -25,7 +25,7 @@
                     fieldName: 'firstName',
                     autocomplete: 'section-personal given-name',
                     required: firstNameFieldRequired,
-                    additionalClass: 'col-md-4',
+                    additionalClass: 'md:col-4',
                     label: 'account.personalFirstNameLabel',
                 }
                 %}
@@ -38,7 +38,7 @@
                     fieldName: 'lastName',
                     autocomplete: 'section-personal family-name',
                     required: lastNameFieldRequired,
-                    additionalClass: 'col-md-4',
+                    additionalClass: 'md:col-4',
                     label: 'account.personalLastNameLabel',
                 }
                 %}
@@ -53,7 +53,7 @@
                     autocomplete: 'email',
                     type: 'email',
                     required: true,
-                    additionalClass: 'col-md-6',
+                    additionalClass: 'md:col-6',
                     label: 'account.loginMailLabel',
                 }
                 %}
@@ -66,7 +66,7 @@
                     fieldName: 'phone',
                     autocomplete: 'tel',
                     required: phoneNumberFieldRequired,
-                    additionalClass: 'col-md-6',
+                    additionalClass: 'md:col-6',
                     label: 'account.personalPhoneLabel',
                 }
                 %}
@@ -101,7 +101,7 @@
         </div>
 
         {% block cms_form_contact_captcha %}
-            {% sw_include '@Storefront/storefront/component/captcha/base.html.twig' with { additionalClass : 'col-md-12' } %}
+            {% sw_include '@Storefront/storefront/component/captcha/base.html.twig' with { additionalClass : 'md:col-12' } %}
         {% endblock %}
 
         {% block cms_form_contact_privacy %}

@@ -52,7 +52,7 @@ describe('OffCanvasTabsPlugin test', () => {
 
         jest.runAllTimers();
 
-        const offCanvas = document.querySelector('.offcanvas');
+        const offCanvas = document.querySelector('.drawer');
 
         expect(window.PluginManager.initializePluginsInParentElement).toHaveBeenCalledTimes(1);
         expect(offCanvas.innerHTML).toBe('Tab content');

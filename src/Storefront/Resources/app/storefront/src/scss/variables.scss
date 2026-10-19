@@ -8,8 +8,6 @@ Import of all variables.
 
 @import 'abstract/variables/bootstrap';
 @import 'skin/shopware/abstract/variables';
-@import '~vendor/bootstrap/scss/functions';
-@import '~vendor/bootstrap/scss/variables';
-@import '~vendor/bootstrap/scss/mixins';
+@import 'abstract/variables/legacy-bootstrap';
 @import 'abstract/variables/custom';
 @import 'abstract/variables/css-properties';

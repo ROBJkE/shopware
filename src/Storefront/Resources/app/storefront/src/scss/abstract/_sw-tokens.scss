@@ -1,0 +1,40 @@
+/*
+Bootstrap 6 theme tokens passed into `@use "bootstrap/scss/bootstrap"`.
+Shopware brand colors are compile-time defaults. Runtime admin colors stay on `:root` `--sw-*`.
+
+@sw-package framework
+*/
+
+@function sw-theme($base, $contrast: #fff) {
+    @return (
+        'base': $base,
+        'fg': $base,
+        'fg-emphasis': $base,
+        'bg': $base,
+        'bg-subtle': $base,
+        'bg-muted': $base,
+        'border': $base,
+        'focus-ring': $base,
+        'contrast': $contrast
+    );
+}
+
+$sw-breakpoints: (
+    xs: 0,
+    sm: 576px,
+    md: 768px,
+    lg: 992px,
+    xl: 1200px,
+    2xl: 1400px,
+);
+
+$sw-theme-colors: (
+    'primary': sw-theme(#0042a0),
+    'secondary': sw-theme(#474a57),
+    'success': sw-theme(#007e4e),
+    'info': sw-theme(#005b99),
+    'warning': sw-theme(#974200),
+    'danger': sw-theme(#c20017),
+    'light': sw-theme(#f9f9f9, #2b3136),
+    'dark': sw-theme(#4a545b),
+);

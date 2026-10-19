@@ -519,7 +519,7 @@ class ThemeTest extends TestCase
             static::assertTrue($themeCompiled);
         } catch (ThemeCompileException $e) {
             // ignore files not found exception
-            if (!str_starts_with($e->getMessage(), 'Unable to compile the theme "Storefront - Theme-ID: ' . $childTheme->getId() . '". `~vendor/bootstrap/scss/functions` file not found for @import: src/Storefront/Resources/app/storefront/src/scss/variables.scss')) {
+            if (!str_starts_with($e->getMessage(), 'Unable to compile the theme "Storefront - Theme-ID: ' . $childTheme->getId() . '". The storefront stylesheet "dist/css/storefront.css" is missing.')) {
                 throw $e;
             }
         }
@@ -786,7 +786,7 @@ class ThemeTest extends TestCase
             );
         } catch (ThemeCompileException $e) {
             // ignore files not found exception
-            if (!str_starts_with($e->getMessage(), 'Unable to compile the theme "Storefront - Theme-ID: ' . $childTheme->getId() . '". `~vendor/bootstrap/scss/functions` file not found for @import: src/Storefront/Resources/app/storefront/src/scss/variables.scss')) {
+            if (!str_starts_with($e->getMessage(), 'Unable to compile the theme "Storefront - Theme-ID: ' . $childTheme->getId() . '". The storefront stylesheet "dist/css/storefront.css" is missing.')) {
                 throw $e;
             }
         }

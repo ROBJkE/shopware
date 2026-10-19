@@ -1,3 +1,4 @@
+@use 'abstract/bootstrap-mixins' as *;
 .quickview-minimal-top,
 .quickview-minimal-image {
     margin-bottom: $spacer;

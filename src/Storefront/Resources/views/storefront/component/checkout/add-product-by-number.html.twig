@@ -1,5 +1,5 @@
 {% block page_checkout_cart_add_product %}
-<div class="col-md-5 cart-add-product-container">
+<div class="md:col-5 cart-add-product-container">
     <form action="{{ path('frontend.checkout.product.add-by-number') }}" method="post">
         {% block page_checkout_cart_add_product_redirect %}
             <input type="hidden"
@@ -24,7 +24,7 @@
                 {% endblock %}
 
                 {% block page_checkout_cart_add_product_submit %}
-                    <button class="btn btn-outline-secondary add-product-button"
+                    <button class="btn btn-outline theme-secondary add-product-button"
                             type="submit"
                             aria-labelledby="addProductInput"
                             id="addProductButton">

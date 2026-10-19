@@ -20,10 +20,10 @@ describe('ZoomModalPlugin tests', () => {
                         <img src="#" alt="" class="gallery-slider-image magnifier-image js-magnifier-image" tabindex="0">
                     </div>
 
-                    <div class="modal js-zoom-modal">
-                        <div class="modal-dialog">
-                            <div class="modal-content" data-modal-gallery-slider="true">
-                                <div class="modal-body">
+                    <dialog class="dialog js-zoom-modal">
+                        <div>
+                            <div  data-modal-gallery-slider="true">
+                                <div class="dialog-body">
                                     <div class="zoom-modal-actions">
                                         <button class="image-zoom-btn js-image-zoom-out">Zoom Out</button>
                                         <button class="image-zoom-btn js-image-zoom-reset">Reset</button>
@@ -49,7 +49,7 @@ describe('ZoomModalPlugin tests', () => {
                                 </div>
                             </div>
                         </div>
-                    </div>
+                    </dialog>
                 </div>
             </div>
         `;
@@ -101,27 +101,31 @@ describe('ZoomModalPlugin tests', () => {
     });
 
     afterEach(() => {
+        jest.useRealTimers();
         zoomModalPlugin = undefined;
         gallerySliderPlugin = undefined;
     });
 
-    test('zoom modal plugin exists', () => {
+    test('zoom dialog plugin exists', () => {
         expect(typeof zoomModalPlugin).toBe('object');
     });
 
-    test('zoom modal show modal has only one listener', () => {
+    test('zoom dialog show dialog has only one listener', () => {
         zoomModalPlugin.$emitter.publish = jest.fn();
 
-        const modal = document.querySelector('.js-zoom-modal');
+        const dialog = document.querySelector('.js-zoom-modal');
 
-        zoomModalPlugin._showModal(modal);
-        zoomModalPlugin._showModal(modal);
+        jest.useFakeTimers();
+        zoomModalPlugin._showModal(dialog);
+        jest.runAllTimers();
+        zoomModalPlugin._showModal(dialog);
+        jest.runAllTimers();
 
-        expect(zoomModalPlugin.$emitter.publish).toHaveBeenCalledWith('modalShow', { modal });
+        expect(zoomModalPlugin.$emitter.publish).toHaveBeenCalledWith('modalShow', { dialog });
         expect(zoomModalPlugin.$emitter.publish).toHaveBeenCalledTimes(2);
     });
 
-    test('zoom modal opens via click event on img trigger element', () => {
+    test('zoom dialog opens via click event on img trigger element', () => {
         const gallerySlider = document.getElementById('gallery-slider');
         const zoomModalSlider = document.getElementById('zoom-modal-gallery-slider');
 
@@ -129,28 +133,30 @@ describe('ZoomModalPlugin tests', () => {
 
         const triggerImgElement = gallerySlider.querySelectorAll('img').item(activeIndex);
         const activeModalImgElement = zoomModalSlider.querySelectorAll('img').item(activeIndex);
-        const modal = document.querySelector('.js-zoom-modal');
+        const dialog = document.querySelector('.js-zoom-modal');
 
         const getParentSliderIndexSpy = jest.spyOn(zoomModalPlugin, '_getParentSliderIndex');
 
         // Mock the current index of the parent GallerySlider, so the ZoomModal attempts to slide to the correct image when opening.
         zoomModalPlugin._parentSliderPlugin.getCurrentSliderIndex.mockReturnValue(activeIndex);
 
-        // Click on image trigger element to open the zoom modal
+        jest.useFakeTimers();
+        // Click on image trigger element to open the zoom dialog
         triggerImgElement.dispatchEvent(new Event('click'));
+        jest.runAllTimers();
 
         expect(window.focusHandler.saveFocusState).toHaveBeenCalled();
 
-        // Expect zoom modal to be shown and backdrop to be present
-        expect(modal.classList.contains('show')).toBe(true);
-        expect(document.querySelector('.modal-backdrop.show')).toBeTruthy();
+        // Expect the native dialog to be open. Bootstrap 6 has no backdrop element.
+        expect(dialog.open).toBe(true);
+        expect(document.documentElement.classList.contains('dialog-open')).toBe(true);
 
         expect(getParentSliderIndexSpy).toHaveBeenCalled();
         expect(zoomModalPlugin.gallerySliderPlugin._slider.goTo).toHaveBeenCalledWith(activeIndex);
         expect(window.focusHandler.setFocus).toHaveBeenCalledWith(activeModalImgElement);
     });
 
-    test('zoom modal opens via enter key on img trigger element', () => {
+    test('zoom dialog opens via enter key on img trigger element', () => {
         const gallerySlider = document.getElementById('gallery-slider');
         const zoomModalSlider = document.getElementById('zoom-modal-gallery-slider');
 
@@ -158,7 +164,7 @@ describe('ZoomModalPlugin tests', () => {
 
         const triggerImgElement = gallerySlider.querySelectorAll('img').item(activeIndex);
         const activeModalImgElement = zoomModalSlider.querySelectorAll('img').item(activeIndex);
-        const modal = document.querySelector('.js-zoom-modal');
+        const dialog = document.querySelector('.js-zoom-modal');
 
         const getParentSliderIndexSpy = jest.spyOn(zoomModalPlugin, '_getParentSliderIndex');
 
@@ -168,20 +174,22 @@ describe('ZoomModalPlugin tests', () => {
         const keydownEvent = new Event('keydown');
         keydownEvent.key = 'Enter';
 
+        jest.useFakeTimers();
         triggerImgElement.dispatchEvent(keydownEvent);
+        jest.runAllTimers();
 
         expect(window.focusHandler.saveFocusState).toHaveBeenCalled();
 
-        // Expect zoom modal to be shown and backdrop to be present
-        expect(modal.classList.contains('show')).toBe(true);
-        expect(document.querySelector('.modal-backdrop.show')).toBeTruthy();
+        // Expect the native dialog to be open. Bootstrap 6 has no backdrop element.
+        expect(dialog.open).toBe(true);
+        expect(document.documentElement.classList.contains('dialog-open')).toBe(true);
 
         expect(getParentSliderIndexSpy).toHaveBeenCalled();
         expect(zoomModalPlugin.gallerySliderPlugin._slider.goTo).toHaveBeenCalledWith(activeIndex);
         expect(window.focusHandler.setFocus).toHaveBeenCalledWith(activeModalImgElement);
     });
 
-    test('zoom modal registers listeners on triggers only once when init runs multiple times', () => {
+    test('zoom dialog registers listeners on triggers only once when init runs multiple times', () => {
         const onClickSpy = jest.spyOn(ZoomModalPlugin.prototype, '_onClick').mockImplementation(() => {});
         const onKeyDownSpy = jest.spyOn(ZoomModalPlugin.prototype, '_onKeyDown').mockImplementation(() => {});
 
@@ -206,7 +214,7 @@ describe('ZoomModalPlugin tests', () => {
         expect(onKeyDownSpy).toHaveBeenCalledTimes(1);
     });
 
-    test('zoom modal re-registers trigger listeners after viewport changes', () => {
+    test('zoom dialog re-registers trigger listeners after viewport changes', () => {
         const registerEventsSpy = jest.spyOn(ZoomModalPlugin.prototype, '_registerEvents');
         const onClickSpy = jest.spyOn(ZoomModalPlugin.prototype, '_onClick').mockImplementation(() => {});
 
@@ -231,75 +239,76 @@ describe('ZoomModalPlugin tests', () => {
         expect(plugin).toBeInstanceOf(ZoomModalPlugin);
     });
 
-    test('zoom modal closes via ESC key', () => {
+    test('zoom dialog closes via ESC key', () => {
         const triggerImgElement = document.querySelector('img');
-        const modal = document.querySelector('.js-zoom-modal');
-        const escEvent = new Event('keydown');
-        escEvent.key = 'Escape';
+        const dialog = document.querySelector('.js-zoom-modal');
 
-        // Click on image trigger element to open the zoom modal
+        jest.useFakeTimers();
+        // Click on image trigger element to open the zoom dialog
         triggerImgElement.dispatchEvent(new Event('click'));
+        jest.runAllTimers();
 
-        // Expect zoom modal to be shown and backdrop to be present
-        expect(modal.classList.contains('show')).toBe(true);
-        expect(document.querySelector('.modal-backdrop.show')).toBeTruthy();
+        // Expect the native dialog to be open. Bootstrap 6 has no backdrop element.
+        expect(dialog.open).toBe(true);
+        expect(document.documentElement.classList.contains('dialog-open')).toBe(true);
 
-        // Now close the modal via ESC key
-        modal.dispatchEvent(escEvent);
+        // A modal dialog closes from the native cancel event, which Escape triggers in the browser.
+        dialog.dispatchEvent(new Event('cancel', { cancelable: true }));
+        jest.runAllTimers();
 
-        // Expect zoom modal to be closed again
-        expect(modal.classList.contains('show')).toBe(false);
-        expect(document.querySelector('.modal-backdrop.show')).toBeFalsy();
+        // Expect zoom dialog to be closed again
+        expect(dialog.open).toBe(false);
+        expect(document.documentElement.classList.contains('dialog-open')).toBe(false);
         expect(window.focusHandler.resumeFocusState).toHaveBeenCalled();
     });
 
     describe('_loadImages', () => {
-        let modal;
+        let dialog;
 
         beforeEach(() => {
-            modal = document.querySelector('.js-zoom-modal');
+            dialog = document.querySelector('.js-zoom-modal');
             zoomModalPlugin._showModal = jest.fn();
         });
 
         test('opens straight away when there is nothing to load', () => {
-            zoomModalPlugin._loadImages(modal);
+            zoomModalPlugin._loadImages(dialog);
 
-            expect(zoomModalPlugin._showModal).toHaveBeenCalledWith(modal);
+            expect(zoomModalPlugin._showModal).toHaveBeenCalledWith(dialog);
         });
 
         test('waits for an image that has a source', () => {
-            modal.insertAdjacentHTML('beforeend', '<img class="js-load-img" data-src="/media/cat.jpg">');
+            dialog.insertAdjacentHTML('beforeend', '<img class="js-load-img" data-src="/media/cat.jpg">');
 
-            zoomModalPlugin._loadImages(modal);
+            zoomModalPlugin._loadImages(dialog);
 
             expect(zoomModalPlugin._showModal).not.toHaveBeenCalled();
 
-            modal.querySelector('.js-load-img').onload();
+            dialog.querySelector('.js-load-img').onload();
 
-            expect(zoomModalPlugin._showModal).toHaveBeenCalledWith(modal);
+            expect(zoomModalPlugin._showModal).toHaveBeenCalledWith(dialog);
         });
 
         test('does not wait for an image whose source is empty', () => {
-            modal.insertAdjacentHTML('beforeend', '<img class="js-load-img" data-src="">');
+            dialog.insertAdjacentHTML('beforeend', '<img class="js-load-img" data-src="">');
 
-            zoomModalPlugin._loadImages(modal);
+            zoomModalPlugin._loadImages(dialog);
 
-            expect(zoomModalPlugin._showModal).toHaveBeenCalledWith(modal);
+            expect(zoomModalPlugin._showModal).toHaveBeenCalledWith(dialog);
         });
 
         test('opens once the loadable images are done, ignoring the empty ones', () => {
-            modal.insertAdjacentHTML(
+            dialog.insertAdjacentHTML(
                 'beforeend',
                 '<img class="js-load-img" data-src=""><img class="js-load-img" data-src="/media/cat.jpg">',
             );
 
-            zoomModalPlugin._loadImages(modal);
+            zoomModalPlugin._loadImages(dialog);
 
             expect(zoomModalPlugin._showModal).not.toHaveBeenCalled();
 
-            modal.querySelectorAll('.js-load-img')[1].onload();
+            dialog.querySelectorAll('.js-load-img')[1].onload();
 
-            expect(zoomModalPlugin._showModal).toHaveBeenCalledWith(modal);
+            expect(zoomModalPlugin._showModal).toHaveBeenCalledWith(dialog);
         });
     });
 });

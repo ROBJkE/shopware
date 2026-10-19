@@ -23,9 +23,9 @@ describe('focus-handler.helper', () => {
         document.body.innerHTML = `
             <button id="modal-open">Open Modal</button>
 
-            <div class="modal">
+            <dialog class="dialog">
                 <button id="modal-close">X</button>
-            </div>`;
+            </dialog>`;
 
         const modalButton = document.getElementById('modal-open');
         const modalCloseButton = document.getElementById('modal-close');
@@ -51,27 +51,27 @@ describe('focus-handler.helper', () => {
         document.body.innerHTML = `
             <button id="modal-open">Open Modal</button>
 
-            <div class="modal">
+            <dialog class="dialog">
                 <button id="modal-close">X</button>
-            </div>`;
+            </dialog>`;
 
         const modalButton = document.getElementById('modal-open');
         const modalCloseButton = document.getElementById('modal-close');
 
         modalButton.focus();
 
-        focusHandler.saveFocusState('offcanvas');
+        focusHandler.saveFocusState('drawer');
 
         modalCloseButton.focus();
         expect(document.activeElement).toBe(modalCloseButton);
 
-        focusHandler.resumeFocusState('offcanvas');
+        focusHandler.resumeFocusState('drawer');
 
         expect(document.activeElement).toBe(modalButton);
 
-        expect(focusHandler._focusMap.get('offcanvas')).toBe(modalButton);
+        expect(focusHandler._focusMap.get('drawer')).toBe(modalButton);
         expect(emitterMock.publish).toHaveBeenCalledWith('Focus/StateSaved', {
-            focusHistoryKey: 'offcanvas',
+            focusHistoryKey: 'drawer',
             focusEl: modalButton,
         });
     });
@@ -80,27 +80,27 @@ describe('focus-handler.helper', () => {
         document.body.innerHTML = `
             <button id="modal-open">Open Modal</button>
 
-            <div class="modal">
+            <dialog class="dialog">
                 <button id="modal-close">X</button>
-            </div>`;
+            </dialog>`;
 
         const modalButton = document.getElementById('modal-open');
         const modalCloseButton = document.getElementById('modal-close');
 
         modalButton.focus();
 
-        focusHandler.saveFocusState('modal', '#modal-open');
+        focusHandler.saveFocusState('dialog', '#modal-open');
 
         modalCloseButton.focus();
         expect(document.activeElement).toBe(modalCloseButton);
 
-        focusHandler.resumeFocusState('modal');
+        focusHandler.resumeFocusState('dialog');
 
         expect(document.activeElement).toBe(modalButton);
 
-        expect(focusHandler._focusMap.get('modal')).toBe('#modal-open');
+        expect(focusHandler._focusMap.get('dialog')).toBe('#modal-open');
         expect(emitterMock.publish).toHaveBeenCalledWith('Focus/StateSaved', {
-            focusHistoryKey: 'modal',
+            focusHistoryKey: 'dialog',
             focusEl: '#modal-open',
         });
     });
@@ -127,14 +127,14 @@ describe('focus-handler.helper', () => {
         document.body.innerHTML = `
             <button id="modal-open">Open Modal</button>
 
-            <div class="modal">
+            <dialog class="dialog">
                 <button id="modal-close">X</button>
-            </div>`;
+            </dialog>`;
 
         const modalButton = document.getElementById('modal-open');
         const modalCloseButton = document.getElementById('modal-close');
 
-        // 1. Focus the modal button manually and verify current focus
+        // 1. Focus the dialog button manually and verify current focus
         modalButton.focus();
         expect(document.activeElement).toBe(modalButton);
 
@@ -210,15 +210,15 @@ describe('focus-handler.helper', () => {
     // @todo: Remove when upstream issue https://github.com/twbs/bootstrap/issues/42503 is resolved.
     describe('_addFocusTrapGuard', () => {
         test('inserts a focus-trap guard directly after the given element', () => {
-            document.body.innerHTML = '<div class="modal">Modal</div>';
+            document.body.innerHTML = '<dialog class="dialog">Modal</dialog>';
 
-            const modal = document.querySelector('.modal');
-            const guard = focusHandler._addFocusTrapGuard(modal);
+            const dialog = document.querySelector('.dialog');
+            const guard = focusHandler._addFocusTrapGuard(dialog);
 
             expect(guard).toBeInstanceOf(HTMLDivElement);
             expect(guard.getAttribute('tabindex')).toBe('0');
             expect(guard.classList.contains('js-focus-trap-guard')).toBe(true);
-            expect(modal.nextElementSibling).toBe(guard);
+            expect(dialog.nextElementSibling).toBe(guard);
             expect(focusHandler._focusTrapGuard).toBe(guard);
         });
 
@@ -235,12 +235,12 @@ describe('focus-handler.helper', () => {
         });
 
         test('ensures there is never more than one focus-trap guard at a time', () => {
-            document.body.innerHTML = '<div class="modal">Modal</div>';
+            document.body.innerHTML = '<dialog class="dialog">Modal</dialog>';
 
-            const modal = document.querySelector('.modal');
+            const dialog = document.querySelector('.dialog');
 
-            const firstGuard = focusHandler._addFocusTrapGuard(modal);
-            const secondGuard = focusHandler._addFocusTrapGuard(modal);
+            const firstGuard = focusHandler._addFocusTrapGuard(dialog);
+            const secondGuard = focusHandler._addFocusTrapGuard(dialog);
 
             expect(document.querySelectorAll('.js-focus-trap-guard')).toHaveLength(1);
             expect(firstGuard.isConnected).toBe(false);
@@ -250,10 +250,10 @@ describe('focus-handler.helper', () => {
 
     describe('_removeFocusTrapGuard', () => {
         test('removes the previously added focus-trap guard', () => {
-            document.body.innerHTML = '<div class="modal">Modal</div>';
+            document.body.innerHTML = '<dialog class="dialog">Modal</dialog>';
 
-            const modal = document.querySelector('.modal');
-            const guard = focusHandler._addFocusTrapGuard(modal);
+            const dialog = document.querySelector('.dialog');
+            const guard = focusHandler._addFocusTrapGuard(dialog);
 
             focusHandler._removeFocusTrapGuard();
 

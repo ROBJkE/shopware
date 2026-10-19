@@ -1,13 +1,14 @@
 /*
-Navigation offcanvas
+Navigation drawer
 ==============================================
-Custom styling for navigation offcanvas which replaces main navigation on smaller screens.
-Based on custom offcanvas component.
+Custom styling for navigation drawer which replaces main navigation on smaller screens.
+Based on custom drawer component.
 */
+@use 'abstract/bootstrap-mixins' as *;
 
 .navigation-offcanvas {
-    --#{$prefix}offcanvas-padding-x: 0;
-    --#{$prefix}offcanvas-padding-y: 0;
+    --offcanvas-padding-x: 0;
+    --offcanvas-padding-y: 0;
     overflow-x: hidden;
 }
 

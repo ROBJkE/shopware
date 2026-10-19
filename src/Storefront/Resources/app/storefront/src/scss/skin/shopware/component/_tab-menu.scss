@@ -7,11 +7,11 @@ https://getbootstrap.com/docs/5.2/components/card/#navigation
 */
 
 .card-tabs {
-    --#{$prefix}card-border-width: 0;
+    --card-border-width: 0;
 
     .card-header {
-        --#{$prefix}card-cap-bg: none;
-        --#{$prefix}card-cap-padding-x: 10px;
+        --card-cap-bg: none;
+        --card-cap-padding-x: 10px;
     }
 
     .nav-item {
@@ -19,15 +19,15 @@ https://getbootstrap.com/docs/5.2/components/card/#navigation
     }
 
     .nav-link {
-        --#{$prefix}nav-link-padding-x: 0;
-        --#{$prefix}nav-link-padding-y: 5px;
-        --#{$prefix}nav-link-color: #{$body-color};
-        --#{$prefix}nav-tabs-border-width: 0;
-        --#{$prefix}nav-tabs-border-radius: 0;
-        --#{$prefix}nav-tabs-link-hover-border-color: #{$primary};
-        --#{$prefix}nav-link-hover-color: #{$primary};
-        --#{$prefix}nav-tabs-link-active-color: #{$primary};
-        --#{$prefix}nav-tabs-link-active-border-color: #{$primary};
+        --nav-link-padding-x: 0;
+        --nav-link-padding-y: 5px;
+        --nav-link-color: #{$body-color};
+        --nav-tabs-border-width: 0;
+        --nav-tabs-border-radius: 0;
+        --nav-tabs-link-hover-border-color: #{$primary};
+        --nav-link-hover-color: #{$primary};
+        --nav-tabs-link-active-color: #{$primary};
+        --nav-tabs-link-active-border-color: #{$primary};
         border-bottom: 2px solid $border-color;
 
         &.active,

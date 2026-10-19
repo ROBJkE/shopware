@@ -5,6 +5,14 @@ Contains global base styles for all pages
 
 @sw-package framework
 */
+@use 'abstract/bootstrap-mixins' as *;
+
+.dropdown,
+.dropup,
+.dropend,
+.dropstart {
+    position: relative;
+}
 
 html {
     // used by backdrop util to override body scroll behaviour
@@ -62,7 +70,7 @@ html {
     @include media-breakpoint-only(xl) {
         --sw-current-breakpoint: 'xl';
     }
-    @include media-breakpoint-only(xxl) {
-        --sw-current-breakpoint: 'xxl';
+    @include media-breakpoint-only(2xl) {
+        --sw-current-breakpoint: '2xl';
     }
 }

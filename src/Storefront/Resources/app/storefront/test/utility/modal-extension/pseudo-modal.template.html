@@ -1,21 +1,23 @@
 <div class="js-pseudo-modal-template">
-    <div class="modal fade"
+    <dialog class="dialog dialog-lg fade"
          tabindex="-1"
-         role="dialog">
-        <div class="modal-dialog"
-             role="document">
-            <div class="modal-content js-pseudo-modal-template-root-element">
-                <div class="modal-header only-close">
-                    <h5 class="modal-title js-pseudo-modal-template-title-element"></h5>
+         role="dialog"
+         aria-modal="true"
+         aria-hidden="true"
+         aria-labelledby="pseudo-modal-title">
+        <div>
+            <div class="js-pseudo-modal-template-root-element">
+                <div class="dialog-header only-close">
+                    <h5 class="dialog-title js-pseudo-modal-template-title-element"></h5>
                     <button type="button"
-                            class="modal-close close"
-                            data-dismiss="modal"
+                            class="btn-close close"
+                            data-bs-dismiss="dialog"
                             aria-label="Close">
                     </button>
                 </div>
-                <div class="modal-body js-pseudo-modal-template-content-element">
+                <div class="dialog-body js-pseudo-modal-template-content-element">
                 </div>
             </div>
         </div>
-    </div>
+    </dialog>
 </div>

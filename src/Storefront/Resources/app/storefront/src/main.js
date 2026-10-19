@@ -8,9 +8,9 @@ import polyfills
 import 'src/helper/polyfill-loader.helper';
 
 /**
- * import base requirements
+ * One global Storefront stylesheet. Webpack extracts it in production.
  */
-import * as bootstrap from 'bootstrap';
+import './scss/storefront.scss';
 
 /*
 import helpers
@@ -40,7 +40,6 @@ window.Feature = Feature;
 window.eventEmitter = new NativeEventEmitter();
 window.focusHandler = new FocusHandler();
 window.formValidation = new FormValidation();
-window.bootstrap = bootstrap;
 
 /*
 initialisation
@@ -201,14 +200,14 @@ document.addEventListener('DOMContentLoaded', () => {
     PluginManager.initializePlugins();
 
     /**
-     * Fix bootstrap modal accessibility errors.
+     * Fix bootstrap dialog accessibility errors.
      *
-     * The bootstrap modal adds the `aria-hidden` attribute on the modal element when closed.
-     * This leads to console errors in some browsers, if an element within the modal still has focus.
+     * The bootstrap dialog adds the `aria-hidden` attribute on the dialog element when closed.
+     * This leads to console errors in some browsers, if an element within the dialog still has focus.
      */
-    const modals = document.querySelectorAll('.modal');
-    for (const modal of modals) {
-        modal.addEventListener('hide.bs.modal', () => {
+    const modals = document.querySelectorAll('.dialog');
+    for (const dialog of modals) {
+        dialog.addEventListener('hide.bs.dialog', () => {
             if (document.activeElement instanceof HTMLElement) {
                 document.activeElement.blur();
             }

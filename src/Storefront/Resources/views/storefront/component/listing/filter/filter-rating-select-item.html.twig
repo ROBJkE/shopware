@@ -16,7 +16,7 @@
             {% block component_filter_rating_select_list_item_label_rating %}
                 {% sw_include '@Storefront/storefront/component/review/rating.html.twig' with {
                     points: points,
-                    style: 'text-primary',
+                    style: 'fg-primary',
                     altText: 'listing.filterRatingMinAltText'|trans({ '%points%': points, '%maxPoints%': maxPoints })|sw_sanitize,
                 } %}
             {% endblock %}

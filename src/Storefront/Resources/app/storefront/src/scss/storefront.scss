@@ -1,0 +1,14 @@
+/*
+Storefront stylesheet entry.
+Bootstrap 6 is loaded once. Storefront partials follow it.
+
+@sw-package framework
+*/
+
+@use 'abstract/bootstrap-entry';
+
+// WEBPACK_FEATURE_FLAGS
+$sw-features: () !default;
+
+@import 'base';
+@import 'skin/shopware/base';

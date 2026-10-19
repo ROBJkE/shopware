@@ -2,24 +2,24 @@
 
 {% block component_pseudo_modal %}
     <div class="js-pseudo-modal-template">
-        <div class="modal modal-lg fade"
+        <dialog class="dialog dialog-lg fade"
              tabindex="-1"
              role="dialog"
              aria-modal="true"
              aria-hidden="true"
              aria-labelledby="pseudo-modal-title">
-            <div class="modal-dialog">
-                <div class="modal-content js-pseudo-modal-template-root-element">
+            <div>
+                <div class="js-pseudo-modal-template-root-element">
                     {% block component_pseudo_modal_header %}
-                        <div class="modal-header only-close">
+                        <div class="dialog-header only-close">
                             {% block component_pseudo_modal_title %}
-                                <div id="pseudo-modal-title" class="modal-title js-pseudo-modal-template-title-element h5"></div>
+                                <div id="pseudo-modal-title" class="dialog-title js-pseudo-modal-template-title-element h5"></div>
                             {% endblock %}
 
                             {% block component_pseudo_modal_close_btn %}
                                 <button type="button"
                                         class="btn-close close"
-                                        data-bs-dismiss="modal"
+                                        data-bs-dismiss="dialog"
                                         aria-label="{{ 'global.default.close'|trans|striptags }}">
                                     {% block component_pseudo_modal_close_btn_content %}{% endblock %}
                                 </button>
@@ -28,7 +28,7 @@
                     {% endblock %}
 
                     {% block component_pseudo_modal_body %}
-                        <div class="modal-body js-pseudo-modal-template-content-element">
+                        <div class="dialog-body js-pseudo-modal-template-content-element">
                         </div>
                     {% endblock %}
                 </div>
@@ -39,7 +39,7 @@
 
                 {# Attributes `data-url` and `href` will be set automatically by `AjaxModalPlugin`. #}
                 {% block component_pseudo_modal_back_btn %}
-                    <button class="js-pseudo-modal-back-btn btn btn-outline-primary" data-ajax-modal="true" data-url="#" href="#">
+                    <button class="js-pseudo-modal-back-btn btn btn-outline theme-primary" data-ajax-modal="true" data-url="#" href="#">
                         {% block component_pseudo_modal_back_btn_content %}
                             {% sw_icon 'arrow-left' style { size: 'sm', class: 'me-1' } %}
                             {{ 'general.back'|trans }}
@@ -47,6 +47,6 @@
                     </button>
                 {% endblock %}
             </template>
-        </div>
+        </dialog>
     </div>
 {% endblock %}

@@ -13,9 +13,9 @@ use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\Feature;
 use Shopware\Core\Framework\Log\Package;
 use Shopware\Core\Framework\Test\TestCaseBase\KernelTestBehaviour;
-use Shopware\Storefront\Theme\AbstractCompilerConfiguration;
 use Shopware\Storefront\Theme\AbstractScssCompiler;
 use Shopware\Storefront\Theme\CompilerConfiguration;
+use Shopware\Storefront\Theme\Exception\ThemeCompileException;
 use Shopware\Storefront\Theme\MD5ThemePathBuilder;
 use Shopware\Storefront\Theme\ScssPhpCompiler;
 use Shopware\Storefront\Theme\StorefrontPluginConfiguration\StorefrontPluginConfiguration;
@@ -47,6 +47,8 @@ class ThemeCompilerDirectUsageTest extends TestCase
 
     private string $mockSalesChannelId;
 
+    private ?string $createdStylesheet = null;
+
     protected function setUp(): void
     {
         parent::setUp();
@@ -58,6 +60,14 @@ class ThemeCompilerDirectUsageTest extends TestCase
         $this->eventDispatcher = static::getContainer()->get('event_dispatcher');
 
         $this->themeCompiler = $this->createThemeCompiler(static::getContainer()->get(ScssPhpCompiler::class));
+        $this->ensureWebpackStylesheet();
+    }
+
+    protected function tearDown(): void
+    {
+        if ($this->createdStylesheet !== null) {
+            (new \Symfony\Component\Filesystem\Filesystem())->remove($this->createdStylesheet);
+        }
     }
 
     // ===================================
@@ -78,7 +88,7 @@ class ThemeCompilerDirectUsageTest extends TestCase
         static::assertStringContainsString('color', $result);
     }
 
-    public function testCompilesThemeVariablesIntoScss(): void
+    public function testCompileCopiesWebpackStylesheet(): void
     {
         $config = new StorefrontPluginConfiguration('TestTheme');
         $config->setThemeConfig([
@@ -100,12 +110,11 @@ class ThemeCompilerDirectUsageTest extends TestCase
             Context::createDefaultContext()
         );
 
-        // Check that variables were written to temp filesystem
-        static::assertTrue($this->tempFilesystem->has('theme-variables.scss'));
-        $variablesContent = $this->tempFilesystem->read('theme-variables.scss');
-
-        static::assertStringContainsString('$sw-color-brand-primary: #008490', $variablesContent);
-        static::assertStringContainsString('$theme-id: test-theme-id', $variablesContent);
+        $themePrefix = (new MD5ThemePathBuilder())->assemblePath($this->mockSalesChannelId, 'test-theme-id');
+        $cssPath = 'theme/' . $themePrefix . '/css/all.css';
+        static::assertTrue($this->filesystem->fileExists($cssPath));
+        static::assertSame($this->webpackStylesheet(), $this->filesystem->read($cssPath));
+        static::assertFalse($this->tempFilesystem->fileExists('theme-variables.scss'));
     }
 
     public function testCompiledCssContainsThemeVariables(): void
@@ -194,49 +203,6 @@ SCSS;
         static::assertStringNotContainsString('.should-not-exist', $result);
     }
 
-    public function testFeatureFlagVariablesAreInjected(): void
-    {
-        $features = Feature::getAll();
-        static::assertNotSame([], $features);
-
-        // Stands in for a theme style file that reads the feature map: one rule per registered flag, which only compiles when ThemeCompiler injects $sw-features
-        $probe = '';
-        $expected = '';
-        foreach ($features as $flag => $active) {
-            $probe .= \sprintf('.feature-map-%s { content: map-get($sw-features, "%s"); }', md5($flag), $flag);
-            $expected .= \sprintf(".feature-map-%s {\n  content: %s;\n}\n", md5($flag), $active ? 'true' : 'false');
-        }
-
-        $scssCompiler = new class(static::getContainer()->get(ScssPhpCompiler::class), $probe) extends AbstractScssCompiler {
-            public function __construct(
-                private readonly AbstractScssCompiler $inner,
-                private readonly string $probe,
-            ) {
-            }
-
-            public function compileString(AbstractCompilerConfiguration $config, string $scss, ?string $path = null): string
-            {
-                return $this->inner->compileString($config, $scss . $this->probe, $path);
-            }
-        };
-
-        $this->createThemeCompiler($scssCompiler)->compileTheme(
-            $this->mockSalesChannelId,
-            'test-theme-id',
-            new StorefrontPluginConfiguration('TestTheme'),
-            new StorefrontPluginConfigurationCollection(),
-            false,
-            Context::createDefaultContext()
-        );
-
-        $themePrefix = (new MD5ThemePathBuilder())->assemblePath($this->mockSalesChannelId, 'test-theme-id');
-        static::assertStringContainsString($expected, $this->filesystem->read('theme/' . $themePrefix . '/css/all.css'));
-    }
-
-    // ===================================
-    // Vendor Import Path Tests
-    // ===================================
-
     public function testResolvesVendorImportPaths(): void
     {
         $testScss = <<<'SCSS'
@@ -284,445 +250,54 @@ SCSS;
     // Variable Type Handling Tests
     // ===================================
 
-    public function testHandlesColorVariables(): void
+    public function testMissingWebpackStylesheetFailsBeforeWritingThemeFiles(): void
     {
-        $config = new StorefrontPluginConfiguration('TestTheme');
-        $config->setThemeConfig([
-            'fields' => [
-                'sw-color-primary' => [
-                    'type' => 'color',
-                    'value' => '#ff0000',
-                ],
-            ],
-        ]);
+        $stylesheet = $this->webpackStylesheetPath();
+        $io = new \Symfony\Component\Filesystem\Filesystem();
+        $backup = $stylesheet . '.bak';
+        $existed = is_file($stylesheet);
+        if ($existed) {
+            $io->rename($stylesheet, $backup);
+        }
 
-        $this->themeCompiler->compileTheme(
-            $this->mockSalesChannelId,
-            'test-theme-id',
-            $config,
-            new StorefrontPluginConfigurationCollection(),
-            false,
-            Context::createDefaultContext()
-        );
-
-        $variablesContent = $this->tempFilesystem->read('theme-variables.scss');
-        static::assertStringContainsString('$sw-color-primary: #ff0000', $variablesContent);
+        try {
+            $this->expectException(ThemeCompileException::class);
+            $this->themeCompiler->compileTheme(
+                $this->mockSalesChannelId,
+                'test-theme-id',
+                new StorefrontPluginConfiguration('TestTheme'),
+                new StorefrontPluginConfigurationCollection(),
+                false,
+                Context::createDefaultContext()
+            );
+        } finally {
+            if ($existed) {
+                $io->rename($backup, $stylesheet);
+            }
+        }
     }
 
-    public function testHandlesBooleanVariables(): void
+    private function webpackStylesheetPath(): string
     {
-        $config = new StorefrontPluginConfiguration('TestTheme');
-        $config->setThemeConfig([
-            'fields' => [
-                'sw-custom-header-enabled' => [
-                    'type' => 'checkbox',
-                    'value' => true,
-                ],
-                'sw-custom-footer-enabled' => [
-                    'type' => 'checkbox',
-                    'value' => false,
-                ],
-                'sw-switch-enabled' => [
-                    'type' => 'switch',
-                    'value' => true,
-                ],
-                'sw-switch-disabled' => [
-                    'type' => 'switch',
-                    'value' => false,
-                ],
-            ],
-        ]);
-
-        $this->themeCompiler->compileTheme(
-            $this->mockSalesChannelId,
-            'test-theme-id',
-            $config,
-            new StorefrontPluginConfigurationCollection(),
-            false,
-            Context::createDefaultContext()
-        );
-
-        $variablesContent = $this->tempFilesystem->read('theme-variables.scss');
-        static::assertStringContainsString('$sw-custom-header-enabled: 1', $variablesContent);
-        static::assertStringContainsString('$sw-custom-footer-enabled: 0', $variablesContent);
-        static::assertStringContainsString('$sw-switch-enabled: 1', $variablesContent);
-        static::assertStringContainsString('$sw-switch-disabled: 0', $variablesContent);
+        return static::getContainer()->getParameter('kernel.project_dir') . '/src/Storefront/Resources/app/storefront/dist/css/storefront.css';
     }
 
-    public function testHandlesTextVariables(): void
+    private function ensureWebpackStylesheet(): void
     {
-        $config = new StorefrontPluginConfiguration('TestTheme');
-        $config->setThemeConfig([
-            'fields' => [
-                'sw-text-field' => [
-                    'type' => 'text',
-                    'value' => '2px solid #000',
-                ],
-                'sw-textarea-field' => [
-                    'type' => 'textarea',
-                    'value' => 'Lorem ipsum',
-                ],
-                'sw-url-field' => [
-                    'type' => 'url',
-                    'value' => 'https://example.com',
-                ],
-            ],
-        ]);
+        $stylesheet = $this->webpackStylesheetPath();
+        if (is_file($stylesheet)) {
+            return;
+        }
 
-        $this->themeCompiler->compileTheme(
-            $this->mockSalesChannelId,
-            'test-theme-id',
-            $config,
-            new StorefrontPluginConfigurationCollection(),
-            false,
-            Context::createDefaultContext()
-        );
-
-        $variablesContent = $this->tempFilesystem->read('theme-variables.scss');
-        static::assertStringContainsString('$sw-text-field: 2px solid #000', $variablesContent);
-        static::assertStringContainsString('$sw-textarea-field: \'Lorem ipsum\'', $variablesContent);
-        static::assertStringContainsString('$sw-url-field: \'https://example.com\'', $variablesContent);
+        $io = new \Symfony\Component\Filesystem\Filesystem();
+        $io->mkdir(\dirname($stylesheet));
+        $io->dumpFile($stylesheet, "body{color:#0042a0}\n");
+        $this->createdStylesheet = $stylesheet;
     }
 
-    public function testHandlesNullAndZeroValues(): void
+    private function webpackStylesheet(): string
     {
-        $config = new StorefrontPluginConfiguration('TestTheme');
-        $config->setThemeConfig([
-            'fields' => [
-                'sw-zero-margin' => [
-                    'type' => 'text',
-                    'value' => 0,
-                ],
-                'sw-null-margin' => [
-                    'type' => 'text',
-                    'value' => null,
-                ],
-                'sw-unset-margin' => [
-                    'type' => 'text',
-                    // No value key
-                ],
-                'sw-empty-margin' => [
-                    'type' => 'text',
-                    'value' => '',
-                ],
-            ],
-        ]);
-
-        $this->themeCompiler->compileTheme(
-            $this->mockSalesChannelId,
-            'test-theme-id',
-            $config,
-            new StorefrontPluginConfigurationCollection(),
-            false,
-            Context::createDefaultContext()
-        );
-
-        $variablesContent = $this->tempFilesystem->read('theme-variables.scss');
-        static::assertStringContainsString('$sw-zero-margin: 0', $variablesContent);
-        static::assertStringContainsString('$sw-null-margin: null', $variablesContent);
-        static::assertStringContainsString('$sw-unset-margin: null', $variablesContent);
-        static::assertStringContainsString('$sw-empty-margin: null', $variablesContent);
-    }
-
-    public function testIgnoresFieldsWithScssPropertySetToFalse(): void
-    {
-        $config = new StorefrontPluginConfiguration('TestTheme');
-        $config->setThemeConfig([
-            'fields' => [
-                'sw-color-primary' => [
-                    'type' => 'color',
-                    'value' => '#ff0000',
-                ],
-                'sw-ignored-field' => [
-                    'type' => 'text',
-                    'value' => 'Should not appear',
-                    'scss' => false,
-                ],
-            ],
-        ]);
-
-        $this->themeCompiler->compileTheme(
-            $this->mockSalesChannelId,
-            'test-theme-id',
-            $config,
-            new StorefrontPluginConfigurationCollection(),
-            false,
-            Context::createDefaultContext()
-        );
-
-        $variablesContent = $this->tempFilesystem->read('theme-variables.scss');
-        static::assertStringContainsString('$sw-color-primary: #ff0000', $variablesContent);
-        static::assertStringNotContainsString('sw-ignored-field', $variablesContent);
-    }
-
-    public function testHandlesMediaFieldVariables(): void
-    {
-        $config = new StorefrontPluginConfiguration('TestTheme');
-        $config->setThemeConfig([
-            'fields' => [
-                'sw-logo-desktop' => [
-                    'type' => 'media',
-                    'value' => 'media-id-123',
-                ],
-                'sw-logo-mobile' => [
-                    'type' => 'media',
-                    'value' => 'media-id-456',
-                ],
-            ],
-        ]);
-
-        $this->themeCompiler->compileTheme(
-            $this->mockSalesChannelId,
-            'test-theme-id',
-            $config,
-            new StorefrontPluginConfigurationCollection(),
-            false,
-            Context::createDefaultContext()
-        );
-
-        $variablesContent = $this->tempFilesystem->read('theme-variables.scss');
-        static::assertStringContainsString('$sw-logo-desktop: \'media-id-123\'', $variablesContent);
-        static::assertStringContainsString('$sw-logo-mobile: \'media-id-456\'', $variablesContent);
-    }
-
-    public function testHandlesMultiSelectFieldWithArrayValue(): void
-    {
-        $config = new StorefrontPluginConfiguration('TestTheme');
-        $config->setThemeConfig([
-            'fields' => [
-                'sw-multi-select-field' => [
-                    'name' => 'sw-multi-select-field',
-                    'type' => 'text',
-                    'value' => [
-                        'top',
-                        'bottom',
-                    ],
-                    'custom' => [
-                        'componentName' => 'sw-multi-select',
-                        'options' => [
-                            ['value' => 'top'],
-                            ['value' => 'bottom'],
-                            ['value' => 'left'],
-                            ['value' => 'right'],
-                        ],
-                    ],
-                ],
-            ],
-        ]);
-
-        $this->themeCompiler->compileTheme(
-            $this->mockSalesChannelId,
-            'test-theme-id',
-            $config,
-            new StorefrontPluginConfigurationCollection(),
-            false,
-            Context::createDefaultContext()
-        );
-
-        // Multi-select fields with array values are not converted to SCSS variables
-        // They are filtered out because they're not scalar values
-        $variablesContent = $this->tempFilesystem->read('theme-variables.scss');
-
-        // The variable should not appear as SCSS doesn't support array values
-        static::assertStringNotContainsString('$sw-multi-select-field:', $variablesContent);
-    }
-
-    public function testHandlesInvalidFieldTypes(): void
-    {
-        $config = new StorefrontPluginConfiguration('TestTheme');
-        $config->setThemeConfig([
-            'fields' => [
-                'sw-valid-field' => [
-                    'type' => 'text',
-                    'value' => 'valid value',
-                ],
-                'sw-invalid-array-media' => [
-                    'type' => 'media',
-                    'value' => [123], // Invalid - array instead of string
-                ],
-                'sw-field-without-type' => [
-                    'name' => 'sw-field-without-type',
-                    'value' => 'no type specified',
-                    // Missing 'type' key
-                ],
-            ],
-        ]);
-
-        $this->themeCompiler->compileTheme(
-            $this->mockSalesChannelId,
-            'test-theme-id',
-            $config,
-            new StorefrontPluginConfigurationCollection(),
-            false,
-            Context::createDefaultContext()
-        );
-
-        $variablesContent = $this->tempFilesystem->read('theme-variables.scss');
-
-        // Valid field should be present
-        static::assertStringContainsString('$sw-valid-field: valid value', $variablesContent);
-
-        // Invalid fields should not be present (filtered out)
-        static::assertStringNotContainsString('sw-invalid-array-media', $variablesContent);
-        static::assertStringNotContainsString('sw-field-without-type', $variablesContent);
-    }
-
-    public function testComprehensiveVariableTypeCompilation(): void
-    {
-        $config = new StorefrontPluginConfiguration('TestTheme');
-        $config->setThemeConfig([
-            'fields' => [
-                'sw-color-brand-primary' => [
-                    'name' => 'sw-color-brand-primary',
-                    'type' => 'color',
-                    'value' => '#008490',
-                ],
-                'sw-color-brand-secondary' => [
-                    'name' => 'sw-color-brand-secondary',
-                    'type' => 'color',
-                    'value' => '#526e7f',
-                ],
-                'sw-border-color' => [
-                    'name' => 'sw-border-color',
-                    'type' => 'color',
-                    'value' => '#bcc1c7',
-                ],
-                'sw-custom-header' => [
-                    'name' => 'sw-custom-header',
-                    'type' => 'checkbox',
-                    'value' => false,
-                ],
-                'sw-custom-footer' => [
-                    'name' => 'sw-custom-footer',
-                    'type' => 'checkbox',
-                    'value' => true,
-                ],
-                'sw-custom-cart' => [
-                    'name' => 'sw-custom-cart',
-                    'type' => 'switch',
-                    'value' => false,
-                ],
-                'sw-custom-product-box' => [
-                    'name' => 'sw-custom-product-box',
-                    'type' => 'switch',
-                    'value' => true,
-                ],
-                'sw-text-field' => [
-                    'name' => 'sw-text-field',
-                    'type' => 'text',
-                    'value' => '2px solid #000',
-                ],
-                'sw-textarea-field' => [
-                    'name' => 'sw-textarea-field',
-                    'type' => 'textarea',
-                    'value' => 'Lorem ipsum dolor',
-                ],
-                'sw-url-field' => [
-                    'name' => 'sw-url-field',
-                    'type' => 'url',
-                    'value' => 'https://www.example.com',
-                ],
-            ],
-        ]);
-
-        $this->themeCompiler->compileTheme(
-            $this->mockSalesChannelId,
-            'test-theme-id',
-            $config,
-            new StorefrontPluginConfigurationCollection(),
-            false,
-            Context::createDefaultContext()
-        );
-
-        $variablesContent = $this->tempFilesystem->read('theme-variables.scss');
-
-        // Verify all variable types are correctly formatted
-        static::assertStringContainsString('$sw-color-brand-primary: #008490', $variablesContent);
-        static::assertStringContainsString('$sw-color-brand-secondary: #526e7f', $variablesContent);
-        static::assertStringContainsString('$sw-border-color: #bcc1c7', $variablesContent);
-        static::assertStringContainsString('$sw-custom-header: 0', $variablesContent);
-        static::assertStringContainsString('$sw-custom-footer: 1', $variablesContent);
-        static::assertStringContainsString('$sw-custom-cart: 0', $variablesContent);
-        static::assertStringContainsString('$sw-custom-product-box: 1', $variablesContent);
-        static::assertStringContainsString('$sw-text-field: 2px solid #000', $variablesContent);
-        static::assertStringContainsString('$sw-textarea-field: \'Lorem ipsum dolor\'', $variablesContent);
-        static::assertStringContainsString('$sw-url-field: \'https://www.example.com\'', $variablesContent);
-        static::assertStringContainsString('$sw-asset-theme-url: \'http://localhost\'', $variablesContent);
-    }
-
-    // ===================================
-    // End-to-End Compilation Tests
-    // ===================================
-
-    public function testFullCompilationCreatesAllExpectedFiles(): void
-    {
-        $config = new StorefrontPluginConfiguration('TestTheme');
-        $config->setThemeConfig([
-            'fields' => [
-                'sw-color-primary' => [
-                    'type' => 'color',
-                    'value' => '#ff0000',
-                ],
-            ],
-        ]);
-
-        $this->themeCompiler->compileTheme(
-            $this->mockSalesChannelId,
-            'test-theme-id',
-            $config,
-            new StorefrontPluginConfigurationCollection(),
-            false,
-            Context::createDefaultContext()
-        );
-
-        // Check temp filesystem has variables
-        static::assertTrue($this->tempFilesystem->has('theme-variables.scss'));
-        static::assertTrue($this->tempFilesystem->has('theme-variables/test-theme-id.scss'));
-
-        // Check main filesystem has theme directory
-        $pathBuilder = new MD5ThemePathBuilder();
-        $themePath = 'theme/' . $pathBuilder->assemblePath($this->mockSalesChannelId, 'test-theme-id');
-        static::assertTrue($this->filesystem->directoryExists($themePath));
-    }
-
-    public function testCompilationWritesCssFile(): void
-    {
-        $config = new StorefrontPluginConfiguration('TestTheme');
-
-        $this->themeCompiler->compileTheme(
-            $this->mockSalesChannelId,
-            'test-theme-id',
-            $config,
-            new StorefrontPluginConfigurationCollection(),
-            false,
-            Context::createDefaultContext()
-        );
-
-        $pathBuilder = new MD5ThemePathBuilder();
-        $cssPath = 'theme/' . $pathBuilder->assemblePath($this->mockSalesChannelId, 'test-theme-id') . '/css/all.css';
-
-        static::assertTrue($this->filesystem->fileExists($cssPath));
-    }
-
-    // ===================================
-    // Asset URL Tests
-    // ===================================
-
-    public function testInjectsAssetUrlVariable(): void
-    {
-        $config = new StorefrontPluginConfiguration('TestTheme');
-
-        $this->themeCompiler->compileTheme(
-            $this->mockSalesChannelId,
-            'test-theme-id',
-            $config,
-            new StorefrontPluginConfigurationCollection(),
-            false,
-            Context::createDefaultContext()
-        );
-
-        $variablesContent = $this->tempFilesystem->read('theme-variables.scss');
-        static::assertStringContainsString('$sw-asset-theme-url: \'http://localhost\'', $variablesContent);
+        return (string) file_get_contents($this->webpackStylesheetPath());
     }
 
     private function createThemeCompiler(AbstractScssCompiler $scssCompiler): ThemeCompiler

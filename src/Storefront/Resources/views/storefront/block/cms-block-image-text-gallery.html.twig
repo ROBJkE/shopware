@@ -2,7 +2,7 @@
     {% set columns = 3 %}
 
     {% block block_image_text_gallery_left %}
-        <div class="col-md-4">
+        <div class="md:col-4">
             <div class="image-text-gallery-card">
                 {% block block_image_text_gallery_left_image %}
                     {% set element = block.slots.getSlot('left-image') %}
@@ -24,7 +24,7 @@
     {% endblock %}
 
     {% block block_image_text_gallery_center %}
-        <div class="col-md-4">
+        <div class="md:col-4">
             <div class="image-text-gallery-card">
                 {% block block_image_text_gallery_center_image %}
                     {% set element = block.slots.getSlot('center-image') %}
@@ -46,7 +46,7 @@
     {% endblock %}
 
     {% block block_image_text_gallery_right %}
-        <div class="col-md-4">
+        <div class="md:col-4">
             <div class="image-text-gallery-card">
                 {% block block_image_text_gallery_right_image %}
                     {% set element = block.slots.getSlot('right-image') %}

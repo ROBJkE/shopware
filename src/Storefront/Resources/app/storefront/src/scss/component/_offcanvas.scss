@@ -6,19 +6,20 @@ The sliding direction can be left or right.
 
 @see https://getbootstrap.com/docs/5.2/components/offcanvas
 */
+@use 'abstract/bootstrap-mixins' as *;
 
-.offcanvas {
+.drawer {
     transition: all 0.45s cubic-bezier(0.3, 0, 0.15, 1);
 
-    &.offcanvas-start .offcanvas-close {
+    &.drawer-start .offcanvas-close {
         align-items: center;
         display: flex;
         flex-direction: row-reverse;
         justify-content: space-between;
     }
 
-    &.offcanvas-bottom {
-        --#{$prefix}offcanvas-height: 90%;
+    &.drawer-bottom {
+        --offcanvas-height: 90%;
         border-radius: 8px 8px 0 0;
     }
 
@@ -26,20 +27,20 @@ The sliding direction can be left or right.
         width: 100%;
     }
 
-    .offcanvas-header {
-        --#{$prefix}offcanvas-padding-y: 0;
-        --#{$prefix}offcanvas-padding-x: 0;
+    .drawer-header {
+        --offcanvas-padding-y: 0;
+        --offcanvas-padding-x: 0;
         background-color: $white;
 
-        .offcanvas-title {
+        .drawer-title {
             font-size: 24px;
             font-weight: $font-weight-bold;
         }
     }
 
-    // @deprecated tag:v6.8.0 - Styling for offcanvas footer is deprecated because it is not used.
+    // @deprecated tag:v6.8.0 - Styling for drawer footer is deprecated because it is not used.
     @if not feature('V6_8_0_0') {
-        .offcanvas-footer {
+        .drawer-footer {
             // stylelint-disable-next-line scss/at-extend-no-missing-placeholder
             @extend .sticky-top;
             bottom: 0;
@@ -60,7 +61,7 @@ The sliding direction can be left or right.
     }
 
     &,
-    .offcanvas-body {
+    .drawer-body {
         > .loader {
             position: absolute;
             left: 50%;
@@ -76,8 +77,8 @@ The sliding direction can be left or right.
 
     // For horizontal OffCanvas, always reserve some space when the mobile viewport
     // reaches the width of the OffCanvas itself, so it does not cover the whole viewport.
-    &.offcanvas-end,
-    &.offcanvas-start {
+    &.drawer-end,
+    &.drawer-start {
         @media (max-width: $offcanvas-horizontal-width + ($grid-gutter-width / 2)) {
             width: calc(100% - #{$grid-gutter-width / 2});
         }
@@ -85,8 +86,8 @@ The sliding direction can be left or right.
 }
 
 @include media-breakpoint-down(sm) {
-    .offcanvas {
-        &.offcanvas-start .offcanvas-close {
+    .drawer {
+        &.drawer-start .offcanvas-close {
             gap: $spacer-sm;
         }
 

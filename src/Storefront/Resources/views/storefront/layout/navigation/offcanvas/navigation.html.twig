@@ -4,11 +4,11 @@
     {% block layout_navigation_offcanvas_navigation_actions %}
         <nav class="nav navigation-offcanvas-actions">
             {% block layout_navigation_offcanvas_navigation_action_language %}
-                {% sw_include '@Storefront/storefront/layout/header/actions/language-widget.html.twig' with {position: 'offcanvas'} %}
+                {% sw_include '@Storefront/storefront/layout/header/actions/language-widget.html.twig' with {position: 'drawer'} %}
             {% endblock %}
 
             {% block layout_navigation_offcanvas_navigation_action_currency %}
-                {% sw_include '@Storefront/storefront/layout/header/actions/currency-widget.html.twig' with {position: 'offcanvas'} %}
+                {% sw_include '@Storefront/storefront/layout/header/actions/currency-widget.html.twig' with {position: 'drawer'} %}
             {% endblock %}
         </nav>
     {% endblock %}

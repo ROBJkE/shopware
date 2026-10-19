@@ -1,7 +1,7 @@
 /*
 Offcanvas cart
 ==============================================
-Extends the basic offcanvas component with additional cart styles.
+Extends the basic drawer component with additional cart styles.
 */
 
 .offcanvas-cart {
@@ -48,12 +48,12 @@ Extends the basic offcanvas component with additional cart styles.
 
 .offcanvas-summary {
     .js-toggle-shipping-selection {
-        --#{$prefix}btn-font-weight: var(--#{$prefix}body-font-weight);
-        --#{$prefix}btn-padding-y: 0;
-        --#{$prefix}btn-padding-x: 0;
-        --#{$prefix}btn-font-size: 90%;
-        --#{$prefix}btn-color: var($primary);
-        --#{$prefix}btn-line-height: inherit;
+        --btn-font-weight: var(--body-font-weight);
+        --btn-padding-y: 0;
+        --btn-padding-x: 0;
+        --btn-font-size: 90%;
+        --btn-color: var($primary);
+        --btn-line-height: inherit;
     }
 
     .offcanvas-shipping-preference {

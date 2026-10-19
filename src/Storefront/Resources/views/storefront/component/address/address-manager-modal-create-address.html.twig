@@ -8,7 +8,7 @@
 {% set type = addressType %}
 
 <div class="js-pseudo-modal-template-root-element address-manager-modal">
-    <div class="modal-header pb-0 align-items-start">
+    <div class="dialog-header pb-0 align-items-start">
         {% block address_manager_modal_address_title %}
 
             {% if postedAddress.has('id') and postedAddress.get('id') != null %}
@@ -22,9 +22,9 @@
             {% endif %}
         {% endblock %}
 
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="{{ 'global.default.close'|trans|striptags }}"></button>
+        <button type="button" class="btn-close" data-bs-dismiss="dialog" aria-label="{{ 'global.default.close'|trans|striptags }}"></button>
     </div>
-    <div class="modal-body">
+    <div class="dialog-body">
         {% block address_manager_modal_address_form_create %}
             <form
                 method="post"
@@ -65,11 +65,11 @@
             </form>
         {% endblock %}
     </div>
-    <div class="modal-footer justify-content-between">
+    <div class="dialog-footer justify-content-between">
         {% block address_manager_modal_address_action_button_back%}
             <button
                 type="button"
-                class="address-form-create-cancel btn btn-outline-dark btn-icon-hover-white"
+                class="address-form-create-cancel btn btn-outline theme-dark btn-icon-hover-white"
                 data-address-type="{{ addressType }}"
             >
                 {% sw_icon 'arrow-left' style {size: 's'} %}
@@ -83,7 +83,7 @@
             <button
                 type="submit"
                 form="address-manager-modal-address-form"
-                class="btn btn-primary align-text-bottom address-form-create-submit"
+                class="btn btn-solid theme-primary align-text-bottom address-form-create-submit"
                 title="{{ 'account.addressSaveChange'|trans|striptags }}"
             >
                 {% if (changeShipping and postedAddress.id === context.customer.activeShippingAddress.id) or (not changeShipping and postedAddress.id === context.customer.activeBillingAddress.id) %}

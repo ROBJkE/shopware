@@ -6,12 +6,12 @@
 }
 
 .account-aside-item {
-    --#{$prefix}list-group-item-padding-x: 0;
-    --#{$prefix}list-group-action-active-color: #{$primary};
-    --#{$prefix}list-group-action-active-bg: #{$list-group-bg};
-    --#{$prefix}list-group-action-hover-color: #{$primary};
-    --#{$prefix}list-group-action-hover-bg: #{$list-group-bg};
-    --#{$prefix}list-group-border-width: 0;
+    --list-group-item-padding-x: 0;
+    --list-group-action-active-color: #{$primary};
+    --list-group-action-active-bg: #{$list-group-bg};
+    --list-group-action-hover-color: #{$primary};
+    --list-group-action-hover-bg: #{$list-group-bg};
+    --list-group-border-width: 0;
 
     &.is-active {
         color: $primary;

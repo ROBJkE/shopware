@@ -25,7 +25,7 @@
 
                             {% sw_include '@Storefront/storefront/component/review/rating.html.twig' with {
                                 points: productAvgRating,
-                                style: 'text-primary'
+                                style: 'fg-primary'
                             } %}
 
                             {% if totalReviewCount > 0 %}
@@ -72,7 +72,7 @@
                                 {% block component_review_filter_box %}
                                     <div class="row product-detail-review-filter">
                                         {% block component_review_filter_checkbox %}
-                                            <div class="col-md-8 col-lg-5 product-detail-review-checkbox">
+                                            <div class="md:col-8 lg:col-5 product-detail-review-checkbox">
                                                 <div class="form-check">
                                                     {% block component_review_filter_checkbox_input %}
                                                         <input type="checkbox"
@@ -102,7 +102,7 @@
                                         {% endblock %}
 
                                         {% block component_review_filter_progressbar %}
-                                            <div class="col d-none d-lg-block product-detail-review-progressbar-col">
+                                            <div class="col d-none lg:d-block product-detail-review-progressbar-col">
                                                 <div class="progress product-detail-review-progressbar-container">
                                                     <div class="progress-bar product-detail-review-progressbar-bar"
                                                          role="progressbar"
@@ -115,7 +115,7 @@
                                         {% endblock %}
 
                                         {% block component_review_filter_share %}
-                                            <div class="col-12 col-md-3 product-detail-review-share">
+                                            <div class="col-12 md:col-3 product-detail-review-share">
                                                 <p><small>{{ matrix.percent|round }}%</small></p>
                                             </div>
                                         {% endblock %}
@@ -155,7 +155,7 @@
                 {% endblock %}
 
                 {% block component_review_form_teaser_button %}
-                    <button class="btn btn-primary product-detail-review-teaser-btn"
+                    <button class="btn btn-solid theme-primary product-detail-review-teaser-btn"
                             type="button"
                             data-bs-toggle="collapse"
                             data-bs-target=".multi-collapse"

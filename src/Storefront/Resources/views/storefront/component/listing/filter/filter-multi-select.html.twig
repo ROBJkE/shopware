@@ -34,7 +34,7 @@
                     data-bs-toggle="collapse"
                     data-bs-target="#{{ filterItemId }}"
                     {% else %}
-                    data-bs-toggle="dropdown"
+                    data-bs-toggle="menu"
                     data-boundary="viewport"
                     {% endif %}>
                 {% block component_filter_multi_select_display_name %}
@@ -54,7 +54,7 @@
         {% endblock %}
 
         {% block component_filter_multi_select_dropdown %}
-            <div class="filter-multi-select-dropdown filter-panel-item-dropdown{% if sidebar %} collapse{% else %} dropdown-menu{% endif %}"
+            <div class="filter-multi-select-dropdown filter-panel-item-dropdown{% if sidebar %} collapse{% else %} menu{% endif %}"
                  id="{{ filterItemId }}">
                 {% block component_filter_multi_select_list %}
                     <ul class="filter-multi-select-list" aria-label="{{ displayName }}">

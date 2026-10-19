@@ -1,3 +1,4 @@
+import Drawer from 'bootstrap/js/dist/drawer.js';
 import OffCanvas from 'src/plugin/offcanvas/offcanvas.plugin';
 
 /**
@@ -27,17 +28,14 @@ describe('OffCanvas tests', () => {
         jest.runAllTimers();
 
         // Ensure offCanvas was injected to the DOM by selecting it
-        const offCanvasElement = document.querySelector('.offcanvas');
+        const offCanvasElement = document.querySelector('.drawer');
 
         // Ensure exists check works
         expect(OffCanvas.exists()).toBe(true);
 
-        // Ensure OffCanvas has all configured CSS classes
-        expect(offCanvasElement.classList.contains('show')).toBe(true);
-
-        // Ensure accessibility attrs are set
-        expect(offCanvasElement.getAttribute('aria-modal')).toBe('true');
-        expect(offCanvasElement.getAttribute('role')).toBe('dialog');
+        // Bootstrap 6 drawers are open <dialog> elements. The browser supplies the dialog role.
+        expect(offCanvasElement.tagName).toBe('DIALOG');
+        expect(offCanvasElement.open).toBe(true);
 
         // Ensure the OffCanvas content is set
         expect(offCanvasElement.innerHTML).toBe('Interesting content');
@@ -52,14 +50,14 @@ describe('OffCanvas tests', () => {
 
         // Ensue OffCanvas was opened
         expect(OffCanvas.exists()).toBe(true);
-        expect(document.querySelector('.offcanvas').classList.contains('show')).toBe(true);
+        expect(document.querySelector('.drawer').open).toBe(true);
 
         // Close the OffCanvas
         OffCanvas.close();
         jest.runAllTimers();
 
         // Ensure OffCanvas is no longer existing in the DOM
-        expect(document.querySelector('.offcanvas')).toBeFalsy();
+        expect(document.querySelector('.drawer')).toBeFalsy();
         expect(OffCanvas.exists()).toBe(false);
     });
 
@@ -98,7 +96,7 @@ describe('OffCanvas tests', () => {
     it('saves and restores the focused trigger before making the background inaccessible', () => {
         document.body.innerHTML = `
             <main id="main">
-                <button id="trigger">Open offcanvas</button>
+                <button id="trigger">Open drawer</button>
             </main>
         `;
 
@@ -118,7 +116,7 @@ describe('OffCanvas tests', () => {
         OffCanvas.open('Interesting content');
         jest.runAllTimers();
 
-        expect(window.focusHandler.saveFocusState).toHaveBeenCalledWith('offcanvas');
+        expect(window.focusHandler.saveFocusState).toHaveBeenCalledWith('drawer');
 
         OffCanvas.close();
         jest.runAllTimers();
@@ -136,20 +134,14 @@ describe('OffCanvas tests', () => {
         // Ensue OffCanvas was opened
         expect(OffCanvas.exists()).toBe(true);
 
-        const backdrop = document.querySelector('.offcanvas-backdrop');
-        const clickEvent = new MouseEvent('mousedown', {
-            view: window,
-            bubbles: true,
-            cancelable: true,
-            clientX: 0,
-        });
-
-        backdrop.dispatchEvent(clickEvent);
+        const offCanvasElement = document.querySelector('.drawer');
+        // A click on the dialog itself is the native backdrop click.
+        offCanvasElement.dispatchEvent(new MouseEvent('click', { bubbles: true }));
         jest.runAllTimers();
 
         // Ensure OffCanvas is no longer existing in the DOM
         expect(OffCanvas.exists()).toBe(false);
-        expect(document.querySelector('.offcanvas')).toBeFalsy();
+        expect(document.querySelector('.drawer')).toBeFalsy();
     });
 
     it('should not close via click on backdrop when configured', () => {
@@ -167,21 +159,14 @@ describe('OffCanvas tests', () => {
         // Ensue OffCanvas was opened
         expect(OffCanvas.exists()).toBe(true);
 
-        const backdrop = document.querySelector('.offcanvas-backdrop');
-        const clickEvent = new MouseEvent('mousedown', {
-            view: window,
-            bubbles: true,
-            cancelable: true,
-            clientX: 0,
-        });
-
-        // Try to close OffCanvas via backdrop
-        backdrop.dispatchEvent(clickEvent);
+        const offCanvasElement = document.querySelector('.drawer');
+        // A static backdrop ignores a click on the dialog itself.
+        offCanvasElement.dispatchEvent(new MouseEvent('click', { bubbles: true }));
         jest.runAllTimers();
 
         // Ensure OffCanvas is still in the DOM
         expect(OffCanvas.exists()).toBe(true);
-        expect(document.querySelector('.offcanvas')).toBeTruthy();
+        expect(document.querySelector('.drawer')).toBeTruthy();
     });
 
     it('should be able to set additional CSS classes', () => {
@@ -198,7 +183,7 @@ describe('OffCanvas tests', () => {
         );
         jest.runAllTimers();
 
-        const offCanvasElement = document.querySelector('.offcanvas');
+        const offCanvasElement = document.querySelector('.drawer');
 
         // Only initially configured class should be given
         expect(offCanvasElement.classList.contains('fancy-class')).toBe(false);
@@ -225,7 +210,7 @@ describe('OffCanvas tests', () => {
         );
         jest.runAllTimers();
 
-        const offCanvasElement = document.querySelector('.offcanvas');
+        const offCanvasElement = document.querySelector('.drawer');
 
         // Should have initial content in the beginning
         expect(offCanvasElement.innerHTML).toBe('Interesting content');
@@ -242,7 +227,7 @@ describe('OffCanvas tests', () => {
 
         // Set content containing a close trigger button with class "js-offcanvas-close"
         OffCanvas.open(
-            '<button class="js-offcanvas-close">Close</button><div class="offcanvas-body">Lorem ipsum</div>',
+            '<button class="js-offcanvas-close">Close</button><div class="drawer-body">Lorem ipsum</div>',
         );
 
         jest.runAllTimers();
@@ -272,7 +257,7 @@ describe('OffCanvas tests', () => {
         );
         jest.runAllTimers();
 
-        const offCanvasElement = document.querySelector('.offcanvas');
+        const offCanvasElement = document.querySelector('.drawer');
 
         // Should have CSS classes from array on OffCanvas element
         expect(offCanvasElement.classList.contains('super-sticky')).toBe(true);
@@ -297,7 +282,7 @@ describe('OffCanvas tests', () => {
         jest.useFakeTimers();
 
         OffCanvas.open(
-            '<div class="offcanvas-body">Lorem ipsum<div data-id="off-canvas-headline">Nice headline</div></div>',
+            '<div class="drawer-body">Lorem ipsum<div data-id="off-canvas-headline">Nice headline</div></div>',
             () => {},
             'right',
             true,
@@ -307,21 +292,21 @@ describe('OffCanvas tests', () => {
         );
         jest.runAllTimers();
 
-        const offCanvasElement = document.querySelector('.offcanvas');
+        const offCanvasElement = document.querySelector('.drawer');
 
         // Should have aria-labelledby attribute on OffCanvas element
         expect(offCanvasElement.getAttribute('aria-labelledby')).toBe('off-canvas-headline');
     });
 
     const offCanvasPositions = [
-        {  passedPosition: 'start', expectedPositionClass: 'offcanvas-start' },
-        {  passedPosition: 'end', expectedPositionClass: 'offcanvas-end' },
-        {  passedPosition: 'top', expectedPositionClass: 'offcanvas-top' },
-        {  passedPosition: 'bottom', expectedPositionClass: 'offcanvas-bottom' },
+        {  passedPosition: 'start', expectedPositionClass: 'drawer-start' },
+        {  passedPosition: 'end', expectedPositionClass: 'drawer-end' },
+        {  passedPosition: 'top', expectedPositionClass: 'drawer-top' },
+        {  passedPosition: 'bottom', expectedPositionClass: 'drawer-bottom' },
 
         // Ensure backwards compatible positions "left" and "right"
-        {  passedPosition: 'left', expectedPositionClass: 'offcanvas-start' },
-        {  passedPosition: 'right', expectedPositionClass: 'offcanvas-end' },
+        {  passedPosition: 'left', expectedPositionClass: 'drawer-start' },
+        {  passedPosition: 'right', expectedPositionClass: 'drawer-end' },
     ];
 
     offCanvasPositions.forEach((position) => {
@@ -336,26 +321,26 @@ describe('OffCanvas tests', () => {
             jest.runAllTimers();
 
             // Should have the correct position class
-            expect(document.querySelector('.offcanvas').classList.contains(position.expectedPositionClass)).toBe(true);
+            expect(document.querySelector('.drawer').classList.contains(position.expectedPositionClass)).toBe(true);
         });
     });
 
-    it('removes only offcanvas from the DOM created by OffCanvasSingleton and ignores other Bootstrap offcanvas', () => {
-        // Add a hard-coded Bootstrap offcanvas to the HTML which must not be removed by OffCanvasSingleton
+    it('removes only drawer from the DOM created by OffCanvasSingleton and ignores other Bootstrap drawer', () => {
+        // Add a hard-coded Bootstrap drawer to the HTML which must not be removed by OffCanvasSingleton
         document.body.innerHTML = `
-            <button class="btn btn-primary" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasExample" aria-controls="offcanvasExample">
-                Open Bootstrap offcanvas
+            <button class="btn btn-solid theme-primary" type="button" data-bs-toggle="drawer" data-bs-target="#offcanvasExample" aria-controls="offcanvasExample">
+                Open Bootstrap drawer
             </button>
 
-            <div class="offcanvas offcanvas-start" tabindex="-1" id="offcanvasExample" aria-labelledby="offcanvasExampleLabel">
-                <div class="offcanvas-header">
-                    <h5 class="offcanvas-title" id="offcanvasExampleLabel">Offcanvas</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+            <dialog class="drawer drawer-start" tabindex="-1" id="offcanvasExample" aria-labelledby="offcanvasExampleLabel">
+                <div class="drawer-header">
+                    <h5 class="drawer-title" id="offcanvasExampleLabel">Offcanvas</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="drawer" aria-label="Close"></button>
                 </div>
-                <div class="offcanvas-body">
-                    Bootstrap offcanvas
+                <div class="drawer-body">
+                    Bootstrap drawer
                 </div>
-            </div>
+            </dialog>
         `;
 
         jest.useFakeTimers();
@@ -366,9 +351,9 @@ describe('OffCanvas tests', () => {
 
         // Ensue shopware OffCanvas was opened
         expect(OffCanvas.exists()).toBe(true);
-        expect(document.querySelector('.js-offcanvas-singleton').classList.contains('show')).toBe(true);
+        expect(document.querySelector('.js-offcanvas-singleton').open).toBe(true);
 
-        // Ensure hard-coded Bootstrap offcanvas is also present in the DOM. It must not be removed by "_removeExistingOffCanvas".
+        // Ensure hard-coded Bootstrap drawer is also present in the DOM. It must not be removed by "_removeExistingOffCanvas".
         expect(document.getElementById('offcanvasExample')).toBeTruthy();
 
         // Close the shopware OffCanvas
@@ -379,15 +364,15 @@ describe('OffCanvas tests', () => {
         expect(document.querySelector('.js-offcanvas-singleton')).toBeFalsy();
         expect(OffCanvas.exists()).toBe(false);
 
-        // Ensure the hard-coded Bootstrap offcanvas is still in the DOM
+        // Ensure the hard-coded Bootstrap drawer is still in the DOM
         expect(document.getElementById('offcanvasExample')).toBeTruthy();
     });
 
-    it('should properly dispose Bootstrap instances when removing existing offcanvas', () => {
+    it('should properly dispose Bootstrap instances when removing existing drawer', () => {
         jest.useFakeTimers();
 
-        // Open first offcanvas
-        OffCanvas.open('First offcanvas');
+        // Open first drawer
+        OffCanvas.open('First drawer');
         jest.runAllTimers();
 
         const firstOffcanvas = document.querySelector('.js-offcanvas-singleton');
@@ -396,20 +381,20 @@ describe('OffCanvas tests', () => {
         // Mock bootstrap.Offcanvas.getInstance and dispose
         const mockDispose = jest.fn();
         const mockInstance = { dispose: mockDispose };
-        const getInstanceSpy = jest.spyOn(bootstrap.Offcanvas, 'getInstance').mockReturnValue(mockInstance);
+        const getInstanceSpy = jest.spyOn(Drawer, 'getInstance').mockReturnValue(mockInstance);
 
-        // Open second offcanvas (should remove first one)
-        OffCanvas.open('Second offcanvas');
+        // Open second drawer (should remove first one)
+        OffCanvas.open('Second drawer');
         jest.runAllTimers();
 
-        // Verify dispose was called on the first offcanvas instance
+        // Verify dispose was called on the first drawer instance
         expect(getInstanceSpy).toHaveBeenCalledWith(firstOffcanvas);
         expect(mockDispose).toHaveBeenCalled();
 
-        // Verify only one offcanvas exists
+        // Verify only one drawer exists
         const allOffcanvas = document.querySelectorAll('.js-offcanvas-singleton');
         expect(allOffcanvas.length).toBe(1);
-        expect(allOffcanvas[0].innerHTML).toBe('Second offcanvas');
+        expect(allOffcanvas[0].innerHTML).toBe('Second drawer');
 
         // Cleanup
         getInstanceSpy.mockRestore();

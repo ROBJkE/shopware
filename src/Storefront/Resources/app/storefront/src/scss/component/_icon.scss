@@ -174,7 +174,7 @@ Credit: https://github.com/FortAwesome/Font-Awesome
 // -------------------------
 
 @each $color, $value in $theme-colors {
-    .alert-#{$color} {
+    .alert.theme-#{$color} {
         .icon {
             color: $value;
         }
@@ -182,9 +182,10 @@ Credit: https://github.com/FortAwesome/Font-Awesome
 }
 
 @each $color, $value in $theme-colors {
-    .btn-#{$color} {
+    .btn-solid.theme-#{$color},
+    .btn-outline.theme-#{$color} {
         .icon {
-            color: color-contrast($value);
+            color: $value;
         }
     }
 }
@@ -212,7 +213,7 @@ Credit: https://github.com/FortAwesome/Font-Awesome
 }
 
 .is-left,
-.offcanvas-start {
+.drawer-start {
     .offcanvas-close {
         svg {
             top: 0;
@@ -221,7 +222,7 @@ Credit: https://github.com/FortAwesome/Font-Awesome
 }
 
 .is-right,
-.offcanvas-end {
+.drawer-end {
     .offcanvas-close {
         svg {
             top: 0.25rem;

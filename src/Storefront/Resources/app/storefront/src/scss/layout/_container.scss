@@ -5,6 +5,7 @@ Additional styling for bootstrap container layout.
 
 https://getbootstrap.com/docs/5.2/layout/containers
 */
+@use 'abstract/bootstrap-mixins' as *;
 
 .container-main {
     padding: 20px 0;

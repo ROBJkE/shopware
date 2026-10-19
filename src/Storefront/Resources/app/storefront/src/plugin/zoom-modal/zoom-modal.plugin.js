@@ -1,3 +1,4 @@
+import Dialog from 'bootstrap/js/dist/dialog.js';
 import Plugin from 'src/plugin-system/plugin.class';
 import DeviceDetection from 'src/helper/device-detection.helper';
 import ImageZoomPlugin from 'src/plugin/image-zoom/image-zoom.plugin';
@@ -10,12 +11,12 @@ export default class ZoomModalPlugin extends Plugin {
     static options = {
 
         /**
-         * selector for the zoom modal
+         * selector for the zoom dialog
          */
         modalSelector: '.js-zoom-modal',
 
         /**
-         * selector to trigger the image zoom modal
+         * selector to trigger the image zoom dialog
          */
         triggerSelector: 'img',
         triggerSelectorCanvas: 'canvas',
@@ -26,7 +27,7 @@ export default class ZoomModalPlugin extends Plugin {
         productIdDataAttribute: 'data-product-id',
 
         /**
-         * selector for the gallery slider inside the modal
+         * selector for the gallery slider inside the dialog
          */
         modalGallerySliderSelector: '[data-modal-gallery-slider]',
 
@@ -41,12 +42,12 @@ export default class ZoomModalPlugin extends Plugin {
         imageZoomInitSelector: '[data-image-zoom]',
 
         /**
-         * selector for the container of the gallery and the zoom modal
+         * selector for the container of the gallery and the zoom dialog
          */
         galleryZoomModalContainerSelector: '.js-gallery-zoom-modal-container',
 
         /**
-         * selector for the images inside the modal which should be loaded on modal show
+         * selector for the images inside the dialog which should be loaded on dialog show
          */
         imgToLoadSelector: '.js-load-img',
 
@@ -217,30 +218,30 @@ export default class ZoomModalPlugin extends Plugin {
     _openModal() {
 
         const galleryZoomModalContainer = this.el.closest(this.options.galleryZoomModalContainerSelector);
-        const modal = galleryZoomModalContainer.querySelector(this.options.modalSelector);
+        const dialog = galleryZoomModalContainer.querySelector(this.options.modalSelector);
 
-        // load images before modal is shown
-        if (modal) {
-            this._loadImages(modal);
+        // load images before dialog is shown
+        if (dialog) {
+            this._loadImages(dialog);
         }
 
-        this.$emitter.publish('onClick', { modal });
+        this.$emitter.publish('onClick', { dialog });
     }
 
     /**
-     * load images inside modal before modal is shown
+     * load images inside dialog before dialog is shown
      *
      * @private
      */
-    _loadImages(modal) {
+    _loadImages(dialog) {
         const imagesToLoad = Array.from(
-            modal.querySelectorAll('img[' + this.options.imgDataSrcAttr + ']' + this.options.imgToLoadSelector),
+            dialog.querySelectorAll('img[' + this.options.imgDataSrcAttr + ']' + this.options.imgToLoadSelector),
         ).filter(img => img.getAttribute(this.options.imgDataSrcAttr));
         const imageCount = imagesToLoad.length;
 
         // images are already loaded
         if (imageCount === 0) {
-            this._showModal(modal);
+            this._showModal(dialog);
             return;
         }
 
@@ -254,18 +255,18 @@ export default class ZoomModalPlugin extends Plugin {
             img.onload = () => {
                 loadedCount++;
 
-                // show modal if all images are loaded or error occured
+                // show dialog if all images are loaded or error occured
                 if (loadedCount + errorCount === imageCount){
-                    this._showModal(modal);
+                    this._showModal(dialog);
                 }
             };
 
             img.onerror = () => {
                 errorCount++;
 
-                // show modal if all images are loaded or error occured
+                // show dialog if all images are loaded or error occured
                 if (loadedCount + errorCount === imageCount){
-                    this._showModal(modal);
+                    this._showModal(dialog);
                 }
             };
 
@@ -280,17 +281,17 @@ export default class ZoomModalPlugin extends Plugin {
     }
 
     /**
-     * trigger bootstrap modal show function
+     * trigger bootstrap dialog show function
      *
      * @private
      */
-    _showModal(modal) {
-        const bootstrapModal = new bootstrap.Modal(modal);
+    _showModal(dialog) {
+        const bootstrapModal = new Dialog(dialog);
 
         if (!this._showModalListener) {
             this._showModalListener = () => {
-                this._initSlider(modal);
-                this.$emitter.publish('modalShow', { modal });
+                this._initSlider(dialog);
+                this.$emitter.publish('modalShow', { dialog });
             };
         }
 
@@ -298,11 +299,11 @@ export default class ZoomModalPlugin extends Plugin {
             window.focusHandler.resumeFocusState('zoom-modal');
         };
 
-        modal.removeEventListener('shown.bs.modal', this._showModalListener);
-        modal.addEventListener('shown.bs.modal', this._showModalListener);
+        dialog.removeEventListener('shown.bs.dialog', this._showModalListener);
+        dialog.addEventListener('shown.bs.dialog', this._showModalListener);
 
-        modal.removeEventListener('hidden.bs.modal', hideModalListener);
-        modal.addEventListener('hidden.bs.modal', hideModalListener);
+        dialog.removeEventListener('hidden.bs.dialog', hideModalListener);
+        dialog.addEventListener('hidden.bs.dialog', hideModalListener);
 
         bootstrapModal.show();
     }
@@ -312,8 +313,8 @@ export default class ZoomModalPlugin extends Plugin {
      *
      * @private
      */
-    _initSlider(modal) {
-        const slider = modal.querySelector(this.options.modalGallerySliderSelector);
+    _initSlider(dialog) {
+        const slider = dialog.querySelector(this.options.modalGallerySliderSelector);
 
         if (!slider) {
             // No slider, but still need to register ImageZoom for single image
@@ -322,7 +323,7 @@ export default class ZoomModalPlugin extends Plugin {
         }
 
         const parentSliderIndex = this._getParentSliderIndex();
-        const galleryImages =  modal.querySelectorAll(this.options.imgGallerySelector);
+        const galleryImages =  dialog.querySelectorAll(this.options.imgGallerySelector);
 
         if (this.gallerySliderPlugin && this.gallerySliderPlugin._slider) {
             this.gallerySliderPlugin._slider.goTo(parentSliderIndex);

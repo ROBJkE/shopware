@@ -7,7 +7,7 @@ import LoadingIndicator from 'src/utility/loading-indicator/loading-indicator.ut
 export default class AjaxOffCanvas extends OffCanvas {
 
     /**
-     * Fire AJAX request to get the offcanvas content
+     * Fire AJAX request to get the drawer content
      *
      * @param {string} url
      * @param {*|boolean} data
@@ -41,7 +41,7 @@ export default class AjaxOffCanvas extends OffCanvas {
      */
     static setContent(url, data, callback, closable, delay) {
         // Do not pass `closable` into setContent; only delay is relevant here
-        super.setContent(`<div class="offcanvas-body">${LoadingIndicator.getTemplate()}</div>`, delay);
+        super.setContent(`<div class="drawer-body">${LoadingIndicator.getTemplate()}</div>`, delay);
 
         const cb = (response) => {
             super.setContent(response, delay);
@@ -71,7 +71,7 @@ export default class AjaxOffCanvas extends OffCanvas {
 
     /**
      * Executes the given callback
-     * and initializes all plugins within the offcanvas
+     * and initializes all plugins within the drawer
      *
      * @param {function} cb
      * @param {string} response

@@ -24,7 +24,7 @@
 			{% block component_review_tab_pane %}
                 <div class="row product-detail-review-content js-review-container">
 					{% block component_review_aside %}
-						<div class="col-sm-4">
+						<div class="sm:col-4">
 							{% block component_review_widget_container %}
 								{% sw_include '@Storefront/storefront/component/review/review-widget.html.twig' %}
 							{% endblock %}
@@ -123,7 +123,7 @@
 
                                                     {% block component_review_list_action_sortby %}
                                                         {% if productReviewCount > 0 %}
-                                                            <div class="col-12 col-md-auto product-detail-review-sortby">
+                                                            <div class="col-12 md:col-auto product-detail-review-sortby">
                                                                 {% block component_review_list_action_sortby_form %}
                                                                     <form class="form-inline product-detail-review-sortby-form"
                                                                         action="{{ path('frontend.product.reviews', { productId: reviews.productId, parentId: reviews.parentId }) }}"

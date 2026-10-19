@@ -1,8 +1,9 @@
+import Drawer from 'bootstrap/js/dist/drawer.js';
 import NativeEventEmitter from 'src/helper/emitter.helper';
 
-// The bootstrap offcanvas class
-const OFF_CANVAS_CLASS = 'offcanvas';
-// Custom offcanvas class to identify offcanvas created by OffCanvasSingleton
+// The bootstrap drawer class
+const OFF_CANVAS_CLASS = 'drawer';
+// Custom drawer class to identify drawer created by OffCanvasSingleton
 const OFF_CANVAS_JS_CLASS = 'js-offcanvas-singleton';
 const OFF_CANVAS_FULLWIDTH_CLASS = 'is-fullwidth';
 const OFF_CANVAS_CLOSE_TRIGGER_CLASS = 'js-offcanvas-close';
@@ -21,7 +22,7 @@ class OffCanvasSingleton {
     }
 
     /**
-     * Open the offcanvas and its backdrop
+     * Open the drawer and its backdrop
      * @param {string} content
      * @param {function|null} callback
      * @param {'left'|'right'|'bottom'} position
@@ -68,7 +69,7 @@ class OffCanvasSingleton {
     }
 
     /**
-     * Determine list of existing offcanvas
+     * Determine list of existing drawer
      * @returns {NodeListOf<Element>}
      * @private
      */
@@ -77,14 +78,14 @@ class OffCanvasSingleton {
     }
 
     /**
-     * Close the offcanvas and its backdrop when the browser goes back in history
+     * Close the drawer and its backdrop when the browser goes back in history
      * @param {number} delay
      */
     close(delay) {
         const OffCanvasElements = this.getOffCanvas();
 
         OffCanvasElements.forEach(offCanvas => {
-            const offCanvasInstance = bootstrap.Offcanvas.getInstance(offCanvas);
+            const offCanvasInstance = Drawer.getInstance(offCanvas);
             offCanvasInstance.hide();
         });
 
@@ -112,7 +113,7 @@ class OffCanvasSingleton {
     }
 
     /**
-     * Opens the offcanvas and its backdrop
+     * Opens the drawer and its backdrop
      *
      * @param {HTMLElement} _offCanvas
      * @param {function} callback
@@ -120,11 +121,11 @@ class OffCanvasSingleton {
      * @private
      */
     _openOffcanvas(_offCanvas, callback) {
-        window.focusHandler.saveFocusState('offcanvas');
+        window.focusHandler.saveFocusState('drawer');
 
         this._disableBackgroundAccessibility(_offCanvas);
 
-        // Keep the Bootstrap focus-trap working when the offcanvas is the last element before `</body>`.
+        // Keep the Bootstrap focus-trap working when the drawer is the last element before `</body>`.
         // @todo: Remove when upstream issue https://github.com/twbs/bootstrap/issues/42503 is resolved.
         window.focusHandler._addFocusTrapGuard(_offCanvas);
 
@@ -155,17 +156,17 @@ class OffCanvasSingleton {
 
                     // @todo: Remove when upstream issue https://github.com/twbs/bootstrap/issues/42503 is resolved.
                     window.focusHandler._removeFocusTrapGuard();
-                    window.focusHandler.resumeFocusState('offcanvas');
+                    window.focusHandler.resumeFocusState('drawer');
 
                     this.$emitter.publish('onCloseOffcanvas', {
                         offCanvasContent: offCanvasElements,
                     });
                 }, delay);
 
-                offCanvas.removeEventListener('hide.bs.offcanvas', onBsClose);
+                offCanvas.removeEventListener('hide.bs.drawer', onBsClose);
             };
 
-            offCanvas.addEventListener('hide.bs.offcanvas', onBsClose);
+            offCanvas.addEventListener('hide.bs.drawer', onBsClose);
         });
 
         window.addEventListener('popstate', this.close.bind(this, delay), { once: true });
@@ -187,7 +188,7 @@ class OffCanvasSingleton {
     }
 
     /**
-     * Prevent access to the page behind the offcanvas and preserve its previous state.
+     * Prevent access to the page behind the drawer and preserve its previous state.
      *
      * @param {HTMLElement} offCanvas
      * @private
@@ -210,7 +211,7 @@ class OffCanvasSingleton {
     }
 
     /**
-     * Restore the page accessibility state from before the offcanvas was opened.
+     * Restore the page accessibility state from before the drawer was opened.
      *
      * @private
      */
@@ -233,14 +234,14 @@ class OffCanvasSingleton {
     }
 
     /**
-     * Remove all existing offcanvas from DOM
+     * Remove all existing drawer from DOM
      * @private
      */
     _removeExistingOffCanvas() {
         const offCanvasElements = this.getOffCanvas();
         offCanvasElements.forEach(offCanvas => {
             // Properly dispose of Bootstrap Offcanvas instance to clean up backdrop
-            const offCanvasInstance = bootstrap.Offcanvas.getInstance(offCanvas);
+            const offCanvasInstance = Drawer.getInstance(offCanvas);
             if (offCanvasInstance && typeof offCanvasInstance.dispose === 'function') {
                 offCanvasInstance.dispose();
             }
@@ -257,25 +258,25 @@ class OffCanvasSingleton {
     }
 
     /**
-     * Defines the position of the offcanvas by setting css class
+     * Defines the position of the drawer by setting css class
      * @param {'left'|'right'|'bottom'} position
      * @returns {string}
      * @private
      */
     _getPositionClass(position) {
         if (position === 'left') {
-            return 'offcanvas-start';
+            return 'drawer-start';
         }
 
         if (position === 'right') {
-            return 'offcanvas-end';
+            return 'drawer-end';
         }
 
-        return `offcanvas-${position}`;
+        return `drawer-${position}`;
     }
 
     /**
-     * Creates the offcanvas element prototype including all relevant settings,
+     * Creates the drawer element prototype including all relevant settings,
      * appends it to the DOM and returns the HTMLElement for further processing
      * @param {'left'|'right'|'bottom'} position
      * @param {boolean} fullwidth
@@ -285,7 +286,7 @@ class OffCanvasSingleton {
      * @private
      */
     _createOffCanvas(position, fullwidth, cssClass, closable) {
-        const offCanvas = document.createElement('div');
+        const offCanvas = document.createElement('dialog');
         offCanvas.classList.add(OFF_CANVAS_CLASS, OFF_CANVAS_JS_CLASS);
         offCanvas.classList.add(this._getPositionClass(position));
         offCanvas.setAttribute('tabindex', '-1');
@@ -310,7 +311,7 @@ class OffCanvasSingleton {
 
         document.body.appendChild(offCanvas);
 
-        OffCanvasSingleton.bsOffcanvas = new bootstrap.Offcanvas(offCanvas, {
+        OffCanvasSingleton.bsOffcanvas = new Drawer(offCanvas, {
             // Only use "static" mode (no close via click on backdrop) when "closable" option is explicitly set to "false".
             backdrop: closable === false ? 'static' : true,
         });
@@ -352,7 +353,7 @@ export default class OffCanvas {
     }
 
     /**
-     * adds an additional class to the offcanvas
+     * adds an additional class to the drawer
      *
      * @param {string} className
      */
@@ -377,7 +378,7 @@ export default class OffCanvas {
     }
 
     /**
-     * returns all existing offcanvas elements
+     * returns all existing drawer elements
      *
      * @returns {NodeListOf<Element>}
      */

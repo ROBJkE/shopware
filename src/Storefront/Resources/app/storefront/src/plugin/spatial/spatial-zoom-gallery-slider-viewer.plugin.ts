@@ -20,11 +20,11 @@ export default class SpatialZoomGallerySliderViewerPlugin extends SpatialBaseVie
      */
     async init() {
         const modalWrapper = document.querySelector('.zoom-modal-wrapper');
-        const modal = modalWrapper?.querySelector('.zoom-modal');
-        modal?.addEventListener('shown.bs.modal', async () => {
+        const dialog = modalWrapper?.querySelector('.zoom-modal');
+        dialog?.addEventListener('shown.bs.dialog', async () => {
             await this.dive?.startAsync();
         });
-        modal?.addEventListener('hidden.bs.modal', () => {
+        dialog?.addEventListener('hidden.bs.dialog', () => {
             this.dive?.stop();
         });
 

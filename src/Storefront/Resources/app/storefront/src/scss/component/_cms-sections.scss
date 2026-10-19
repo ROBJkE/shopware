@@ -3,6 +3,7 @@ CMS sections
 ==============================================
 General styling for cms sections
 */
+@use 'abstract/bootstrap-mixins' as *;
 
 .cms-section {
     &.bg-image {
@@ -23,12 +24,12 @@ General styling for cms sections
 
     .full-width {
         @include make-container();
-        --#{$prefix}gutter-x: 0;
+        --gutter-x: 0;
     }
 
     .cms-section-sidebar {
         & > .row {
-            --#{$prefix}gutter-x: 60px;
+            --gutter-x: 60px;
         }
     }
 }

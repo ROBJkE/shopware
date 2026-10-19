@@ -13,10 +13,10 @@
                     {% block layout_header_actions_currency_widget_content %}
                         <div class="currencies-menu dropdown">
                             {% block layout_header_actions_currency_widget_dropdown_toggle %}
-                                <button class="btn dropdown-toggle top-bar-nav-btn"
+                                <button class="btn top-bar-nav-btn"
                                         type="button"
                                         id="currenciesDropdown-{{ position }}"
-                                        data-bs-toggle="dropdown"
+                                        data-bs-toggle="menu" data-bs-placement="bottom-end"
                                         aria-haspopup="true"
                                         aria-expanded="false"
                                         aria-label="{{ 'header.currencyTrigger'|trans({ '%currency%': context.currency.translated.name })|striptags }}">
@@ -28,7 +28,7 @@
                             {% endblock %}
 
                             {% block layout_header_actions_currency_widget_form_items %}
-                                <ul class="top-bar-list dropdown-menu dropdown-menu-end"
+                                <ul class="top-bar-list menu"
                                     aria-label="{{ 'header.currencyList'|trans|striptags }}">
                                     {% for currency in header.currencies %}
                                         {% set isActiveCurrency = currency.id is same as(context.currency.id) %}
@@ -36,7 +36,7 @@
                                         {% block layout_header_actions_currency_widget_form_items_element %}
                                             <li class="top-bar-list-item">
                                                 {% block layout_header_actions_currency_widget_form_items_element_label %}
-                                                    <button class="dropdown-item d-flex gap-1{% if isActiveCurrency %} active{% endif %}" type="submit" name="currencyId" id="{{ position }}-{{ currency.id }}" value="{{ currency.id }}">
+                                                    <button class="menu-item d-flex gap-1{% if isActiveCurrency %} active{% endif %}" type="submit" name="currencyId" id="{{ position }}-{{ currency.id }}" value="{{ currency.id }}">
                                                         <span aria-hidden="true" class="top-bar-list-item-currency-symbol">{{ currency.symbol }}</span>
                                                         {{ currency.translated.name }}
                                                     </button>
@@ -49,8 +49,8 @@
                         </div>
                     {% endblock %}
 
-                    {% if position == 'offcanvas' %}
-                        <input name="redirectParameters[offcanvas]" type="hidden" value="menu">
+                    {% if position == 'drawer' %}
+                        <input name="redirectParameters[drawer]" type="hidden" value="menu">
                     {% endif %}
                 </form>
             {% endblock %}

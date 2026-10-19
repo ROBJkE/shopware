@@ -36,7 +36,7 @@
             <h1 class="cart-main-header d-inline-block">
                 {{ 'checkout.cartHeader'|trans|sw_sanitize }}
             </h1>
-            <span class="cart-main-header-item-counter d-inline-block mb-4 fw-bold fs-3 ms-1 text-dark-emphasis">
+            <span class="cart-main-header-item-counter d-inline-block mb-4 fw-bold fs-3 ms-1 fg-emphasis-dark">
                 ({{- 'checkout.itemCounter'|trans({'%count%': page.cart.lineItems|length})|sw_sanitize -}})
             </span>
         {% endblock %}
@@ -88,7 +88,7 @@
                 {% else %}
                     {# @deprecated tag:v6.8.0 - Block page_checkout_cart_add_product will be moved to add-product-by-number.html.twig #}
                     {% block page_checkout_cart_add_product %}
-                        <div class="col-md-5 cart-add-product-container">
+                        <div class="md:col-5 cart-add-product-container">
                             <form action="{{ path('frontend.checkout.product.add-by-number') }}" method="post">
                                 {# @deprecated tag:v6.8.0 - Block page_checkout_cart_add_product_redirect will be moved to add-product-by-number.html.twig #}
                                 {% block page_checkout_cart_add_product_redirect %}
@@ -118,7 +118,7 @@
 
                                         {# @deprecated tag:v6.8.0 - Block page_checkout_cart_add_product_submit will be moved to add-product-by-number.html.twig #}
                                         {% block page_checkout_cart_add_product_submit %}
-                                            <button class="btn btn-outline-secondary add-product-button"
+                                            <button class="btn btn-outline theme-secondary add-product-button"
                                                     type="submit"
                                                     aria-labelledby="addProductInput"
                                                     id="addProductButton">
@@ -133,7 +133,7 @@
                 {% endif %}
 
                 {% block page_checkout_cart_shipping_costs %}
-                    <div class="col-md-7 cart-shipping-costs-container">
+                    <div class="md:col-7 cart-shipping-costs-container">
                         <form name="precalc"
                               method="post"
                               action="{{ path('frontend.checkout.configure') }}"
@@ -260,7 +260,7 @@
                         {% endblock %}
 
                         {% block page_checkout_cart_add_promotion_submit %}
-                            <button class="btn btn-outline-secondary checkout-aside-add-promotion-button"
+                            <button class="btn btn-outline theme-secondary checkout-aside-add-promotion-button"
                                     type="submit"
                                     aria-labelledby="addPromotionInput"
                                     id="addPromotion">
@@ -276,7 +276,7 @@
     {% block page_checkout_cart_action_proceed %}
         <div class="checkout-aside-action d-grid">
             <a href="{{ path('frontend.checkout.confirm.page') }}"
-               class="btn btn-primary btn-lg begin-checkout-btn"
+               class="btn btn-solid theme-primary btn-lg begin-checkout-btn"
                title="{{ 'checkout.proceedLink'|trans|striptags }}">
                 {{ 'checkout.proceedLink'|trans|sw_sanitize }}
             </a>

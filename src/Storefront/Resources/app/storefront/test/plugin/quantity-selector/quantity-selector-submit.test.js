@@ -90,7 +90,7 @@ describe('Quantity selector form submission', () => {
         expect(ajaxSubmit).toHaveBeenCalledTimes(1);
     });
 
-    test.each(['enter', 'blur'])('does not overwrite a newer offcanvas quantity after %s', (finish) => {
+    test.each(['enter', 'blur'])('does not overwrite a newer drawer quantity after %s', (finish) => {
         let input = renderQuantity();
         const cart = new OffCanvasCartPlugin(document.querySelector('.header-cart'));
         const quantities = [];

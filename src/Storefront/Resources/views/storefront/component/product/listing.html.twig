@@ -29,7 +29,7 @@
                 {% if searchResult.total > 0 %}
                     {% block element_product_listing_pagination_nav_actions %}
                         <div class="cms-element-product-listing-actions row justify-content-between">
-                            <div class="col-md-auto">
+                            <div class="md:col-auto">
                                 {% block element_product_listing_pagination_nav_top %}
                                     {% sw_include '@Storefront/storefront/component/pagination.html.twig' with {
                                         entities: searchResult,
@@ -39,7 +39,7 @@
                                 {% endblock %}
                             </div>
 
-                            <div class="col-md-auto">
+                            <div class="md:col-auto">
                                 {% block element_product_listing_sorting %}
                                     {% sw_include '@Storefront/storefront/component/sorting.html.twig' with {
                                         current: searchResult.sorting,

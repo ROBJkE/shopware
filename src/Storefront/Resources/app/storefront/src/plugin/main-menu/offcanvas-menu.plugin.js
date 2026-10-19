@@ -10,7 +10,7 @@ import HttpClient from 'src/service/http-client.service';
 export default class OffcanvasMenuPlugin extends Plugin {
 
     static options = {
-        navigationUrl: window.router['frontend.menu.offcanvas'],
+        navigationUrl: window.router['frontend.menu.drawer'],
         position: 'left',
         triggerEvent: 'click',
 
@@ -49,8 +49,8 @@ export default class OffcanvasMenuPlugin extends Plugin {
         if (OffCanvas.exists()) {
             const offCanvasElements = OffCanvas.getOffCanvas();
 
-            offCanvasElements.forEach(offcanvas => {
-                const links = offcanvas.querySelectorAll(this.options.linkSelector);
+            offCanvasElements.forEach(drawer => {
+                const links = drawer.querySelectorAll(this.options.linkSelector);
                 links.forEach(link => {
                     OffcanvasMenuPlugin._resetLoader(link);
                     link.addEventListener('click', (event) => {
@@ -58,7 +58,7 @@ export default class OffcanvasMenuPlugin extends Plugin {
                     });
                 });
 
-                window.PluginManager.initializePluginsInParentElement(offcanvas);
+                window.PluginManager.initializePluginsInParentElement(drawer);
             });
         }
         // re-open the menu if the url parameter is set
@@ -66,7 +66,7 @@ export default class OffcanvasMenuPlugin extends Plugin {
     }
 
     /**
-     * opens the offcanvas menu
+     * opens the drawer menu
      *
      * @param event
      * @private
@@ -80,16 +80,16 @@ export default class OffcanvasMenuPlugin extends Plugin {
     }
 
     /**
-     * opens the menu via url parameter (offcanvas=menu)
+     * opens the menu via url parameter (drawer=menu)
      * @private
      */
     _openMenuViaUrlParameter() {
         const urlParams = new URLSearchParams(window.location.search);
-        if (urlParams.has('offcanvas') && urlParams.get('offcanvas') === 'menu') {
+        if (urlParams.has('drawer') && urlParams.get('drawer') === 'menu') {
             document.querySelector('[data-off-canvas-menu="true"]')?.click();
             if (window.history.replaceState) {
                 const url = new URL(window.location);
-                url.searchParams.delete('offcanvas');
+                url.searchParams.delete('drawer');
                 window.history.replaceState({}, document.title, url);
             }
         }
@@ -232,7 +232,7 @@ export default class OffcanvasMenuPlugin extends Plugin {
     }
 
     /**
-     * returns the offcanvas element
+     * returns the drawer element
      *
      * @returns {Node}
      * @private
@@ -242,14 +242,14 @@ export default class OffcanvasMenuPlugin extends Plugin {
     }
 
     /**
-     * returns the offcanvas main menu element
+     * returns the drawer main menu element
      *
      * @returns {Element|any}
      * @private
      */
     static _getOffcanvasMenu() {
-        const offcanvas = OffcanvasMenuPlugin._getOffcanvas();
+        const drawer = OffcanvasMenuPlugin._getOffcanvas();
 
-        return offcanvas.querySelector(this.options.menuSelector);
+        return drawer.querySelector(this.options.menuSelector);
     }
 }

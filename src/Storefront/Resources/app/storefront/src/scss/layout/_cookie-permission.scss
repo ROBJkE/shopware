@@ -5,6 +5,7 @@ Shows a cookie permission alert at the bottom of the page.
 
 @sw-package framework
 */
+@use 'abstract/bootstrap-mixins' as *;
 
 .cookie-permission-container {
     display: none;

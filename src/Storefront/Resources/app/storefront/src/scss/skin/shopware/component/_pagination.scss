@@ -1,5 +1,6 @@
+@use 'abstract/bootstrap-mixins' as *;
 .pagination {
-    --#{$prefix}pagination-padding-y: calc(#{$btn-padding-y} + 1px);
+    --pagination-padding-y: calc(#{$btn-padding-y} + 1px);
     gap: 0.125rem;
 
     .page-link {

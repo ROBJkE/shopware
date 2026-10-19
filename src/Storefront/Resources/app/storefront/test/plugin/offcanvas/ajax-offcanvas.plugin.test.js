@@ -43,9 +43,9 @@ describe('AjaxOffcanvas tests', () => {
 
         // Ensure OffCanvas exists and has content from ajax request
         expect(AjaxOffcanvas.exists()).toBe(true);
-        expect(document.querySelector('.offcanvas').innerHTML).toBe('<div>Interesting content from POST request</div>');
+        expect(document.querySelector('.drawer').innerHTML).toBe('<div>Interesting content from POST request</div>');
 
-        // Ensure plugins will be re-initialized within the offcanvas
+        // Ensure plugins will be re-initialized within the drawer
         expect(window.PluginManager.initializePluginsInParentElement).toHaveBeenCalledTimes(1);
     });
 
@@ -70,9 +70,9 @@ describe('AjaxOffcanvas tests', () => {
 
         // Ensure OffCanvas exists and has content from ajax request
         expect(AjaxOffcanvas.exists()).toBe(true);
-        expect(document.querySelector('.offcanvas').innerHTML).toBe('<div>Interesting content from GET request</div>');
+        expect(document.querySelector('.drawer').innerHTML).toBe('<div>Interesting content from GET request</div>');
 
-        // Ensure plugins will be re-initialized within the offcanvas
+        // Ensure plugins will be re-initialized within the drawer
         expect(window.PluginManager.initializePluginsInParentElement).toHaveBeenCalledTimes(1);
     });
 
@@ -107,7 +107,7 @@ describe('AjaxOffcanvas tests', () => {
 
         AjaxOffcanvas.close();
 
-        // Ensure plugins will be re-initialized within the offcanvas
+        // Ensure plugins will be re-initialized within the drawer
         expect(window.PluginManager.initializePluginsInParentElement).toHaveBeenCalledTimes(1);
     });
 

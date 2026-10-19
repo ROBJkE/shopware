@@ -5,6 +5,7 @@ Styling for gallery slider component.
 Displays images in a slider gallery with thumbnail navigation.
 based on "base-slider" component and "tiny-slider" (https://github.com/ganlanyuan/tiny-slider)
 */
+@use 'abstract/bootstrap-mixins' as *;
 
 .gallery-slider {
     // correct perceptual issue with tiny slider

@@ -16,14 +16,14 @@
     <div class="row g-2 basic-captcha"
          data-basic-captcha="true"
          data-basic-captcha-options="{{ basicCaptchaOptions|json_encode }}">
-        <div class="form-group {% if additionalClass %} {{ additionalClass }}{% else %}col-md-6{% endif %} basic-captcha-content">
+        <div class="form-group {% if additionalClass %} {{ additionalClass }}{% else %}md:col-6{% endif %} basic-captcha-content">
             {% block component_basic_captcha_image %}
                 <div class="basic-captcha-content-code">
                     <div class="basic-captcha-content-image" id="{{ formId }}-basic-captcha-content-image"></div>
 
                     {% block component_basic_captcha_refresh_icon %}
                         <button type="button" 
-                                class="btn btn-outline-primary basic-captcha-content-refresh-icon" 
+                                class="btn btn-outline theme-primary basic-captcha-content-refresh-icon" 
                                 id="{{ formId }}-basic-captcha-content-refresh-icon"
                                 aria-label="{{ 'captcha.basicCaptchaRefreshButton'|trans|sw_sanitize }}">
                             {% sw_icon 'arrow-switch' %}

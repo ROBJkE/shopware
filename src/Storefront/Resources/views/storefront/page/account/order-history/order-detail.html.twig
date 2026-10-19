@@ -101,25 +101,25 @@
                         {% block page_account_order_item_detail_table_labels_summary %}
                             <div class="order-item-detail-footer">
                                 <div class="row g-0">
-                                    <div class="col-12 col-md-7 col-xl-6">
+                                    <div class="col-12 md:col-7 xl:col-6">
                                         <dl class="row g-0 order-item-detail-labels" role="region" aria-label="{{ 'account.orderInfoAriaLabel'|trans|striptags }}">
                                             {% block page_account_order_item_detail_date %}
                                                 {% block page_account_order_item_detail_date_label %}
-                                                    <dt class="col-6 col-md-5">{{ 'account.orderItemDate'|trans|sw_sanitize }}</dt>
+                                                    <dt class="col-6 md:col-5">{{ 'account.orderItemDate'|trans|sw_sanitize }}</dt>
                                                 {% endblock %}
 
                                                 {% block page_account_order_item_detail_date_value %}
-                                                    <dd class="col-6 col-md-7 order-item-detail-labels-value">{{ order.orderDateTime|format_date('medium', locale=app.request.locale) }}</dd>
+                                                    <dd class="col-6 md:col-7 order-item-detail-labels-value">{{ order.orderDateTime|format_date('medium', locale=app.request.locale) }}</dd>
                                                 {% endblock %}
                                             {% endblock %}
 
                                             {% block page_account_order_item_detail_number %}
                                                 {% block page_account_order_item_detail_number_label %}
-                                                    <dt class="col-6 col-md-5">{{ 'account.orderItemNumber'|trans|sw_sanitize }}</dt>
+                                                    <dt class="col-6 md:col-5">{{ 'account.orderItemNumber'|trans|sw_sanitize }}</dt>
                                                 {% endblock %}
 
                                                 {% block page_account_order_item_detail_number_value %}
-                                                    <dd class="col-6 col-md-7 order-item-detail-labels-value">{{ order.orderNumber }}</dd>
+                                                    <dd class="col-6 md:col-7 order-item-detail-labels-value">{{ order.orderNumber }}</dd>
                                                 {% endblock %}
                                             {% endblock %}
 
@@ -127,16 +127,16 @@
                                                 {# @deprecated tag:v6.8.0 - If condition `order.transactions|length > 0` will be removed. If condition `order.primaryOrderTransaction` will remain in use. #}
                                                 {% if order.transactions|length > 0 or order.primaryOrderTransaction %}
                                                     {% block page_account_order_item_detail_payment_method_label %}
-                                                        <dt class="col-6 col-md-5">{{ 'account.orderItemPaymentMethod'|trans|sw_sanitize }}</dt>
+                                                        <dt class="col-6 md:col-5">{{ 'account.orderItemPaymentMethod'|trans|sw_sanitize }}</dt>
                                                     {% endblock %}
 
                                                     {% block page_account_order_item_detail_payment_method_value %}
                                                         {% if feature('v6.8.0.0') %}
-                                                            <dd class="col-6 col-md-7 order-item-detail-labels-value">
+                                                            <dd class="col-6 md:col-7 order-item-detail-labels-value">
                                                                 {{ order.primaryOrderTransaction.paymentMethod.translated.name }}
                                                             </dd>
                                                         {% else %}
-                                                            <dd class="col-6 col-md-7 order-item-detail-labels-value">
+                                                            <dd class="col-6 md:col-7 order-item-detail-labels-value">
                                                                 {{ order.transactions|last.paymentMethod.translated.name }}
                                                             </dd>
                                                         {% endif %}
@@ -148,16 +148,16 @@
                                                 {# @deprecated tag:v6.8.0 - If condition `order.deliveries|length > 0` will be removed. If condition `order.primaryOrderDelivery` will remain in use. #}
                                                 {% if order.deliveries|length > 0 or order.primaryOrderDelivery %}
                                                     {% block page_account_order_item_detail_shipping_method_label %}
-                                                        <dt class="col-6 col-md-5">{{ 'account.orderItemShippingMethod'|trans|sw_sanitize }}</dt>
+                                                        <dt class="col-6 md:col-5">{{ 'account.orderItemShippingMethod'|trans|sw_sanitize }}</dt>
                                                     {% endblock %}
 
                                                     {% block page_account_order_item_detail_shipping_method_value %}
                                                         {% if feature('v6.8.0.0') %}
-                                                            <dd class="col-6 col-md-7 order-item-detail-labels-value">
+                                                            <dd class="col-6 md:col-7 order-item-detail-labels-value">
                                                                 {{ order.primaryOrderDelivery.shippingMethod.translated.name }}
                                                             </dd>
                                                         {% else %}
-                                                            <dd class="col-6 col-md-7 order-item-detail-labels-value">
+                                                            <dd class="col-6 md:col-7 order-item-detail-labels-value">
                                                                 {{ order.deliveries|first.shippingMethod.translated.name }}
                                                             </dd>
                                                         {% endif %}
@@ -168,11 +168,11 @@
                                             {% block page_account_order_item_detail_tracking_code %}
                                                 {% if order.deliveries|length > 0 %}
                                                     {% block page_account_order_item_detail_tracking_code_label %}
-                                                        <dt class="col-6 col-md-5">{{ 'account.orderItemTracking'|trans|sw_sanitize }}</dt>
+                                                        <dt class="col-6 md:col-5">{{ 'account.orderItemTracking'|trans|sw_sanitize }}</dt>
                                                     {% endblock %}
 
                                                     {% block page_account_order_item_detail_tracking_code_label_value %}
-                                                        <dd class="col-6 col-md-7">
+                                                        <dd class="col-6 md:col-7">
                                                             {% for delivery in order.deliveries %}
                                                                 {% set trackingCodes = delivery.trackingCodes %}
                                                                 {% set trackingUrl = delivery.shippingMethod.translated.trackingUrl %}
@@ -205,17 +205,17 @@
                                         </dl>
                                     </div>
 
-                                    <div class="col-12 col-md-5 col-xl-6">
+                                    <div class="col-12 md:col-5 xl:col-6">
                                         {% block page_account_order_item_detail_summary %}
                                             <dl class="row g-0 order-item-detail-summary" role="region" aria-label="{{ 'account.orderSummaryAriaLabel'|trans|striptags }}">
                                                 {% block page_account_order_item_detail_shipping_costs %}
                                                     {% if order.deliveries|length > 0 %}
                                                         {% block page_account_order_item_detail_shipping_costs_label %}
-                                                            <dt class="col-6 col-md-8">{{ 'account.orderItemShippingcosts'|trans|sw_sanitize }}</dt>
+                                                            <dt class="col-6 md:col-8">{{ 'account.orderItemShippingcosts'|trans|sw_sanitize }}</dt>
                                                         {% endblock %}
 
                                                         {% block page_account_order_item_detail_shipping_costs_value %}
-                                                            <dd class="col-6 col-md-4">{{ order.shippingTotal|currency(order.currency.isoCode) }}</dd>
+                                                            <dd class="col-6 md:col-4">{{ order.shippingTotal|currency(order.currency.isoCode) }}</dd>
                                                         {% endblock %}
                                                     {% endif %}
                                                 {% endblock %}
@@ -224,7 +224,7 @@
                                                     {% if order.taxStatus !== constant('Shopware\\Core\\Checkout\\Cart\\Price\\Struct\\CartPrice::TAX_STATE_FREE') %}
                                                         {% for calculatedTax in order.price.calculatedTaxes %}
                                                             {% block page_account_order_item_detail_vat_label %}
-                                                                <dt class="col-6 col-md-8">
+                                                                <dt class="col-6 md:col-8">
                                                                     {% if order.taxStatus === constant('Shopware\\Core\\Checkout\\Cart\\Price\\Struct\\CartPrice::TAX_STATE_GROSS') %}                                                                        {{ 'checkout.summaryTaxInclude'|trans({
                                                                             '%rate%':  calculatedTax.taxRate
                                                                         })|sw_sanitize }}
@@ -237,7 +237,7 @@
                                                             {% endblock %}
 
                                                             {% block page_account_order_item_detail_vat_value %}
-                                                                <dd class="col-6 col-md-4">
+                                                                <dd class="col-6 md:col-4">
                                                                     {{ calculatedTax.tax|currency(order.currency.isoCode) }}
                                                                 </dd>
                                                             {% endblock %}
@@ -247,7 +247,7 @@
 
                                                 {% block page_account_order_item_detail_amount %}
                                                     {% block page_account_order_item_detail_amount_label %}
-                                                        <dt class="col-6 col-md-8">
+                                                        <dt class="col-6 md:col-8">
                                                             {% if order.taxStatus === constant('Shopware\\Core\\Checkout\\Cart\\Price\\Struct\\CartPrice::TAX_STATE_FREE') %}
                                                                 {{ 'account.orderItemNetTotal'|trans|sw_sanitize }}
                                                             {% else %}
@@ -257,7 +257,7 @@
                                                     {% endblock %}
 
                                                     {% block page_account_order_item_detail_amount_value %}
-                                                        <dd class="col-6 col-md-4 order-item-total">
+                                                        <dd class="col-6 md:col-4 order-item-total">
                                                             {% if order.taxStatus === constant('Shopware\\Core\\Checkout\\Cart\\Price\\Struct\\CartPrice::TAX_STATE_FREE') %}
                                                                 {{ order.amountNet|currency(order.currency.isoCode) }}
                                                             {% else %}

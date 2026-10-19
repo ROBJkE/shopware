@@ -56,8 +56,8 @@ const template = `
 
     </div>
 
-    <button type="submit" class="btn btn-primary btn-block js-offcanvas-cookie-submit"></button>
-    <button type="submit" class="btn btn-primary btn-block js-offcanvas-cookie-accept-all"></button>
+    <button type="submit" class="btn btn-solid theme-primary btn-block js-offcanvas-cookie-submit"></button>
+    <button type="submit" class="btn btn-solid theme-primary btn-block js-offcanvas-cookie-accept-all"></button>
 </div>
 `;
 
@@ -67,7 +67,7 @@ describe('CookieConfiguration plugin tests', () => {
 
     beforeEach(() => {
         window.router = {
-            'frontend.cookie.offcanvas': 'https://shop.example.com/offcanvas',
+            'frontend.cookie.drawer': 'https://shop.example.com/drawer',
             'frontend.cookie.groups': 'https://shop.example.com/cookie/groups',
             'frontend.account.login.page': 'https://shop.example.com/login',
         };
@@ -251,7 +251,7 @@ describe('CookieConfiguration plugin tests', () => {
     test('Ensure handleCustomLink opens the off-canvas-menu for normal left-click', () => {
         const openOffCanvas = jest.spyOn(plugin, 'openOffCanvas');
 
-        // Test normal left-click (should open offcanvas)
+        // Test normal left-click (should open drawer)
         plugin._handleCustomLink({
             preventDefault: jest.fn(),
             button: 0,
@@ -264,10 +264,10 @@ describe('CookieConfiguration plugin tests', () => {
         expect(openOffCanvas).toHaveBeenCalled();
     });
 
-    test('Ensure handleCustomLink does not open offcanvas for middle-click or Ctrl+click', () => {
+    test('Ensure handleCustomLink does not open drawer for middle-click or Ctrl+click', () => {
         const openOffCanvas = jest.spyOn(plugin, 'openOffCanvas');
 
-        // Test middle-click (should not open offcanvas)
+        // Test middle-click (should not open drawer)
         plugin._handleCustomLink({
             preventDefault: jest.fn(),
             button: 1,
@@ -279,7 +279,7 @@ describe('CookieConfiguration plugin tests', () => {
 
         expect(openOffCanvas).not.toHaveBeenCalled();
 
-        // Test Ctrl+click (should not open offcanvas)
+        // Test Ctrl+click (should not open drawer)
         plugin._handleCustomLink({
             preventDefault: jest.fn(),
             button: 0,
@@ -301,7 +301,7 @@ describe('CookieConfiguration plugin tests', () => {
     });
 
     test('Ensure _setInitialState reads the correct state from the template', () => {
-        // These cookies are represented in the offcanvas.template.html
+        // These cookies are represented in the drawer.template.html
         const requiredAndActive = ['session-', 'timezone'];
         const optionalAndInactive = ['lorem', 'ipsum', 'dolor', 'sit'];
 
@@ -317,7 +317,7 @@ describe('CookieConfiguration plugin tests', () => {
     });
 
     test('Ensure cookies deactivated by the user are removed when the preferences are submitted', async () => {
-        // These cookies are represented in the offcanvas.template.html
+        // These cookies are represented in the drawer.template.html
         const requiredAndActive = ['session-', 'timezone'];
         const optionalAndInactive = ['lorem', 'ipsum', 'dolor', 'sit'];
         const checkbox = document.body.querySelector(`[data-cookie="${optionalAndInactive[0]}"]`);
@@ -436,9 +436,9 @@ describe('CookieConfiguration plugin tests', () => {
         global.fetch.mockRestore();
     });
 
-    test('COOKIE_CONFIGURATION_UPDATE fires with all active cookies when offcanvas was never opened', done => {
+    test('COOKIE_CONFIGURATION_UPDATE fires with all active cookies when drawer was never opened', done => {
         // Simulate the bug scenario: user clicks "Accept all" in the cookie bar
-        // without ever opening the offcanvas, so lastState remains empty
+        // without ever opening the drawer, so lastState remains empty
         const freshPlugin = new CookieConfiguration(document.createElement('div'));
         expect(freshPlugin.lastState.active).toHaveLength(0);
         expect(freshPlugin.lastState.inactive).toHaveLength(0);
@@ -504,7 +504,7 @@ describe('CookieConfiguration plugin tests', () => {
         document.body.removeChild(triggerBtn);
     });
 
-    test('_onAccept sets the cookie and closes the offcanvas', () => {
+    test('_onAccept sets the cookie and closes the drawer', () => {
         const setItemSpy = jest.spyOn(CookieStorage, 'setItem').mockImplementation(jest.fn());
         plugin._onAccept('wishlist-enabled');
         expect(setItemSpy).toHaveBeenCalledWith('wishlist-enabled', '1', 30);
@@ -512,7 +512,7 @@ describe('CookieConfiguration plugin tests', () => {
         setItemSpy.mockRestore();
     });
 
-    test('_onLogin closes the offcanvas and redirects', () => {
+    test('_onLogin closes the drawer and redirects', () => {
         const navigateToSpy = jest.spyOn(CookieConfiguration.prototype, '_navigateTo').mockImplementation(() => {});
         window.router['frontend.account.login.page'] = 'https://shop.example.com/login';
         plugin._onLogin();
@@ -520,12 +520,12 @@ describe('CookieConfiguration plugin tests', () => {
         expect(navigateToSpy).toHaveBeenCalledWith('https://shop.example.com/login');
     });
 
-    test('_onCancel closes the offcanvas', () => {
+    test('_onCancel closes the drawer', () => {
         plugin._onCancel();
         expect(AjaxOffCanvas.close).toHaveBeenCalled();
     });
 
-    test('_onPreferences closes the offcanvas and opens config modal', () => {
+    test('_onPreferences closes the drawer and opens config dialog', () => {
         const openOffCanvasSpy = jest.spyOn(plugin, 'openOffCanvas');
         const event = { preventDefault: jest.fn() };
         plugin._onPreferences(event);
@@ -534,7 +534,7 @@ describe('CookieConfiguration plugin tests', () => {
         expect(openOffCanvasSpy).toHaveBeenCalled();
     });
 
-    test('openRequestConsentOffCanvas does not throw exception if .offcanvas is missing', () => {
+    test('openRequestConsentOffCanvas does not throw exception if .drawer is missing', () => {
         plugin._getOffCanvas = jest.fn(() => ({
             querySelectorAll: () => [],
         }));
@@ -892,7 +892,7 @@ describe('CookieConfiguration plugin tests', () => {
                 ['analytics', 'tracking'] // inactive (remaining cookies)
             );
 
-            // Verify offcanvas closes
+            // Verify drawer closes
             expect(closeOffCanvasSpy).toHaveBeenCalled();
 
             setItemSpy.mockRestore();
@@ -1348,7 +1348,7 @@ describe('CookieConfiguration plugin tests', () => {
             expect(callback).toHaveBeenCalled();
         });
 
-        test('openRequestConsentOffCanvas callback with offcanvas element', () => {
+        test('openRequestConsentOffCanvas callback with drawer element', () => {
             const registerEventsSpy = jest.spyOn(plugin, '_registerConsentOffcanvasEvents');
             const openSpy = jest.spyOn(AjaxOffCanvas, 'open').mockImplementation((_route, _reload, callback) => {
                 callback();
@@ -1356,8 +1356,8 @@ describe('CookieConfiguration plugin tests', () => {
 
             plugin.openRequestConsentOffCanvas('/test-route', 'test-cookie');
 
-            const offcanvas = document.querySelector('.offcanvas');
-            expect(registerEventsSpy).toHaveBeenCalledWith(offcanvas, 'test-cookie');
+            const drawer = document.querySelector('.drawer');
+            expect(registerEventsSpy).toHaveBeenCalledWith(drawer, 'test-cookie');
 
             openSpy.mockRestore();
             registerEventsSpy.mockRestore();
@@ -1378,7 +1378,7 @@ describe('CookieConfiguration plugin tests', () => {
         });
 
         test('_registerConsentOffcanvasEvents registers all button events', () => {
-            // Create a mock offcanvas with all possible buttons
+            // Create a mock drawer with all possible buttons
             const mockOffcanvas = document.createElement('div');
 
             const acceptBtn = document.createElement('button');
@@ -1407,7 +1407,7 @@ describe('CookieConfiguration plugin tests', () => {
             addEventListenerSpy.mockRestore();
         });
 
-        test('_onPreferences with offcanvas element present', () => {
+        test('_onPreferences with drawer element present', () => {
             const preventDefault = jest.fn();
             const event = { preventDefault };
 
@@ -1418,7 +1418,7 @@ describe('CookieConfiguration plugin tests', () => {
 
             const originalQuerySelector = document.querySelector;
             document.querySelector = jest.fn((selector) => {
-                if (selector === '.offcanvas') {
+                if (selector === '.drawer') {
                     return mockOffcanvasElement;
                 }
                 return originalQuerySelector.call(document, selector);
@@ -1434,17 +1434,17 @@ describe('CookieConfiguration plugin tests', () => {
             expect(preventDefault).toHaveBeenCalled();
             expect(AjaxOffCanvas.close).toHaveBeenCalled();
             expect(openOffCanvasSpy).toHaveBeenCalled();
-            expect(mockOffcanvasElement.addEventListener).toHaveBeenCalledWith('hidden.bs.offcanvas', expect.any(Function), { once: true });
+            expect(mockOffcanvasElement.addEventListener).toHaveBeenCalledWith('hidden.bs.drawer', expect.any(Function), { once: true });
 
             // Restore
             document.querySelector = originalQuerySelector;
             openOffCanvasSpy.mockRestore();
         });
 
-        test('openRequestConsentOffCanvas callback with no offcanvas element', () => {
-            // Test lines 375-380 coverage - callback when offcanvas not found
+        test('openRequestConsentOffCanvas callback with no drawer element', () => {
+            // Test lines 375-380 coverage - callback when drawer not found
             const originalQuerySelector = document.querySelector;
-            document.querySelector = jest.fn(() => null); // No offcanvas found
+            document.querySelector = jest.fn(() => null); // No drawer found
 
             const registerEventsSpy = jest.spyOn(plugin, '_registerConsentOffcanvasEvents');
             const openSpy = jest.spyOn(AjaxOffCanvas, 'open').mockImplementation((_route, _reload, callback) => {
@@ -1454,7 +1454,7 @@ describe('CookieConfiguration plugin tests', () => {
 
             plugin.openRequestConsentOffCanvas('/test-route', 'test-cookie');
 
-            // Should not register events when no offcanvas is found
+            // Should not register events when no drawer is found
             expect(registerEventsSpy).not.toHaveBeenCalled();
 
             // Restore
@@ -1463,13 +1463,13 @@ describe('CookieConfiguration plugin tests', () => {
             registerEventsSpy.mockRestore();
         });
 
-        test('_onPreferences with no offcanvas element present', () => {
-            // Test line 765 coverage - return when no offcanvas element
+        test('_onPreferences with no drawer element present', () => {
+            // Test line 765 coverage - return when no drawer element
             const preventDefault = jest.fn();
             const event = { preventDefault };
 
             const originalQuerySelector = document.querySelector;
-            document.querySelector = jest.fn(() => null); // No offcanvas found
+            document.querySelector = jest.fn(() => null); // No drawer found
 
             const openOffCanvasSpy = jest.spyOn(plugin, 'openOffCanvas').mockImplementation((callback) => {
                 // Simulate callback execution
@@ -1516,9 +1516,9 @@ describe('CookieConfiguration plugin tests', () => {
                 json: jest.fn().mockResolvedValue(mockResponse),
             });
 
-            // Find the offcanvas element and add test checkboxes
-            const offcanvas = plugin._getOffCanvas();
-            const cookieList = offcanvas.querySelector('.offcanvas-cookie-list');
+            // Find the drawer element and add test checkboxes
+            const drawer = plugin._getOffCanvas();
+            const cookieList = drawer.querySelector('.offcanvas-cookie-list');
 
             // Create a test cookie group
             const testGroup = document.createElement('div');

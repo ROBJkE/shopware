@@ -1,3 +1,4 @@
+@use 'abstract/bootstrap-mixins' as *;
 $infoItemDetailMdSpace: 8;
 $infoItemInfoMdSpace: 5;
 $infoItemTotalPriceMdSpace: 2;
@@ -22,7 +23,7 @@ $infoItemRemoveMdSpace: 1;
 .line-item-info {
     order: 1;
     margin-bottom: $spacer;
-    // Equals: .col-10 .col-md-5
+    // Equals: .col-10 .md:col-5
     @include make-col-ready();
     @include make-col(10);
     @include media-breakpoint-up(md) {
@@ -31,7 +32,7 @@ $infoItemRemoveMdSpace: 1;
 }
 
 .line-item-details {
-    // Equals: .col-12 .col-sm-7 .col-md-8;
+    // Equals: .col-12 .sm:col-7 .md:col-8;
     @include make-col-ready();
     @include make-col(12);
     @include media-breakpoint-up(sm) {
@@ -45,7 +46,7 @@ $infoItemRemoveMdSpace: 1;
 .line-item-quantity {
     order: 3;
     margin-bottom: $spacer-sm;
-    // Equals: .col-12 .col-sm-4 .col-md-2;
+    // Equals: .col-12 .sm:col-4 .md:col-2;
     @include make-col-ready();
     @include make-col(12);
     @include media-breakpoint-up(sm) {
@@ -74,7 +75,7 @@ $infoItemRemoveMdSpace: 1;
 
 .line-item-unit-price {
     display: none;
-    // Equals: .col-12 .col-sm-4 .col-md-2;
+    // Equals: .col-12 .sm:col-4 .md:col-2;
     @include make-col(12);
     @include media-breakpoint-up(sm) {
         @include make-col(4);
@@ -99,7 +100,7 @@ $infoItemRemoveMdSpace: 1;
     order: 4;
     font-weight: $font-weight-bold;
     justify-content: flex-end;
-    // Equals: .col-12 .col-sm-4 .col-md-2;
+    // Equals: .col-12 .sm:col-4 .md:col-2;
     @include make-col-ready();
     @include make-col(12);
     @include media-breakpoint-up(sm) {
@@ -113,7 +114,7 @@ $infoItemRemoveMdSpace: 1;
 .line-item-remove {
     order: 2;
     text-align: right;
-    // Equals: .col-2 .col-md-1;
+    // Equals: .col-2 .md:col-1;
     @include make-col-ready();
     @include make-col(2);
     @include media-breakpoint-up(md) {
@@ -121,7 +122,7 @@ $infoItemRemoveMdSpace: 1;
     }
 }
 
-// Always display columns underneath each other for offcanvas mode
+// Always display columns underneath each other for drawer mode
 .is-offcanvas {
     .line-item-info {
         @include make-col(10);
@@ -572,7 +573,7 @@ $infoItemRemoveMdSpace: 1;
     }
 }
 
-// Always avoid nested line item indentation for offcanvas
+// Always avoid nested line item indentation for drawer
 .is-offcanvas .line-item-children {
     margin-left: 0;
     padding-left: 12px;

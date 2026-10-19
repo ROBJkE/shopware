@@ -9,7 +9,7 @@ describe('Form country state select plugin', () => {
     let template = `
         <form id="registerForm" action="/register" method="post">
 
-            <div class="form-group col-md-6">
+            <div class="form-group md:col-6">
                 <label class="form-label" for="vatIds">VAT Reg.No.</label>
                 <input type="text" name="vatIds[]" id="vatIds" class="form-name">
             </div>
@@ -76,7 +76,7 @@ describe('Form country state select plugin', () => {
         template = `
             <form id="registerForm" class="register-shipping" action="/register" method="post">
 
-                <div class="form-group col-md-6">
+                <div class="form-group md:col-6">
                     <label class="form-label" for="vatIds">VAT Reg.No.</label>
                     <input type="text" name="vatIds[]" id="vatIds" class="form-name">
                 </div>
@@ -110,7 +110,7 @@ describe('Form country state select plugin', () => {
         template = `
             <form id="registerForm" action="/register" method="post">
 
-                <div class="form-group col-md-6">
+                <div class="form-group md:col-6">
                     <label class="form-label" for="vatIds">VAT Registration Number</label>
                     <input type="text" name="vatIds[]" id="vatIds" class="form-name">
                 </div>
@@ -401,7 +401,7 @@ describe('Form country state select plugin', () => {
         template = `
             <form id="registerForm" class="register-shipping" action="/register" method="post">
 
-                <div class="form-group col-md-6">
+                <div class="form-group md:col-6">
                     <label class="form-label" for="vatIds">VAT Reg.No.</label>
                     <input type="text" name="vatIds[]" id="vatIds" class="form-name">
                 </div>
@@ -435,7 +435,7 @@ describe('Form country state select plugin', () => {
         template = `
             <form id="registerForm" class="register-billing" action="/register" method="post">
 
-                <div class="form-group col-md-6">
+                <div class="form-group md:col-6">
                     <label class="form-label" for="vatIds">VAT Reg.No.</label>
                     <input type="text" name="vatIds[]" id="vatIds" class="form-name">
                 </div>
@@ -471,7 +471,7 @@ describe('Form country state select plugin', () => {
         template = `
             <form id="registerForm" class="register-shipping" action="/register" method="post">
 
-                <div class="form-group col-md-6">
+                <div class="form-group md:col-6">
                     <label class="form-label" for="vatIds">VAT Reg.No.</label>
                     <input type="text" name="vatIds[]" id="vatIds" class="form-name">
                 </div>
@@ -508,12 +508,12 @@ describe('Form country state select plugin', () => {
         template = `
             <form id="registerForm" class="register-shipping" action="/register" method="post">
 
-                <div class="form-group col-md-6">
+                <div class="form-group md:col-6">
                     <label class="form-label" for="vatIds">VAT Reg.No.</label>
                     <input type="text" name="vatIds[]" id="vatIds" class="form-name">
                 </div>
 
-                <div class="form-group col-md-6">
+                <div class="form-group md:col-6">
                     <label class="form-label" for="addressCountry">Country</label>
                     <select class="country-select" id="addressCountry" data-initial-country-id="NE">
                         <option data-placeholder-option="true" disabled="disabled" value="">Select country...</option>
@@ -522,7 +522,7 @@ describe('Form country state select plugin', () => {
                     </select>
                 </div>
 
-                <div class="form-group col-md-6">
+                <div class="form-group md:col-6">
                     <label class="form-label" for="addressCountryState">State</label>
                     <select class="country-state-select" id="addressCountryState" data-initial-country-state-id="">
                         <option data-placeholder-option="true">Select state..</option>
@@ -573,7 +573,7 @@ describe('Form country state select plugin', () => {
         template = `
             <form id="registerForm" action="/register" method="post">
 
-                <div class="form-group col-md-6">
+                <div class="form-group md:col-6">
                     <label class="form-label" for="vatIds">VAT Reg.No.</label>
                     <input type="text" name="vatIds[]" id="vatIds" class="form-name">
                 </div>
@@ -599,7 +599,7 @@ describe('Form country state select plugin', () => {
         template = `
             <form id="registerForm" action="/register" method="post">
 
-                <div class="form-group col-md-6">
+                <div class="form-group md:col-6">
                     <label class="form-label" for="vatIds">VAT Reg.No.</label>
                     <input type="text" name="vatIds[]" id="vatIds" class="form-name" pattern="OLD[0-9]">
                 </div>
@@ -625,7 +625,7 @@ describe('Form country state select plugin', () => {
         template = `
             <form id="registerForm" action="/register" method="post">
 
-                <div class="form-group col-md-6">
+                <div class="form-group md:col-6">
                     <label class="form-label" for="vatIds">VAT Reg.No.</label>
                     <input type="text" name="vatIds[]" id="vatIds" class="form-name">
                 </div>
@@ -666,7 +666,7 @@ describe('Form country state select plugin', () => {
         template = `
             <form id="registerForm" action="/register" method="post">
 
-                <div class="form-group col-md-6">
+                <div class="form-group md:col-6">
                     <label class="form-label" for="vatIds">VAT Reg.No.</label>
                     <input type="text" name="vatIds[]" id="vatIds" class="form-name">
                 </div>
@@ -703,7 +703,7 @@ describe('Form country state select plugin', () => {
         template = `
             <form id="registerForm" action="/register" method="post">
 
-                <div class="form-group col-md-6">
+                <div class="form-group md:col-6">
                     <label class="form-label" for="vatIds">VAT Reg.No.</label>
                     <input type="text" name="vatIds[]" id="vatIds" class="form-name">
                 </div>
@@ -733,7 +733,7 @@ describe('Form country state select plugin', () => {
         template = `
             <form id="registerForm" action="/register" method="post">
 
-                <div class="form-group col-md-6">
+                <div class="form-group md:col-6">
                     <label class="form-label" for="vatIds">VAT Reg.No.</label>
                     <input type="text" name="vatIds[]" id="vatIds" class="form-name">
                 </div>
@@ -763,7 +763,7 @@ describe('Form country state select plugin', () => {
         template = `
             <form id="registerForm" action="/register" method="post">
 
-                <div class="form-group col-md-6">
+                <div class="form-group md:col-6">
                     <label class="form-label" for="vatIds">VAT Reg.No.</label>
                     <input type="text" name="vatIds[]" id="vatIds" class="form-name">
                 </div>
@@ -806,7 +806,7 @@ describe('Form country state select plugin', () => {
         template = `
             <form id="registerForm" action="/register" method="post">
 
-                <div class="form-group col-md-6">
+                <div class="form-group md:col-6">
                     <label class="form-label" for="vatIds">VAT Reg.No.</label>
                     <input type="text" name="vatIds[]" id="vatIds" class="form-name">
                 </div>
@@ -838,7 +838,7 @@ describe('Form country state select plugin', () => {
         template = `
             <form id="registerForm" action="/register" method="post">
 
-                <div class="form-group col-md-6">
+                <div class="form-group md:col-6">
                     <label class="form-label" for="vatIds">VAT Reg.No.</label>
                     <input type="text" name="vatIds[]" id="vatIds" class="form-name is-invalid"
                            aria-describedby="vatIdsFeedback" value="DE123456789">
@@ -874,7 +874,7 @@ describe('Form country state select plugin', () => {
         template = `
             <form id="registerForm" class="register-shipping" action="/register" method="post">
 
-                <div class="form-group col-md-6">
+                <div class="form-group md:col-6">
                     <label class="form-label" for="vatIds">VAT Reg.No.</label>
                     <input type="text" name="vatIds[]" id="vatIds" class="form-name">
                 </div>
@@ -903,7 +903,7 @@ describe('Form country state select plugin', () => {
         template = `
             <form id="registerForm" action="/register" method="post">
 
-                <div class="form-group col-md-3">
+                <div class="form-group md:col-3">
                     <label class="form-label" for="addressZipcode">Zip code</label>
                     <input type="text" name="address[zipcode]" id="addressZipcode" data-input-name="zipcodeInput">
                 </div>
@@ -930,7 +930,7 @@ describe('Form country state select plugin', () => {
         template = `
             <form id="registerForm" action="/register" method="post">
 
-                <div class="form-group col-md-3">
+                <div class="form-group md:col-3">
                     <label class="form-label" for="addressZipcode">Zip code</label>
                     <input type="text" name="address[zipcode]" id="addressZipcode" data-input-name="zipcodeInput">
                 </div>
@@ -957,7 +957,7 @@ describe('Form country state select plugin', () => {
         template = `
             <form id="registerForm" action="/register" method="post">
 
-                <div class="form-group col-md-3">
+                <div class="form-group md:col-3">
                     <label class="form-label" for="addressZipcode">Zip code</label>
                     <input type="text" name="address[zipcode]" id="addressZipcode" data-input-name="zipcodeInput">
                 </div>
@@ -1000,7 +1000,7 @@ describe('Form country state select plugin', () => {
         template = `
             <form id="registerForm" action="/register" method="post">
 
-                <div class="form-group col-md-3">
+                <div class="form-group md:col-3">
                     <label class="form-label" for="addressZipcode">Zip code</label>
                     <input type="text" name="address[zipcode]" id="addressZipcode" data-input-name="zipcodeInput">
                 </div>
@@ -1037,7 +1037,7 @@ describe('Form country state select plugin', () => {
         template = `
             <form id="registerForm" action="/register" method="post">
 
-                <div class="form-group col-md-3">
+                <div class="form-group md:col-3">
                     <label class="form-label" for="addressZipcode">Zip code</label>
                     <input type="text" name="address[zipcode]" id="addressZipcode" data-input-name="zipcodeInput"
                            class="form-control is-invalid" aria-describedby="addressZipcodeFeedback" value="12345">
@@ -1073,12 +1073,12 @@ describe('Form country state select plugin', () => {
         template = `
             <form id="registerForm" action="/register" method="post">
 
-                <div class="form-group col-md-3">
+                <div class="form-group md:col-3">
                     <label class="form-label" for="addressCity">City</label>
                     <input type="text" name="address[city]" id="addressCity" required="required">
                 </div>
 
-                <div class="form-group col-md-3">
+                <div class="form-group md:col-3">
                     <label class="form-label" for="addressZipcode">Zip code</label>
                     <input type="text" name="address[zipcode]" id="addressZipcode" data-input-name="zipcodeInput">
                 </div>

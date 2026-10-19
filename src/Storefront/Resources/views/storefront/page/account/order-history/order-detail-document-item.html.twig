@@ -1,7 +1,7 @@
 {% block page_account_order_document_item_detail %}
     <li class="row order-detail-content-row">
         {% block page_account_order_document_item_detail_file_name %}
-            <div class="col-12 col-md-6 document-item document-item-file-name">
+            <div class="col-12 md:col-6 document-item document-item-file-name">
                 {% set isDocumentV2 = document.documentFiles is not empty %}
                 {% set documentFiles = isDocumentV2 ? document.documentFiles|filter(file => file.media is not null) : [document.documentMediaFile, document.documentA11yMediaFile]|filter(media => media is not null) %}
 
@@ -41,7 +41,7 @@
         {% endblock %}
 
         {% block page_account_order_document_item_detail_date %}
-            <div class="col-9 col-md-4 align-content-center document-item document-item-date">
+            <div class="col-9 md:col-4 align-content-center document-item document-item-date">
                 <span class="document-item-date-label visually-hidden">{{ 'account.documentItemColumnDate'|trans|sw_sanitize }}:</span>
                 {{ document.createdAt|format_datetime('medium', 'short', locale=app.request.locale) }}
             </div>

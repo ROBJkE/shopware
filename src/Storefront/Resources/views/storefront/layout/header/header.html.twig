@@ -6,15 +6,15 @@
     {% block layout_header_navigation %}
         <div class="row align-items-center header-row">
             {% block layout_header_logo %}
-                <div class="col-12 col-lg-auto header-logo-col pb-sm-2 my-3 m-lg-0">
+                <div class="col-12 lg:col-auto header-logo-col sm:pb-2 my-3 lg:m-0">
                     {% sw_include '@Storefront/storefront/layout/header/logo.html.twig' %}
                 </div>
             {% endblock %}
 
             {% block layout_header_search %}
-                <div class="col-12 order-2 col-sm order-sm-1 header-search-col">
+                <div class="col-12 order-2 sm:col sm:order-1 header-search-col">
                     <div class="row">
-                        <div class="col-sm-auto d-none d-sm-block d-lg-none">
+                        <div class="sm:col-auto d-none sm:d-block lg:d-none">
                             {% block layout_header_navigation_toggle_tablet %}
                                 <div class="nav-main-toggle">
                                     {% block layout_header_navigation_toggle_tablet_button %}
@@ -40,10 +40,10 @@
             {% endblock %}
 
             {% block layout_header_actions %}
-                <div class="col-12 order-1 col-sm-auto order-sm-2 header-actions-col">
+                <div class="col-12 order-1 sm:col-auto sm:order-2 header-actions-col">
                     <div class="row g-0">
                         {% block layout_header_navigation_toggle %}
-                            <div class="col d-sm-none">
+                            <div class="col sm:d-none">
                                 <div class="menu-button">
                                     {% block layout_header_navigation_toggle_button %}
                                         <button
@@ -62,7 +62,7 @@
                         {% endblock %}
 
                         {% block layout_header_search_toggle %}
-                            <div class="col-auto d-sm-none">
+                            <div class="col-auto sm:d-none">
                                 <div class="search-toggle">
                                     <button class="btn header-actions-btn search-toggle-btn js-search-toggle-btn collapsed"
                                             type="button"
