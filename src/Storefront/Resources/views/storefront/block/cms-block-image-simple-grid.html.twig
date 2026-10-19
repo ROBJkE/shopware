@@ -2,7 +2,7 @@
     {% set columns = 2 %}
 
     {% block block_image_simple_grid_left %}
-        <div class="col-md-6">
+        <div class="md:col-6">
             {% block block_image_simple_grid_left_top %}
                 {% set element = block.slots.getSlot('left-top') %}
 
@@ -22,7 +22,7 @@
     {% endblock %}
 
     {% block block_image_simple_grid_right %}
-        <div class="col-md-6">
+        <div class="md:col-6">
             {% block block_image_simple_grid_right_inner %}
                 {% set element = block.slots.getSlot('right') %}
 

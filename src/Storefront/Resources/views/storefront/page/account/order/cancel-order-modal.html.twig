@@ -7,7 +7,7 @@
         {% set modalId = 'cancelOrderModal-' ~ order.id %}
     {% endif %}
 
-    <div class="modal fade"
+    <dialog class="dialog fade"
          id="{{ modalId }}"
          data-backdrop="static"
          tabindex="-1"
@@ -16,19 +16,19 @@
          aria-hidden="true"
          aria-labelledby="{{ modalId }}-header">
         {% block page_checkout_aside_cancel_order_modal_dialog %}
-            <div class="modal-dialog">
+            <div>
                 {% block page_checkout_aside_cancel_order_modal_content %}
-                    <div class="modal-content">
+                    <div>
                         {% block page_checkout_aside_cancel_order_modal_header %}
-                            <div class="modal-header">
+                            <div class="dialog-header">
                                 {% block page_checkout_aside_cancel_order_modal_header_title %}
-                                    <div id="{{ modalId }}-header" class="modal-title js-pseudo-modal-template-title-element h5">{{ 'account.editOrderCancelOrderModalHeader'|trans|sw_sanitize }}</div>
+                                    <div id="{{ modalId }}-header" class="dialog-title js-pseudo-modal-template-title-element h5">{{ 'account.editOrderCancelOrderModalHeader'|trans|sw_sanitize }}</div>
                                 {% endblock %}
 
                                 {% block page_checkout_aside_cancel_order_modal_header_close_button %}
                                     <button class="btn-close close"
                                             type="button"
-                                            data-bs-dismiss="modal"
+                                            data-bs-dismiss="dialog"
                                             aria-label="{{ 'global.default.close'|trans|striptags }}">
                                     </button>
                                 {% endblock %}
@@ -36,7 +36,7 @@
                         {% endblock %}
 
                         {% block page_checkout_aside_cancel_order_modal_body %}
-                            <div class="modal-body">
+                            <div class="dialog-body">
                                 {% block page_checkout_aside_cancel_order_modal_body_text %}
                                     <p>{{ 'account.editOrderCancelOrderModalBodyText'|trans|sw_sanitize }}</p>
                                 {% endblock %}
@@ -48,7 +48,7 @@
                         {% endblock %}
 
                         {% block page_checkout_aside_cancel_order_modal_footer %}
-                            <div class="modal-footer">
+                            <div class="dialog-footer">
                                 {% block page_checkout_aside_cancel_order_modal_footer_form %}
                                     <form action="{{ path('frontend.account.order.cancel') }}"
                                           method="post">
@@ -73,14 +73,14 @@
                                         {% block page_checkout_aside_cancel_order_modal_header_back_button %}
                                             <button class="btn"
                                                     type="button"
-                                                    data-bs-dismiss="modal">
+                                                    data-bs-dismiss="dialog">
                                                 {{ 'account.editOrderCancelOrderModalFooterButtonBack'|trans|sw_sanitize }}
                                             </button>
                                         {% endblock %}
 
                                         {% block page_checkout_aside_cancel_order_modal_footer_form_button %}
                                             <button type="submit"
-                                                    class="btn btn-primary">
+                                                    class="btn btn-solid theme-primary">
                                                 {{ 'account.editOrderCancelOrderModalFooterButton'|trans|sw_sanitize }}
                                             </button>
                                         {% endblock %}
@@ -92,6 +92,6 @@
                 {% endblock %}
             </div>
         {% endblock %}
-    </div>
+    </dialog>
 {% endblock %}
 

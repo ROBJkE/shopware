@@ -16,7 +16,7 @@
                 itemprop="url"
                 {% endif %}
                 {% if hasChildren %}
-                    data-href="{{ path('frontend.menu.offcanvas', {navigationId: item.category.id}) }}"
+                    data-href="{{ path('frontend.menu.drawer', {navigationId: item.category.id}) }}"
                 {% endif %}
                 {% if item.category.shouldOpenInNewTab %}
                     target="_blank"

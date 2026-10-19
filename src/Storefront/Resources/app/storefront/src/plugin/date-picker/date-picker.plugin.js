@@ -99,7 +99,7 @@ export default class DatePickerPlugin extends Plugin {
     }
 
     /**
-     * Opens the selection modal of the flatpickr instance
+     * Opens the selection dialog of the flatpickr instance
      *
      * @returns {void}
      */
@@ -108,7 +108,7 @@ export default class DatePickerPlugin extends Plugin {
     }
 
     /**
-     * Closes the selection modal of the flatpickr instance
+     * Closes the selection dialog of the flatpickr instance
      *
      * @returns {void}
      */

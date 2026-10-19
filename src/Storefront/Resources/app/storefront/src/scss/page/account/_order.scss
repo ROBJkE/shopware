@@ -1,3 +1,4 @@
+@use 'abstract/bootstrap-mixins' as *;
 .order-table {
     margin-bottom: $spacer-lg;
     border: 1px solid $border-color;

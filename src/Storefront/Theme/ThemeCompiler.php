@@ -7,7 +7,6 @@ use League\Flysystem\FilesystemOperator;
 use League\Flysystem\FilesystemReader;
 use League\Flysystem\Visibility;
 use Psr\Log\LoggerInterface;
-use ScssPhp\ScssPhp\OutputStyle;
 use Shopware\Core\Framework\Adapter\Cache\CacheInvalidator;
 use Shopware\Core\Framework\Adapter\Filesystem\Plugin\CopyBatch;
 use Shopware\Core\Framework\Adapter\Filesystem\Plugin\CopyBatchInput;
@@ -16,11 +15,7 @@ use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\Feature;
 use Shopware\Core\Framework\Log\Package;
 use Shopware\Core\Framework\Uuid\Uuid;
-use Shopware\Storefront\Event\ThemeCompilerConcatenatedStylesEvent;
-use Shopware\Storefront\Theme\Event\ThemeCompilerEnrichScssVariablesEvent;
 use Shopware\Storefront\Theme\Exception\ThemeException;
-use Shopware\Storefront\Theme\StorefrontPluginConfiguration\File;
-use Shopware\Storefront\Theme\StorefrontPluginConfiguration\FileCollection;
 use Shopware\Storefront\Theme\StorefrontPluginConfiguration\StorefrontPluginConfiguration;
 use Shopware\Storefront\Theme\StorefrontPluginConfiguration\StorefrontPluginConfigurationCollection;
 use Shopware\Storefront\Theme\Validator\SCSSValidator;
@@ -56,8 +51,17 @@ class ThemeCompiler implements ThemeCompilerInterface
         private readonly FilesystemOperator $tempFilesystem,
         private readonly FilesystemOperator $assetFilesystem,
         private readonly CopyBatchInputFactory $copyBatchInputFactory,
+        /**
+         * @phpstan-ignore property.onlyWritten (Style compilation no longer resolves SCSS files. The argument stays for dependency injection.)
+         */
         private readonly ThemeFileResolver $themeFileResolver,
+        /**
+         * @phpstan-ignore property.onlyWritten (SCSS output style is no longer selected here.)
+         */
         private readonly bool $debug,
+        /**
+         * @phpstan-ignore property.onlyWritten (ThemeCompilerEnrichScssVariablesEvent and ThemeCompilerConcatenatedStylesEvent are no longer dispatched.)
+         */
         private readonly EventDispatcherInterface $eventDispatcher,
         private readonly ThemeFilesystemResolver $themeFilesystemResolver,
         iterable $packages,
@@ -80,14 +84,9 @@ class ThemeCompiler implements ThemeCompilerInterface
         bool $withAssets,
         Context $context
     ): void {
-        // Normal style files. Loaded for usual pages.
-        $compiledStyles = $this->getCompiledStyles(
-            $this->getResolvedStyleFiles($themeConfig, $configurationCollection),
-            $themeId,
-            $themeConfig,
-            $salesChannelId,
-            $context
-        );
+        // Fail before the previous theme directory is removed.
+        $stylesheetPath = $this->locateWebpackStylesheet($themeConfig, $themeId);
+        $this->validateThemeFields($themeConfig, $themeId);
 
         $newThemeHash = Uuid::randomHex();
         $themePrefix = $this->themePathBuilder->generateNewPath($salesChannelId, $themeId, $newThemeHash);
@@ -102,7 +101,7 @@ class ThemeCompiler implements ThemeCompilerInterface
         }
 
         try {
-            $styleCopyFiles = $this->getStyleCopyFiles($themePrefix, $compiledStyles);
+            $styleCopyFiles = $this->getStyleCopyFiles($themePrefix, $stylesheetPath);
 
             $assetCopyFiles = [];
             $staleAssetFiles = [];
@@ -591,53 +590,6 @@ class ThemeCompiler implements ThemeCompilerInterface
         return array_values($collected);
     }
 
-    /**
-     * @param array<string, string> $resolveMappings
-     */
-    private function compileStyles(
-        string $concatenatedStyles,
-        StorefrontPluginConfiguration $configuration,
-        array $resolveMappings,
-        string $salesChannelId,
-        string $themeId,
-        Context $context
-    ): string {
-        try {
-            $variables = $this->dumpVariables($configuration->getThemeConfig() ?? [], $themeId, $salesChannelId, $context);
-            $features = $this->getFeatureConfigScssMap();
-            $resolveImportPath = $this->getResolveImportPathsCallback($resolveMappings);
-
-            $importPaths = [];
-
-            $cwd = \getcwd();
-            if ($cwd !== false) {
-                $importPaths[] = $cwd;
-            }
-
-            $importPaths[] = $resolveImportPath;
-
-            $compilerConfig = new CompilerConfiguration(
-                [
-                    'importPaths' => $importPaths,
-                    'outputStyle' => $this->debug ? OutputStyle::EXPANDED : OutputStyle::COMPRESSED,
-                ]
-            );
-
-            $cssOutput = $this->scssCompiler->compileString(
-                $compilerConfig,
-                $features . $variables . $concatenatedStyles
-            );
-        } catch (\Throwable $exception) {
-            throw ThemeException::themeCompileException(
-                $configuration->getTechnicalName() . ' - Theme-ID: ' . $themeId,
-                $exception->getMessage(),
-                $exception,
-            );
-        }
-
-        return $cssOutput;
-    }
-
     private function getImportFileExtension(string $extension): string
     {
         // If the import has no extension, it must be a SCSS module.
@@ -655,60 +607,30 @@ class ThemeCompiler implements ThemeCompilerInterface
     }
 
     /**
-     * Converts the feature config array to a SCSS map syntax.
-     * This allows reading of the feature flag config inside SCSS via `map.get` function.
-     *
-     * Output example:
-     * $sw-features: ("FEATURE_NEXT_1234": false, "FEATURE_NEXT_1235": true);
-     *
-     * @see https://sass-lang.com/documentation/values/maps
+     * Webpack emits one Storefront stylesheet. Theme compilation copies that file.
      */
-    private function getFeatureConfigScssMap(): string
+    private function locateWebpackStylesheet(StorefrontPluginConfiguration $themeConfig, string $themeId): string
     {
-        $allFeatures = Feature::getAll();
+        $filesystem = $this->themeFilesystemResolver->getFilesystemForStorefrontConfig(new StorefrontPluginConfiguration('Storefront'));
+        $relativePath = 'Resources/app/storefront/dist/css/storefront.css';
 
-        $featuresScss = implode(',', array_map(static fn ($value, $key) => \sprintf('"%s": %s', $key, json_encode($value, \JSON_THROW_ON_ERROR)), $allFeatures, array_keys($allFeatures)));
+        if (!$filesystem->hasFile($relativePath)) {
+            throw ThemeException::themeCompileException(
+                $themeConfig->getTechnicalName() . ' - Theme-ID: ' . $themeId,
+                'The storefront stylesheet "dist/css/storefront.css" is missing. Run the storefront build (`bin/build-storefront.sh` or `composer build:js:storefront`).',
+            );
+        }
 
-        return \sprintf('$sw-features: (%s);', $featuresScss);
+        return $filesystem->path($relativePath);
     }
 
-    /**
-     * Creates the strings that will be written to the SCSS file.
-     * If variables have no or nullish value they will be written as "null" in SCSS.
-     *
-     * @param array<string, string|int|null> $variables
-     *
-     * @return array<string>
-     */
-    private function formatVariables(array $variables): array
+    private function validateThemeFields(StorefrontPluginConfiguration $configuration, string $themeId): void
     {
-        return array_map(static fn ($value, $key) => \sprintf(
-            '$%s: %s;',
-            $key,
-            isset($value) && $value !== '' ? $value : 'null'
-        ), $variables, array_keys($variables));
-    }
+        if (!$this->validate) {
+            return;
+        }
 
-    /**
-     * @param array{
-     *     fields?: array<string, array{
-     *         value?: array<mixed>|bool|float|int|string|null,
-     *         scss?: bool|null,
-     *         type?: string|null,
-     *         ...<string, mixed>
-     *     }>,
-     *     ...<string, mixed>
-     * } $config
-     *
-     * @throws FilesystemException
-     */
-    private function dumpVariables(array $config, string $themeId, string $salesChannelId, Context $context): string
-    {
-        $variables = [
-            'theme-id' => $themeId,
-        ];
-
-        foreach ($config['fields'] ?? [] as $key => $data) {
+        foreach (($configuration->getThemeConfig() ?? [])['fields'] ?? [] as $data) {
             if (
                 !\is_array($data)
                 || (\array_key_exists('scss', $data) && $data['scss'] === false)
@@ -717,151 +639,34 @@ class ThemeCompiler implements ThemeCompilerInterface
                 continue;
             }
 
-            if ($this->validate) {
-                $data['value'] = SCSSValidator::validate($this->scssCompiler, $data, $this->customAllowedRegex, true);
-            }
-
-            if (!\array_key_exists('value', $data)) {
-                // If a variable does not exist, it should still be written with a null value.
-                $variables[$key] = null;
-                continue;
-            }
-
-            if (
-                \in_array($data['type'], ['media', 'textarea', 'url'], true)
-                && \is_string($data['value'])
-                && !\str_starts_with($data['value'], '\'')
-                && !\str_ends_with($data['value'], '\'')
-            ) {
-                $variables[$key] = '\'' . $data['value'] . '\'';
-            } elseif ($data['type'] === 'switch' || $data['type'] === 'checkbox') {
-                $variables[$key] = (int) $data['value'];
-            } elseif (!\is_array($data['value'])) {
-                $variables[$key] = (string) $data['value'];
+            try {
+                SCSSValidator::validate($this->scssCompiler, $data, $this->customAllowedRegex, true);
+            } catch (\Throwable $exception) {
+                throw ThemeException::themeCompileException(
+                    $configuration->getTechnicalName() . ' - Theme-ID: ' . $themeId,
+                    $exception->getMessage(),
+                    $exception,
+                );
             }
         }
-
-        foreach ($this->packages as $key => $package) {
-            $variables[\sprintf('sw-asset-%s-url', $key)] = \sprintf('\'%s\'', $package->getUrl(''));
-        }
-
-        $themeVariablesEvent = new ThemeCompilerEnrichScssVariablesEvent(
-            $variables,
-            $salesChannelId,
-            $context
-        );
-
-        $this->eventDispatcher->dispatch($themeVariablesEvent);
-
-        $dump = str_replace(
-            ['#class#', '#variables#'],
-            [self::class, implode(\PHP_EOL, $this->formatVariables($themeVariablesEvent->getVariables()))],
-            $this->getVariableDumpTemplate()
-        );
-
-        $this->tempFilesystem->write('theme-variables.scss', $dump);
-        $this->tempFilesystem->write('theme-variables/' . $themeId . '.scss', $dump);
-
-        return $dump;
-    }
-
-    private function getVariableDumpTemplate(): string
-    {
-        return <<<PHP_EOL
-// ATTENTION! This file is auto generated by the #class# and should not be edited.
-
-#variables#
-
-PHP_EOL;
-    }
-
-    private function concatenateStyles(
-        FileCollection $styleFiles,
-        string $salesChannelId
-    ): string {
-        $styles = $styleFiles->map(static fn (File $file) => \sprintf('@import \'%s\';', $file->getFilepath()));
-
-        $concatenatedStylesEvent = new ThemeCompilerConcatenatedStylesEvent(
-            implode("\n", $styles),
-            $salesChannelId
-        );
-        $this->eventDispatcher->dispatch($concatenatedStylesEvent);
-
-        return $concatenatedStylesEvent->getConcatenatedStyles();
-    }
-
-    private function getResolvedStyleFiles(
-        StorefrontPluginConfiguration $themeConfig,
-        StorefrontPluginConfigurationCollection $configurationCollection,
-    ): FileCollection {
-        try {
-            return $this->themeFileResolver->resolveStyleFiles($themeConfig, $configurationCollection, false);
-        } catch (\Throwable $e) {
-            throw ThemeException::themeCompileException(
-                $themeConfig->getName() ?? '',
-                'Files could not be resolved with error: ' . $e->getMessage(),
-                $e
-            );
-        }
-    }
-
-    /**
-     * Concatenates all files of the provided collection and compiles the styles.
-     */
-    private function getCompiledStyles(
-        FileCollection $styleFiles,
-        string $themeId,
-        StorefrontPluginConfiguration $themeConfig,
-        string $salesChannelId,
-        Context $context,
-    ): string {
-        try {
-            $concatenatedStyles = $this->concatenateStyles($styleFiles, $salesChannelId);
-        } catch (\Throwable $e) {
-            throw ThemeException::themeCompileException(
-                $themeConfig->getName() ?? '',
-                'Error while trying to concatenate Styles: ' . $e->getMessage(),
-                $e
-            );
-        }
-
-        return $this->compileStyles(
-            $concatenatedStyles,
-            $themeConfig,
-            $styleFiles->getResolveMappings(),
-            $salesChannelId,
-            $themeId,
-            $context
-        );
     }
 
     /**
      * @return list<CopyBatchInput>
      */
-    private function getStyleCopyFiles(
-        string $themePrefix,
-        string $compiled,
-        string $fileName = 'all.css'
-    ): array {
+    private function getStyleCopyFiles(string $themePrefix, string $stylesheetPath): array
+    {
         $compileLocation = 'theme' . \DIRECTORY_SEPARATOR . $themePrefix;
 
-        $tempStream = fopen('php://temp', 'rwb');
-
-        \assert(\is_resource($tempStream));
-        fwrite($tempStream, $compiled);
-        rewind($tempStream);
-
-        $files = [
+        return [
             new CopyBatchInput(
-                $tempStream,
+                $stylesheetPath,
                 [
-                    $compileLocation . \DIRECTORY_SEPARATOR . 'css' . \DIRECTORY_SEPARATOR . $fileName,
+                    $compileLocation . \DIRECTORY_SEPARATOR . 'css' . \DIRECTORY_SEPARATOR . 'all.css',
                 ],
                 $this->visibility
             ),
         ];
-
-        return $files;
     }
 
     /**

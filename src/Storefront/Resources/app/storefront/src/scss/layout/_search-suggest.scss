@@ -3,6 +3,7 @@ Search suggest
 ==================================================
 Contains styles for the search suggest popover in the shop header.
 */
+@use 'abstract/bootstrap-mixins' as *;
 
 .search-suggest-container {
     position: absolute;

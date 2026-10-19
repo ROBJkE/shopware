@@ -29,7 +29,7 @@ describe('HtmlOffcanvas tests', () => {
         expect(HtmlOffcanvas.exists()).toBe(true);
 
         // Ensure content from DOM is injected into Offcanvas
-        expect(document.querySelector('.offcanvas').innerHTML).toBe('<p>Super interesting content</p>');
+        expect(document.querySelector('.drawer').innerHTML).toBe('<p>Super interesting content</p>');
     });
 
     it('should error when element cannot be found by selector', () => {

@@ -3,6 +3,7 @@ CMS elements
 ==============================================
 General styling for cms elements
 */
+@use 'abstract/bootstrap-mixins' as *;
 
 .cms-element-image,
 .cms-element-video {

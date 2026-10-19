@@ -25,7 +25,7 @@ export default class ImageZoomPlugin extends Plugin {
         zoomSteps: 5,
 
         /**
-         * selector for the zoom modal
+         * selector for the zoom dialog
          *
          * @type string
          */

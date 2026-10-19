@@ -10,7 +10,7 @@ $box-standard-height-img: 200px;
     // Do not expand the Bootstrap `stretched-link` pseudo element over the entire product card.
     // By giving it the image height, only the image itself is linked and the remaining content is still selectable.
     &.box-wishlist .stretched-link::after {
-        height: calc(#{$box-standard-height-img} + var(--#{$prefix}card-spacer-y));
+        height: calc(#{$box-standard-height-img} + var(--card-spacer-y));
     }
 }
 
@@ -82,12 +82,12 @@ $box-standard-height-img: 200px;
     }
 
     &-btn {
-        --#{$prefix}btn-border-radius: 50%;
-        --#{$prefix}btn-border-width: 0;
-        --#{$prefix}btn-padding-x: 0.5rem;
-        --#{$prefix}btn-padding-y: 0.5rem;
-        --#{$prefix}btn-color: var(--#{$prefix}gray-800);
-        --#{$prefix}btn-focus-box-shadow: #{$input-btn-focus-box-shadow};
+        --btn-border-radius: 50%;
+        --btn-border-width: 0;
+        --btn-padding-x: 0.5rem;
+        --btn-padding-y: 0.5rem;
+        --btn-color: var(--gray-800);
+        --btn-focus-box-shadow: #{$input-btn-focus-box-shadow};
         height: 40px;
         width: 40px;
     }

@@ -3,6 +3,7 @@ Header minimal
 ==================================================
 Contains custom styles for the minimal header which is used on checkout pages.
 */
+@use 'abstract/bootstrap-mixins' as *;
 
 .header-minimal {
     background: $white;

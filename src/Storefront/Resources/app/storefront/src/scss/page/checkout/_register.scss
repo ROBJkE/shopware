@@ -1,3 +1,4 @@
+@use 'abstract/bootstrap-mixins' as *;
 .is-act-checkoutregisterpage, // @deprecated tag:v6.8.0 - Body class `is-act-checkoutregisterpage` will be removed, use active route class `is-active-route-frontend-checkout-register-page` instead.
 .is-active-route-frontend-checkout-register-page {
     .checkout {

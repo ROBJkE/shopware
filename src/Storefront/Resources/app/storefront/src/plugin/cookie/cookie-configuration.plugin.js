@@ -23,7 +23,7 @@
  * Event handlers:
  * Applies its "openOffCanvas"-eventHandler to:
  * 1) '.js-cookie-configuration-button button'
- * 2) `[href="${window.router['frontend.cookie.offcanvas']}"]`
+ * 2) `[href="${window.router['frontend.cookie.drawer']}"]`
  * Can be opened manually using the public method "openOffCanvas"
  *
  * Events:
@@ -63,12 +63,12 @@ export default class CookieConfiguration extends Plugin {
         globalButtonAcceptAllSelector: '.js-cookie-accept-all-button',
         globalButtonPermissionSelector: '.js-cookie-permission-button',
         parentInputSelector: '.offcanvas-cookie-parent-input',
-        customLinkSelector: `[href="${window.router['frontend.cookie.offcanvas']}"]`,
+        customLinkSelector: `[href="${window.router['frontend.cookie.drawer']}"]`,
         entriesActiveClass: 'offcanvas-cookie-entries--active',
         entriesClass: 'offcanvas-cookie-entries',
         groupClass: 'offcanvas-cookie-group',
         parentInputClass: 'offcanvas-cookie-parent-input',
-        // Consent offcanvas selectors
+        // Consent drawer selectors
         consentAcceptButtonSelector: '.js-wishlist-cookie-accept',
         consentLoginButtonSelector: '.js-wishlist-login',
         consentCancelButtonSelector: '.js-wishlist-cookie-offcanvas-cancel',
@@ -148,7 +148,7 @@ export default class CookieConfiguration extends Plugin {
         this._delegatedEventHandler = (event) => {
             const target = event.target;
 
-            // Check for custom link (e.g., cookie offcanvas link)
+            // Check for custom link (e.g., cookie drawer link)
             const customLink = target.closest(customLinkSelector);
             if (customLink) {
                 this._handleCustomLink(event);
@@ -215,7 +215,7 @@ export default class CookieConfiguration extends Plugin {
     }
 
     /**
-     * Handles all click events within the offcanvas using event delegation
+     * Handles all click events within the drawer using event delegation
      * This prevents memory leaks and duplicate event listeners
      *
      * @param {Event} event
@@ -249,7 +249,7 @@ export default class CookieConfiguration extends Plugin {
     }
 
     /**
-     * Handle custom link clicks (e.g., cookie offcanvas links)
+     * Handle custom link clicks (e.g., cookie drawer links)
      * Prevents default behavior only for normal left-clicks, allows middle-click and Ctrl/Cmd+click for new tabs
      *
      * @param event
@@ -573,7 +573,7 @@ export default class CookieConfiguration extends Plugin {
         const { lastState } = this;
         const updated = {};
 
-        // When accepting all cookies from the cookie bar, the offcanvas was never opened
+        // When accepting all cookies from the cookie bar, the drawer was never opened
         // and therefore lastState is empty. Treat all cookies as changed in that case.
         if (this._isLastStateEmpty()) {
             active.forEach(cookie => { updated[cookie] = true; });
@@ -604,7 +604,7 @@ export default class CookieConfiguration extends Plugin {
      */
     openOffCanvas(callback = null) {
         const { offCanvasPosition } = this.options;
-        const url = window.router['frontend.cookie.offcanvas'];
+        const url = window.router['frontend.cookie.drawer'];
 
         this._hideCookieBar();
 
@@ -656,7 +656,7 @@ export default class CookieConfiguration extends Plugin {
     }
 
     /**
-     * Register listener for offcanvas close events
+     * Register listener for drawer close events
      * @private
      */
     _registerOffCanvasCloseListener() {
@@ -700,7 +700,7 @@ export default class CookieConfiguration extends Plugin {
     }
 
     /**
-     * Opens a feature-specific consent offcanvas
+     * Opens a feature-specific consent drawer
      *
      * @param {string} route
      * @param {string} cookieName
@@ -714,21 +714,21 @@ export default class CookieConfiguration extends Plugin {
 
         AjaxOffCanvas.open(route, false, () => {
             window.PluginManager.initializePlugins();
-            const offcanvas = document.querySelector('.offcanvas');
-            if (!offcanvas){
+            const drawer = document.querySelector('.drawer');
+            if (!drawer){
                 return;
             }
-            this._registerConsentOffcanvasEvents(offcanvas, cookieName);
+            this._registerConsentOffcanvasEvents(drawer, cookieName);
         }, 'left');
     }
 
     /**
-     * Register event listeners for the consent offcanvas
+     * Register event listeners for the consent drawer
      *
-     * @param {HTMLElement} offcanvas
+     * @param {HTMLElement} drawer
      * @param {string} cookieName
      */
-    _registerConsentOffcanvasEvents(offcanvas, cookieName) {
+    _registerConsentOffcanvasEvents(drawer, cookieName) {
         const {
             consentAcceptButtonSelector,
             consentLoginButtonSelector,
@@ -736,22 +736,22 @@ export default class CookieConfiguration extends Plugin {
             consentPreferencesButtonSelector,
         } = this.options;
 
-        const acceptBtn = offcanvas.querySelector(consentAcceptButtonSelector);
+        const acceptBtn = drawer.querySelector(consentAcceptButtonSelector);
         if (acceptBtn) {
             acceptBtn.addEventListener('click', this._onAccept.bind(this, cookieName));
         }
 
-        const loginBtn = offcanvas.querySelector(consentLoginButtonSelector);
+        const loginBtn = drawer.querySelector(consentLoginButtonSelector);
         if (loginBtn) {
             loginBtn.addEventListener('click', this._onLogin.bind(this));
         }
 
-        const cancelBtn = offcanvas.querySelector(consentCancelButtonSelector);
+        const cancelBtn = drawer.querySelector(consentCancelButtonSelector);
         if (cancelBtn) {
             cancelBtn.addEventListener('click', this._onCancel.bind(this));
         }
 
-        const prefBtn = offcanvas.querySelector(consentPreferencesButtonSelector);
+        const prefBtn = drawer.querySelector(consentPreferencesButtonSelector);
         if (prefBtn) {
             prefBtn.addEventListener('click', this._onPreferences.bind(this));
         }
@@ -982,7 +982,7 @@ export default class CookieConfiguration extends Plugin {
 
     /**
      * Event handler for the 'Allow all'-button in the off canvas view.
-     * Uses the API endpoint to fetch and accept all cookies, then closes the offcanvas.
+     * Uses the API endpoint to fetch and accept all cookies, then closes the drawer.
      *
      * @private
      */
@@ -1030,7 +1030,7 @@ export default class CookieConfiguration extends Plugin {
     }
 
     /**
-     * Returns the current offcanvas element if available
+     * Returns the current drawer element if available
      *
      * @returns {*}
      * @private
@@ -1080,11 +1080,11 @@ export default class CookieConfiguration extends Plugin {
         e.preventDefault();
         AjaxOffCanvas.close();
         this.openOffCanvas(() => {
-            const offcanvasElement = document.querySelector('.offcanvas');
+            const offcanvasElement = document.querySelector('.drawer');
             if (!offcanvasElement) {
                 return;
             }
-            offcanvasElement.addEventListener('hidden.bs.offcanvas',
+            offcanvasElement.addEventListener('hidden.bs.drawer',
                 this._restoreFocus.bind(this),
                 { once: true },
             );
@@ -1092,7 +1092,7 @@ export default class CookieConfiguration extends Plugin {
     }
 
     /**
-     * Restores focus to the element that triggered the consent offcanvas (e.g., add-to-wishlist button)
+     * Restores focus to the element that triggered the consent drawer (e.g., add-to-wishlist button)
      * @private
      */
     _restoreFocus() {

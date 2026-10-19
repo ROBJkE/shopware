@@ -1,3 +1,7 @@
+import Menu from 'bootstrap/js/dist/menu.js';
+import Popover from 'bootstrap/js/dist/popover.js';
+import Tooltip from 'bootstrap/js/dist/tooltip.js';
+
 const TOOLTIP_SELECTOR = '[data-bs-toggle="tooltip"]';
 const POPOVER_SELECTOR = '[data-bs-toggle="popover"]';
 
@@ -11,7 +15,7 @@ export default class BootstrapUtil {
      * @see https://getbootstrap.com/docs/5.2/components/tooltips/#enable-tooltips
      */
     static initTooltip() {
-        return new bootstrap.Tooltip(document.body, {
+        return new Tooltip(document.body, {
             selector: TOOLTIP_SELECTOR,
         });
     }
@@ -21,7 +25,7 @@ export default class BootstrapUtil {
      * @see https://getbootstrap.com/docs/5.2/components/popovers/#enable-popovers
      */
     static initPopover() {
-        new bootstrap.Popover(document.querySelector('html'), {
+        new Popover(document.querySelector('html'), {
             selector: POPOVER_SELECTOR,
             trigger: 'focus',
         });
@@ -32,7 +36,7 @@ export default class BootstrapUtil {
      * @see https://getbootstrap.com/docs/5.3/components/dropdowns/#options
      */
     static setDropdownDefaultOffset() {
-        bootstrap.Dropdown.Default.offset = [0, 6];
+        Menu.Default.offset = [0, 6];
     }
 
     static initBootstrapPlugins() {

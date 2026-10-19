@@ -73,6 +73,7 @@ module.exports = {
     // This option allows the use of a custom resolver.
     moduleNameMapper: {
         '^src/(.*)$': '<rootDir>/src/$1',
+        '\\.(scss|css)$': '<rootDir>/test/styleMock.js',
     },
 
     reporters: [
@@ -91,9 +92,30 @@ module.exports = {
     ],
 
     transform: {
-        '^.+\\.(t|j)s$': 'babel-jest',
+        // Bootstrap 6 is ESM. Jest needs CommonJS even when browserslist targets native modules.
+        '^.+\\.(t|j)s$': ['babel-jest', {
+            babelrc: false,
+            configFile: false,
+            presets: [
+                ['@babel/preset-env', {
+                    useBuiltIns: 'entry',
+                    corejs: '3.34.0',
+                    bugfixes: true,
+                    modules: 'commonjs',
+                }],
+                '@babel/preset-typescript',
+            ],
+            plugins: [
+                ['@babel/plugin-proposal-decorators', { version: '2023-01' }],
+            ],
+        }],
         '^.+\\.html$': '<rootDir>/text.loader.js',
     },
+
+    // Bootstrap 6 and Floating UI are ESM.
+    transformIgnorePatterns: [
+        '/node_modules/(?!(bootstrap|@floating-ui)/)',
+    ],
 
     setupFilesAfterEnv: [
         '<rootDir>/jest.init.js',

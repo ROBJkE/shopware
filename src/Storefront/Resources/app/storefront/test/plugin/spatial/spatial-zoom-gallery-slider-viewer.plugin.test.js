@@ -36,13 +36,13 @@ describe('SpatialZoomGallerySliderViewerPlugin tests', function () {
             </div>
         `;
 
-        const modal = document.querySelector('.zoom-modal');
-        modal.show = jest.fn(() => {
-            modal.dispatchEvent(new Event('shown.bs.modal', { bubbles: true }));
+        const dialog = document.querySelector('.zoom-modal');
+        dialog.show = jest.fn(() => {
+            dialog.dispatchEvent(new Event('shown.bs.dialog', { bubbles: true }));
         });
 
-        modal.hide = jest.fn(() => {
-            modal.dispatchEvent(new Event('hidden.bs.modal', { bubbles: true }));
+        dialog.hide = jest.fn(() => {
+            dialog.dispatchEvent(new Event('hidden.bs.dialog', { bubbles: true }));
         });
 
         spatialZoomGallerySliderViewerPlugin = new SpatialZoomGallerySliderViewerPlugin(mockElement, options);
@@ -105,20 +105,20 @@ describe('SpatialZoomGallerySliderViewerPlugin tests', function () {
         expect(grandParent.classList.contains('gallery-slider-canvas-disabled')).toBe(true);
     });
 
-    test('should start and stop rendering when showing and hiding the modal', async () => {
+    test('should start and stop rendering when showing and hiding the dialog', async () => {
         await spatialZoomGallerySliderViewerPlugin.initViewer();
 
         spatialZoomGallerySliderViewerPlugin.dive = mockDive;
 
         const modalWrapper = document.querySelector('.zoom-modal-wrapper');
-        const modal = modalWrapper?.querySelector('.zoom-modal');
-        modal.show();
+        const dialog = modalWrapper?.querySelector('.zoom-modal');
+        dialog.show();
 
         await process.nextTick(() => {});
 
         expect(mockDive.startAsync).toHaveBeenCalled();
 
-        modal.hide();
+        dialog.hide();
 
         await process.nextTick(() => {});
 

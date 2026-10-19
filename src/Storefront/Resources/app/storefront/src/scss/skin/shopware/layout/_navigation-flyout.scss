@@ -3,6 +3,7 @@ Navigation flyout
 ==============================================
 Custom skin styling for navigation flyout which opens on hover over the main navigation.
 */
+@use 'abstract/bootstrap-mixins' as *;
 
 .navigation-flyout-categories {
     &:not(.is-level-0) {

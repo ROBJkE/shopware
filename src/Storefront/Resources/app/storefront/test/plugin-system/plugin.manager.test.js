@@ -771,7 +771,7 @@ describe('Plugin manager', () => {
         });
 
         it('should apply the override when the plugin is initialized within a parent element', async () => {
-            // The path taken for AJAX loaded content, e.g. an offcanvas or a reloaded listing.
+            // The path taken for AJAX loaded content, e.g. an drawer or a reloaded listing.
             document.body.innerHTML = '<div id="ajax-content"><div data-overridable-cart="true"></div></div>';
 
             PluginManager.register('OverridableCart', coreImport, '[data-overridable-cart]');

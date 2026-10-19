@@ -159,7 +159,7 @@
             {% endif %}
 
             {% set galleryZoomSliderOptions = {
-                baseSliderWrapperClass: 'modal-body'
+                baseSliderWrapperClass: 'dialog-body'
             } %}
 
             {% if hasSpatialMedia %}
@@ -204,7 +204,7 @@
                      tabindex="0"
                 >
                     {% block element_image_gallery_inner_col %}
-                        <div class="gallery-slider-col{% if galleryPosition == 'left' %} col order-1 order-md-2{% elseif galleryPosition == 'underneath' %} col-12 order-1{% endif %}"
+                        <div class="gallery-slider-col{% if galleryPosition == 'left' %} col order-1 md:order-2{% elseif galleryPosition == 'underneath' %} col-12 order-1{% endif %}"
                              {% if zoomModal %}data-zoom-modal="true"{% endif %}>
                             {# option "magnifierOverGallery" shows zoom container over gallery #}
                             <div class="base-slider gallery-slider{% if navigationArrows == 'outside' %} has-nav-outside{% endif %}{% if navigationDots == 'outside' %} has-dots-outside{% endif %}{% if magnifierOverGallery %} js-magnifier-zoom-image-container{% endif %}">
@@ -230,7 +230,7 @@
                                                                         {% if image.isSpatial() %}
                                                                             {% block element_image_gallery_inner_item_spatial %}
                                                                                  {% block element_image_gallery_inner_item_spatial_loader %}
-                                                                                     <span class="badge bg-secondary m-3 position-absolute top-0 end-0 d-md-none">3D</span>
+                                                                                     <span class="badge bg-secondary m-3 position-absolute top-0 end-0 md:d-none">3D</span>
                                                                                      <div class="spatial-canvas-spinner position-absolute top-50 start-50 bg-white flex justify-content-center align-items-center" style="--bs-bg-opacity: .8;">
                                                                                          <div class="spinner-border" role="status">
                                                                                              <span class="visually-hidden">Loading...</span>
@@ -252,7 +252,7 @@
                                                                                         {% endblock %}
 
                                                                                         <div class="spatial-anim-container position-absolute start-0 top-0 p-1 gap-2 d-flex">
-                                                                                            <button class="btn btn-outline-light spatial-anim-button position-relative text-center mx-0 p-0 visually-hidden" aria-label="{{ 'spatial.animation.toggle'|trans|striptags }}">
+                                                                                            <button class="btn btn-outline theme-light spatial-anim-button position-relative text-center mx-0 p-0 visually-hidden" aria-label="{{ 'spatial.animation.toggle'|trans|striptags }}">
                                                                                                 <svg class="spatial-anim-button-circle position-absolute end-0 top-0">
                                                                                                     <circle r="calc(50% - (var(--stroke-width) / 2))" cx="50%" cy="50%"></circle>
                                                                                                 </svg>
@@ -413,7 +413,7 @@
                                                         {% if image.isSpatial() %}
                                                             {% block element_image_gallery_inner_single_spatial %}
                                                                 {% block element_image_gallery_inner_single_spatial_loader %}
-                                                                    <span class="badge bg-secondary m-3 position-absolute top-0 end-0 d-md-none">3D</span>
+                                                                    <span class="badge bg-secondary m-3 position-absolute top-0 end-0 md:d-none">3D</span>
                                                                     <div class="spatial-canvas-spinner position-absolute top-50 start-50 bg-white flex justify-content-center align-items-center" style="--bs-bg-opacity: .8;">
                                                                         <div class="spinner-border" role="status">
                                                                             <span class="visually-hidden">Loading...</span>
@@ -436,7 +436,7 @@
                                                                         {% endblock %}
 
                                                                         <div class="spatial-anim-container position-absolute start-0 top-0 p-1 gap-2 d-flex">
-                                                                            <button class="btn btn-outline-light spatial-anim-button position-relative text-center mx-0 p-0 visually-hidden" aria-label="{{ 'spatial.animation.toggle'|trans|striptags }}">
+                                                                            <button class="btn btn-outline theme-light spatial-anim-button position-relative text-center mx-0 p-0 visually-hidden" aria-label="{{ 'spatial.animation.toggle'|trans|striptags }}">
                                                                                 <svg class="spatial-anim-button-circle position-absolute end-0 top-0">
                                                                                     <circle r="calc(50% - (var(--stroke-width) / 2))" cx="50%" cy="50%"></circle>
                                                                                 </svg>
@@ -577,7 +577,7 @@
 
                     {% block element_image_gallery_inner_thumbnails_col %}
                         {% if imageCount > 1 %}
-                            <div class="gallery-slider-thumbnails-col{% if galleryPosition == 'left' %} col-0 col-md-auto order-2 order-md-1 is-left{% elseif galleryPosition == 'underneath' %} col-12 order-2 is-underneath{% endif %}">
+                            <div class="gallery-slider-thumbnails-col{% if galleryPosition == 'left' %} col-0 md:col-auto order-2 md:order-1 is-left{% elseif galleryPosition == 'underneath' %} col-12 order-2 is-underneath{% endif %}">
                                 <div class="gallery-slider-thumbnails-container{% if galleryPosition == 'underneath' %} is-underneath{% endif %}">
                                     {% block element_image_gallery_inner_thumbnails %}
                                         <div class="gallery-slider-thumbnails{% if galleryPosition == 'underneath' %} is-underneath{% endif %}"
@@ -692,7 +692,7 @@
                         {% if zoomModal %}
                             <div class="zoom-modal-wrapper">
                                 {% block element_image_gallery_inner_zoom_modal %}
-                                    <div class="modal is-fullscreen zoom-modal js-zoom-modal{% if imageCount is same as(1) %} no-thumbnails{% endif %}"
+                                    <dialog class="dialog is-fullscreen zoom-modal js-zoom-modal{% if imageCount is same as(1) %} no-thumbnails{% endif %}"
                                          data-bs-backdrop="false"
                                          data-image-zoom-modal="true"
                                          tabindex="-1"
@@ -701,13 +701,13 @@
                                          aria-hidden="true"
                                          aria-label="{{ 'component.cms.imageGallery.ariaLabel'|trans|striptags }}">
                                         {% block element_image_gallery_inner_zoom_modal_dialog %}
-                                            <div class="modal-dialog">
+                                            <div>
                                                 {% block element_image_gallery_inner_zoom_modal_content %}
-                                                    <div class="modal-content"{% if imageCount > 1 %} data-modal-gallery-slider="true" data-gallery-slider-options="{{ galleryZoomSliderOptions|json_encode }}" {% endif %}>
+                                                    <div {% if imageCount > 1 %} data-modal-gallery-slider="true" data-gallery-slider-options="{{ galleryZoomSliderOptions|json_encode }}" {% endif %}>
                                                         {% block element_image_gallery_inner_zoom_modal_close_button %}
                                                             <button type="button"
                                                                     class="btn-close close"
-                                                                    data-bs-dismiss="modal"
+                                                                    data-bs-dismiss="dialog"
                                                                     aria-label="{{ 'global.default.close'|trans|striptags }}">
                                                                 {% block element_image_gallery_inner_zoom_modal_close_icon %}
                                                                 {% endblock %}
@@ -715,14 +715,14 @@
                                                         {% endblock %}
 
                                                         {% block element_image_gallery_inner_zoom_modal_body %}
-                                                            <div class="modal-body">
+                                                            <div class="dialog-body">
                                                                 {% block element_image_gallery_inner_zoom_modal_action_buttons %}
                                                                     <div class="zoom-modal-actions btn-group"
                                                                          role="group"
                                                                          aria-label="zoom actions">
                                                                         {% block element_image_gallery_inner_zoom_modal_action_zoom_out %}
                                                                             <button type="button"
-                                                                                    class="btn btn-light image-zoom-btn js-image-zoom-out"
+                                                                                    class="btn btn-solid theme-light image-zoom-btn js-image-zoom-out"
                                                                                     aria-label="{{ 'component.cms.imageGallery.zoomOut'|trans }}">
                                                                                 {% block element_image_gallery_inner_zoom_modal_action_zoom_out_icon %}
                                                                                     {% sw_icon 'minus-circle' %}
@@ -732,7 +732,7 @@
 
                                                                         {% block element_image_gallery_inner_zoom_modal_action_zoom_reset %}
                                                                             <button type="button"
-                                                                                    class="btn btn-light image-zoom-btn js-image-zoom-reset"
+                                                                                    class="btn btn-solid theme-light image-zoom-btn js-image-zoom-reset"
                                                                                     aria-label="{{ 'component.cms.imageGallery.zoomReset'|trans }}">
                                                                                 {% block element_image_gallery_inner_zoom_modal_action_zoom_reset_icon %}
                                                                                     {% sw_icon 'screen-minimize' %}
@@ -742,7 +742,7 @@
 
                                                                         {% block element_image_gallery_inner_zoom_modal_action_zoom_in %}
                                                                             <button type="button"
-                                                                                    class="btn btn-light image-zoom-btn js-image-zoom-in"
+                                                                                    class="btn btn-solid theme-light image-zoom-btn js-image-zoom-in"
                                                                                     aria-label="{{ 'component.cms.imageGallery.zoomIn'|trans }}">
                                                                                 {% block element_image_gallery_inner_zoom_modal_action_zoom_in_icon %}
                                                                                     {% sw_icon 'plus-circle' %}
@@ -816,7 +816,7 @@
                                                                                             {% block element_image_gallery_inner_zoom_modal_slider_item_zoom_container_spatial %}
                                                                                                 {% if image.isSpatial() %}
                                                                                                     {% block element_image_gallery_inner_zoom_modal_slider_item_zoom_container_spatial_loader %}
-                                                                                                        <span class="badge bg-secondary m-3 position-absolute top-0 end-0 d-md-none">3D</span>
+                                                                                                        <span class="badge bg-secondary m-3 position-absolute top-0 end-0 md:d-none">3D</span>
                                                                                                         <div class="spatial-canvas-spinner position-absolute top-50 start-50 translate-middle bg-white flex justify-content-center align-items-center" style="--bs-bg-opacity: .8;">
                                                                                                             <div class="spinner-border" role="status">
                                                                                                                 <span class="visually-hidden">Loading...</span>
@@ -838,7 +838,7 @@
                                                                                                             {% endblock %}
 
                                                                                                             <div class="spatial-anim-container position-absolute start-0 top-0 p-3 gap-2 d-flex">
-                                                                                                                <button class="btn btn-outline-light spatial-anim-button position-relative text-center mx-0 p-0 visually-hidden" aria-label="{{ 'spatial.animation.toggle'|trans|striptags }}">
+                                                                                                                <button class="btn btn-outline theme-light spatial-anim-button position-relative text-center mx-0 p-0 visually-hidden" aria-label="{{ 'spatial.animation.toggle'|trans|striptags }}">
                                                                                                                     <svg class="spatial-anim-button-circle position-absolute end-0 top-0">
                                                                                                                         <circle r="calc(50% - (var(--stroke-width) / 2))" cx="50%" cy="50%"></circle>
                                                                                                                     </svg>
@@ -919,7 +919,7 @@
 
                                                         {% if imageCount > 1 %}
                                                             {% block element_image_gallery_inner_zoom_modal_footer %}
-                                                                <div class="modal-footer">
+                                                                <div class="dialog-footer">
                                                                     {% block element_image_gallery_inner_zoom_modal_thumbnails_controls %}
                                                                         <div class="gallery-slider-modal-controls">
                                                                             <div data-thumbnail-slider-controls="true" class="gallery-slider-modal-thumbnails">
@@ -1002,7 +1002,7 @@
                                                 {% endblock %}
                                             </div>
                                         {% endblock %}
-                                    </div>
+                                    </dialog>
                                 {% endblock %}
                             </div>
                         {% endif %}

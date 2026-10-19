@@ -8,7 +8,7 @@
 {% set isAjaxOffcanvas = false %}
 
 {% block utilities_offcanvas_meta %}
-    {# only including this for robots to have appropriate meta tags and when offcanvas is loaded via ajax #}
+    {# only including this for robots to have appropriate meta tags and when drawer is loaded via ajax #}
     {% if not app.request.xmlHttpRequest and isAjaxOffcanvas %}
         {% sw_include '@Storefront/storefront/layout/meta.html.twig' %}
     {% endif %}
@@ -16,9 +16,9 @@
 
 {% block utilities_offcanvas %}
     {% block utilities_offcanvas_header %}
-        <div class="offcanvas-header">
+        <div class="drawer-header">
             {% block utilities_offcanvas_close %}
-                <button class="btn btn-secondary offcanvas-close js-offcanvas-close">
+                <button class="btn btn-solid theme-secondary offcanvas-close js-offcanvas-close">
                     {% block utilities_offcanvas_close_icon %}
                         {% sw_icon 'x' style { size: 'sm' } %}
                     {% endblock %}
@@ -32,7 +32,7 @@
     {% endblock %}
 
     {% block utilities_offcanvas_content_container %}
-        <div class="offcanvas-body">
+        <div class="drawer-body">
             {% block utilities_offcanvas_content %}{% endblock %}
         </div>
     {% endblock %}

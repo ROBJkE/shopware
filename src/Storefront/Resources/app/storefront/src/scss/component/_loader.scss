@@ -8,8 +8,8 @@ Defines the loader icon
     // No drop-in replacement mixin available for spinner. Keep alias .loader
     // stylelint-disable-next-line scss/at-extend-no-missing-placeholder
     @extend .spinner-border;
-    --#{$prefix}text-opacity: 1;
-    --#{$prefix}spinner-border-width: 3px;
+    --text-opacity: 1;
+    --spinner-border-width: 3px;
     color: rgba(var(--bs-primary-rgb), var(--bs-text-opacity));
 }
 
@@ -132,21 +132,21 @@ Can be shown before or after the button text or replace it.
 
 .btn {
     > .loader {
-        --#{$prefix}spinner-width: 18px;
-        --#{$prefix}spinner-height: 18px;
-        --#{$prefix}spinner-vertical-align: -0.25em;
-        color: var(--#{$prefix}btn-color);
+        --spinner-width: 18px;
+        --spinner-height: 18px;
+        --spinner-vertical-align: -0.25em;
+        color: var(--btn-color);
     }
 
     &.is-loading-indicator-before {
         .loader {
-            margin-right: var(--#{$prefix}btn-padding-x);
+            margin-right: var(--btn-padding-x);
         }
     }
 
     &.is-loading-indicator-after {
         .loader {
-            margin-left: var(--#{$prefix}btn-padding-x);
+            margin-left: var(--btn-padding-x);
         }
     }
 
@@ -168,7 +168,7 @@ Can be shown before or after the button text or replace it.
                 0.15s ease-out 0s 1 slide-in,
                 // Restore original Bootstrap spinning animation (prettier cannot handle CSS vars in animations)
                 /* stylelint-disable */
-                var(--#{$prefix}spinner-animation-speed) linear infinite var(--#{$prefix}spinner-animation-name);
+                var(--spinner-animation-speed) linear infinite var(--spinner-animation-name);
                 /* stylelint-enable */
         }
     }

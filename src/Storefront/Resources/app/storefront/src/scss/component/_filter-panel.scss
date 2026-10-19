@@ -4,6 +4,7 @@ Filter panel
 Styling for filter panel component.
 This file contains the generic styling for all filter items.
 */
+@use 'abstract/bootstrap-mixins' as *;
 
 .filter-panel {
     display: flex;
@@ -33,12 +34,12 @@ This file contains the generic styling for all filter items.
     margin-bottom: 12px;
 
     .filter-panel-item-toggle {
-        --#{$prefix}btn-focus-box-shadow: #{$input-btn-focus-box-shadow};
-        --#{$prefix}btn-border-color: #{$input-border-color};
-        --#{$prefix}btn-hover-border-color: #{$input-border-color};
-        --#{$prefix}btn-active-border-color: #{$primary};
-        --#{$prefix}btn-active-color: #{$primary};
-        --#{$prefix}btn-font-weight: #{$font-weight-normal};
+        --btn-focus-box-shadow: #{$input-btn-focus-box-shadow};
+        --btn-border-color: #{$input-border-color};
+        --btn-hover-border-color: #{$input-border-color};
+        --btn-active-border-color: #{$primary};
+        --btn-active-color: #{$primary};
+        --btn-font-weight: #{$font-weight-normal};
     }
 }
 
@@ -65,17 +66,17 @@ This file contains the generic styling for all filter items.
 }
 
 .filter-active {
-    --#{$prefix}btn-focus-box-shadow: #{$input-btn-focus-box-shadow};
-    --#{$prefix}btn-border-color: #{$input-border-color};
-    --#{$prefix}btn-hover-border-color: #{$primary};
-    --#{$prefix}btn-hover-color: #{$primary};
-    --#{$prefix}btn-hover-bg: #{$gray-100};
-    --#{$prefix}btn-active-border-color: #{$primary};
-    --#{$prefix}btn-active-color: #{$primary};
-    --#{$prefix}btn-font-weight: #{$font-weight-normal};
-    --#{$prefix}btn-border-radius: #{$border-radius-pill};
-    --#{$prefix}btn-padding-y: 0.125rem;
-    --#{$prefix}btn-line-height: 1.625rem;
+    --btn-focus-box-shadow: #{$input-btn-focus-box-shadow};
+    --btn-border-color: #{$input-border-color};
+    --btn-hover-border-color: #{$primary};
+    --btn-hover-color: #{$primary};
+    --btn-hover-bg: #{$gray-100};
+    --btn-active-border-color: #{$primary};
+    --btn-active-color: #{$primary};
+    --btn-font-weight: #{$font-weight-normal};
+    --btn-border-radius: #{$border-radius-pill};
+    --btn-padding-y: 0.125rem;
+    --btn-line-height: 1.625rem;
 }
 
 .filter-active-preview {
@@ -91,10 +92,10 @@ This file contains the generic styling for all filter items.
 }
 
 .btn.filter-reset-all {
-    --#{$prefix}btn-border-radius: #{$border-radius-pill};
-    --#{$prefix}btn-padding-y: 0.125rem;
-    --#{$prefix}btn-line-height: 1.625rem;
-    --#{$prefix}btn-font-weight: #{$font-weight-normal};
+    --btn-border-radius: #{$border-radius-pill};
+    --btn-padding-y: 0.125rem;
+    --btn-line-height: 1.625rem;
+    --btn-font-weight: #{$font-weight-normal};
 }
 
 .is--sidebar {
@@ -154,12 +155,12 @@ This file contains the generic styling for all filter items.
 }
 
 .btn.filter-panel-wrapper-toggle {
-    --#{$prefix}btn-padding-x: 6px;
-    --#{$prefix}btn-padding-y: 6px;
-    --#{$prefix}btn-hover-bg: var(--#{$prefix}gray-200);
-    --#{$prefix}btn-hover-color: var(--#{$prefix}primary);
-    --#{$prefix}btn-active-bg: var(--#{$prefix}gray-200);
-    --#{$prefix}btn-active-color: var(--#{$prefix}primary);
+    --btn-padding-x: 6px;
+    --btn-padding-y: 6px;
+    --btn-hover-bg: var(--gray-200);
+    --btn-hover-color: var(--primary);
+    --btn-active-bg: var(--gray-200);
+    --btn-active-color: var(--primary);
     display: none;
     width: 100%;
 

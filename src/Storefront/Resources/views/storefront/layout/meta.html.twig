@@ -155,8 +155,8 @@
                 {# CSS will be loaded from the JS automatically #}
             {% else %}
                 {% set componentStyles = importmapData.styles ?? [] %}
-                {# In dev-server mode, all styles are served by the import map. #}
-                {% set assets = (importmapData.isDevServer ?? false) ? [] : (theme_config('assets.css') ?? []) %}
+                {# The theme stylesheet stays linked while the Vite dev server serves component CSS. #}
+                {% set assets = theme_config('assets.css') ?? [] %}
                 {% for file in assets %}
                     <link rel="stylesheet"
                           href="{{ asset(file, 'theme') }}">
@@ -224,18 +224,18 @@
                 window.activeRoute = '{{ activeRoute }}';
                 window.activeRouteParameters = '{{ (app.request.attributes.get('_route_params') ?? {})|json_encode|escape('js') }}';
                 window.router = {
-                    'frontend.cart.offcanvas': '{{ path('frontend.cart.offcanvas') }}',
-                    'frontend.cookie.offcanvas': '{{ path('frontend.cookie.offcanvas') }}',
+                    'frontend.cart.drawer': '{{ path('frontend.cart.drawer') }}',
+                    'frontend.cookie.drawer': '{{ path('frontend.cookie.drawer') }}',
                     'frontend.cookie.groups': '{{ path('frontend.cookie.groups') }}',
                     'frontend.checkout.finish.page': '{{ path('frontend.checkout.finish.page') }}',
                     'frontend.checkout.info': '{{ path('frontend.checkout.info') }}',
-                    'frontend.menu.offcanvas': '{{ path('frontend.menu.offcanvas') }}',
+                    'frontend.menu.drawer': '{{ path('frontend.menu.drawer') }}',
                     'frontend.cms.page': '{{ path('frontend.cms.page') }}',
                     'frontend.cms.navigation.page': '{{ path('frontend.cms.navigation.page') }}',
                     'frontend.country.country-data': '{{ path('frontend.country.country.data') }}',
                     'frontend.app-system.generate-token': '{{ path('frontend.app-system.generate-token', { name: 'Placeholder' }) }}',
                     'frontend.gateway.context': '{{ path('frontend.gateway.context') }}',
-                    'frontend.cookie.consent.offcanvas': '{{ path('frontend.cookie.consent.offcanvas') }}',
+                    'frontend.cookie.consent.drawer': '{{ path('frontend.cookie.consent.drawer') }}',
                     'frontend.account.login.page': '{{ path('frontend.account.login.page') }}',
                     };
                 window.salesChannelId = '{{ context.salesChannelId }}';

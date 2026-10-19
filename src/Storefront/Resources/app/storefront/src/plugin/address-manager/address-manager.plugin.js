@@ -16,7 +16,7 @@ export default class AddressManagerPlugin extends Plugin {
         activeBillingAddressId: null,
         activeShippingAddressId: null,
         initialTab: null,
-        addressModalDialogScrollableClass: 'modal-dialog-scrollable',
+        addressModalDialogScrollableClass: 'dialog-scrollable',
         addressModalDialogSelectorClass: 'modal-dialog-address',
         dropdownSelector: '.dropdown',
         addressEditFormSelector: '.address-manager-modal-address-form',
@@ -55,8 +55,8 @@ export default class AddressManagerPlugin extends Plugin {
     }
 
     /**
-     * Registers all needed event listeners for interacting with the modal.
-     * Needs to be run every time the modal gets replaced.
+     * Registers all needed event listeners for interacting with the dialog.
+     * Needs to be run every time the dialog gets replaced.
      *
      * @private
      */
@@ -91,7 +91,7 @@ export default class AddressManagerPlugin extends Plugin {
     }
 
     /**
-     * Initially get the modal.
+     * Initially get the dialog.
      *
      * @private
      * @param {PointerEvent} event
@@ -113,7 +113,7 @@ export default class AddressManagerPlugin extends Plugin {
     }
 
     /**
-     * Initially renders the modal.
+     * Initially renders the dialog.
      *
      * @param {String} response
      */
@@ -122,17 +122,17 @@ export default class AddressManagerPlugin extends Plugin {
 
         pseudoModal.open(() => this._btnLoader.remove(), 0);
 
-        const modal = pseudoModal.getModal();
-        modal.children[0].classList.add(
+        const dialog = pseudoModal.getModal();
+        dialog.children[0].classList.add(
             this.options.addressModalDialogScrollableClass,
             this.options.addressModalDialogSelectorClass,
         );
 
         if (this.options.initialTab === BILLING) {
-            modal.querySelector(this.options.billingAddressTabSelector).checked = true;
+            dialog.querySelector(this.options.billingAddressTabSelector).checked = true;
             this._onSwitchToBillingTab();
         } else {
-            modal.querySelector(this.options.shippingAddressTabSelector).checked = true;
+            dialog.querySelector(this.options.shippingAddressTabSelector).checked = true;
         }
 
         window.PluginManager.initializePlugins();
@@ -151,7 +151,7 @@ export default class AddressManagerPlugin extends Plugin {
     }
 
     /**
-     * Close the modal after saving the selected addresses.
+     * Close the dialog after saving the selected addresses.
      * Reload the page to update the context with the selected addresses.
      *
      * @private

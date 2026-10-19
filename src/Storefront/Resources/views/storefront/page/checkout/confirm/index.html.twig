@@ -14,7 +14,7 @@
     {% set legalGuaranteeNoticeModalTagOpen = '<a href="#legalGuaranteeNoticeInline" class="btn btn-link-inline">' %}
     {% set legalGuaranteeNoticeModalTagClose = '</a>' %}
 {% else %}
-    {% set legalGuaranteeNoticeModalTagOpen = '<button type="button" class="btn btn-link-inline" aria-haspopup="dialog" data-bs-toggle="modal" data-bs-target="#' ~ legalGuaranteeNoticeModalId ~ '">' %}
+    {% set legalGuaranteeNoticeModalTagOpen = '<button type="button" class="btn btn-link-inline" aria-haspopup="dialog" data-bs-toggle="dialog" data-bs-target="#' ~ legalGuaranteeNoticeModalId ~ '">' %}
     {% set legalGuaranteeNoticeModalTagClose = '</button>' %}
 {% endif %}
 
@@ -24,7 +24,7 @@
             <h1 class="confirm-main-header d-inline-block">
                 {{ 'checkout.confirmHeader'|trans|sw_sanitize }}
             </h1>
-            <span class="confirm-main-header-item-counter d-inline-block mb-4 fw-bold fs-3 ms-1 text-dark-emphasis">
+            <span class="confirm-main-header-item-counter d-inline-block mb-4 fw-bold fs-3 ms-1 fg-emphasis-dark">
                 ({{- 'checkout.itemCounter'|trans({'%count%': page.cart.lineItems|length})|sw_sanitize -}})
             </span>
         {% endblock %}
@@ -147,7 +147,7 @@
             <div class="confirm-payment-shipping">
                 <div class="row">
                     {% block page_checkout_confirm_payment %}
-                        <div class="col-sm-6 confirm-payment">
+                        <div class="sm:col-6 confirm-payment">
                             {% sw_include '@Storefront/storefront/page/checkout/confirm/confirm-payment.html.twig' %}
                         </div>
                     {% endblock %}
@@ -162,7 +162,7 @@
                         {% endif %}
 
                         {% if hasPhysicalItem %}
-                            <div class="col-sm-6 confirm-shipping">
+                            <div class="sm:col-6 confirm-shipping">
                                 {% sw_include '@Storefront/storefront/page/checkout/confirm/confirm-shipping.html.twig' %}
                             </div>
                         {% endif %}
@@ -367,30 +367,30 @@
     {% block page_checkout_confirm_legal_guarantee_notice %}
         {% if showLegalGuaranteeNotice and not showLegalGuaranteeNoticeInline %}
             {% block page_checkout_confirm_legal_guarantee_notice_modal %}
-                <div class="modal modal-lg fade"
+                <dialog class="dialog dialog-lg fade"
                      id="{{ legalGuaranteeNoticeModalId }}"
                      tabindex="-1"
                      role="dialog"
                      aria-modal="true"
                      aria-hidden="true"
                      aria-labelledby="{{ legalGuaranteeNoticeModalId }}-header">
-                    <div class="modal-dialog modal-dialog-centered">
-                        <div class="modal-content">
+                    <div>
+                        <div>
                             {% block page_checkout_confirm_legal_guarantee_notice_modal_header %}
-                                <div class="modal-header">
-                                    <div id="{{ legalGuaranteeNoticeModalId }}-header" class="modal-title js-pseudo-modal-template-title-element h5">
+                                <div class="dialog-header">
+                                    <div id="{{ legalGuaranteeNoticeModalId }}-header" class="dialog-title js-pseudo-modal-template-title-element h5">
                                         {{ 'checkout.confirmLegalGuaranteeNoticeLink'|trans|sw_sanitize }}
                                     </div>
                                     <button class="btn-close close"
                                             type="button"
-                                            data-bs-dismiss="modal"
+                                            data-bs-dismiss="dialog"
                                             aria-label="{{ 'global.default.close'|trans|striptags }}">
                                     </button>
                                 </div>
                             {% endblock %}
 
                             {% block page_checkout_confirm_legal_guarantee_notice_modal_body %}
-                                <div class="modal-body confirm-legal-guarantee-notice">
+                                <div class="dialog-body confirm-legal-guarantee-notice">
                                     <a href="{{ context.languageId|sw_legal_guarantee_notice_link }}"
                                        target="_blank"
                                        rel="noopener">
@@ -400,7 +400,7 @@
                             {% endblock %}
                         </div>
                     </div>
-                </div>
+                </dialog>
             {% endblock %}
         {% endif %}
     {% endblock %}
@@ -423,7 +423,7 @@
             {% block page_checkout_confirm_form_submit %}
                 <div class="d-grid">
                     <button id="confirmFormSubmit"
-                            class="btn btn-primary btn-lg"
+                            class="btn btn-solid theme-primary btn-lg"
                             form="confirmOrderForm"
                         {% if page.cart.errors.blockResubmit %}
                             disabled

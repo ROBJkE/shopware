@@ -7,21 +7,21 @@
                 {% block layout_header_minimal_row %}
                     <div class="row header-row header-minimal-row">
                         {% block layout_header_minimal_logo %}
-                            <div class="col-6 col-md-4 header-minimal-logo">
+                            <div class="col-6 md:col-4 header-minimal-logo">
                                 {% sw_include '@Storefront/storefront/layout/header/logo.html.twig' %}
                             </div>
                         {% endblock %}
 
                         {% block layout_header_minimal_contact %}
-                            <div class="col-md-4 header-minimal-contact">
+                            <div class="md:col-4 header-minimal-contact">
                                 {{ 'header.supportInfo'|trans|sw_sanitize }}
                             </div>
                         {% endblock %}
 
                         {% block layout_header_minimal_button %}
-                            <div class="col-6 col-md-4 header-minimal-back-to-shop">
+                            <div class="col-6 md:col-4 header-minimal-back-to-shop">
                                 <a href="{{ path('frontend.home.page') }}"
-                                   class="btn btn-outline-primary header-minimal-back-to-shop-button"
+                                   class="btn btn-outline theme-primary header-minimal-back-to-shop-button"
                                    title="{{ 'checkout.finishButtonBackToShop'|trans|striptags }}">
                                     {{ 'checkout.finishButtonBackToShop'|trans|striptags }}
                                 </a>

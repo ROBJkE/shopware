@@ -41,6 +41,72 @@ if (fs.existsSync(featureConfigPath)) {
     console.error(chalk.red('\n \u{26A0}️  The feature dump file "config_js_features.json" cannot be found. All features will be deactivated. Please execute bin/console feature:dump.  \u{26A0}️\n'));
 }
 
+const scssFeatureConfig = (() => {
+    if (!features || Object.keys(features).length === 0) {
+        return '$sw-features: ();';
+    }
+
+    const featuresScss = Object.entries(features).map(([key, val]) => {
+        return `'${key}': ${val}`;
+    }).join(',');
+
+    return `$sw-features: (${featuresScss});`;
+})();
+
+const scssLoaders = [
+    isHotMode ? { loader: 'style-loader' } : MiniCssExtractPlugin.loader,
+    {
+        loader: 'css-loader',
+        options: {
+            sourceMap: !isProdMode,
+            // Skip auto resolving of url(), see: https://github.com/webpack-contrib/css-loader/blob/master/CHANGELOG.md#400-2020-07-25
+            url: false,
+        },
+    },
+    {
+        loader: 'postcss-loader',
+        options: {
+            sourceMap: !isProdMode,
+            postcssOptions: {
+                config: false,
+                plugins: [
+                    require('postcss-prefix-custom-properties')({
+                        prefix: 'bs-',
+                        ignore: [/^--bs-/, /^--bd-/, /^--sw-/],
+                    }),
+                ],
+            },
+        },
+    },
+    {
+        loader: 'sass-loader',
+        options: {
+            sourceMap: !isProdMode,
+            additionalData: (content) => {
+                if (content.includes('// WEBPACK_FEATURE_FLAGS')) {
+                    return content.replace('// WEBPACK_FEATURE_FLAGS', scssFeatureConfig);
+                }
+
+                return content;
+            },
+            sassOptions: {
+                loadPaths: [
+                    path.resolve(__dirname, 'src/scss'),
+                    path.resolve(__dirname, 'node_modules'),
+                ],
+                ...(!isDebugMode ? {
+                    silenceDeprecations: [
+                        'import',
+                        'global-builtin',
+                        'color-functions',
+                        'slash-div',
+                    ],
+                } : {}),
+            },
+        },
+    },
+];
+
 let hostName;
 const proxyPort = parseInt(process.env.STOREFRONT_PROXY_PORT || 9998);
 
@@ -180,68 +246,22 @@ const coreConfig = {
                     filename: 'assets/wasm/[name].[contenthash:8][ext]',
                 },
             },
-            ...(() => {
-                if (isHotMode) {
-                    return [
-                        {
-                            test: /\.scss$/,
-                            use: [
-                                {
-                                    loader: 'style-loader',
-                                },
-                                {
-                                    loader: 'css-loader',
-                                    options: {
-                                        sourceMap: true,
-                                        // Skip auto resolving of url(), see: https://github.com/webpack-contrib/css-loader/blob/master/CHANGELOG.md#400-2020-07-25
-                                        url: false,
-                                    },
-                                },
-                                {
-                                    loader: 'postcss-loader', // needs to be AFTER css/style-loader and BEFORE sass-loader
-                                    options: {
-                                        sourceMap: true,
-                                        postcssOptions: {
-                                            config: false,
-                                        },
-                                    },
-                                },
-                                {
-                                    loader: 'sass-loader',
-                                    options: {
-                                        sourceMap: true,
-                                        sassOptions: {
-                                            ...(!isDebugMode ? {
-                                                silenceDeprecations: [
-                                                    'import',
-                                                    'global-builtin',
-                                                    'color-functions',
-                                                    'mixed-decls',
-                                                    'slash-div',
-                                                ],
-                                            } : {}),
-                                        },
-                                    },
-                                },
-                            ],
+            {
+                test: /\.scss$/,
+                use: scssLoaders,
+            },
+            {
+                test: /\.(woff(2)?|ttf|eot|svg|otf)$/,
+                use: [
+                    {
+                        loader: 'file-loader',
+                        options: {
+                            name: '[name].[ext]',
+                            outputPath: 'fonts/',
                         },
-                        {
-                            test: /\.(woff(2)?|ttf|eot|svg|otf)$/,
-                            use: [
-                                {
-                                    loader: 'file-loader',
-                                    options: {
-                                        name: '[name].[ext]',
-                                        outputPath: 'fonts/',
-                                    },
-                                },
-                            ],
-                        },
-                    ];
-                }
-
-                return [];
-            })(),
+                    },
+                ],
+            },
         ],
     },
     name: 'shopware-6-storefront',
@@ -279,9 +299,6 @@ const coreConfig = {
     },
     plugins: [
         new webpack.NoEmitOnErrorsPlugin(),
-        new webpack.ProvidePlugin({
-            Popper: ['popper.js', 'default'],
-        }),
         new MiniCssExtractPlugin({
             filename: './css/[name].css',
             chunkFilename: './css/[name].css',
@@ -421,83 +438,6 @@ const pluginConfigs = pluginEntries.map((plugin) => {
         customPluginConfig,
     ]);
 });
-
-if (isHotMode) {
-    /**
-     * Converts the feature config JSON to a SCSS map syntax.
-     * This allows reading of the feature flag config inside SCSS via `map.get` function.
-     *
-     * Output example:
-     * $sw-features: ("FEATURE_NEXT_1234": false, "FEATURE_NEXT_1235": true);
-     *
-     * @see https://sass-lang.com/documentation/values/maps
-     */
-    const scssFeatureConfig = (() => {
-        // Return an empty SCSS map when feature dump cannot be found. All feature checks will be false.
-        if (!features) {
-            return '$sw-features: ();';
-        }
-
-        const featuresScss = Object.entries(features).map(([key, val]) => {
-            return `'${key}': ${val}`;
-        }).join(',');
-
-        return `$sw-features: (${featuresScss});`;
-    })();
-
-    /**
-     * Adds all entry points from the theme-variables.json "style" array as imports to one string.
-     */
-    const scssEntryFilePath = path.resolve(projectRootPath, 'var/theme-entry.scss');
-    const themeConfig = JSON.parse(fs.readFileSync(path.resolve(projectRootPath, 'files/theme-config/index.json'), {encoding: 'utf8'}));
-    const themeId = themeFiles.themeId ?? Object.values(themeConfig)[0];
-
-    const scssDumpedFallbackVariables = path.resolve(projectRootPath, 'var/theme-variables.scss');
-    const scssDumpedThemeVariables = path.resolve(projectRootPath, `var/theme-variables/${themeId}.scss`);
-    const scssDumpedVariables = (fs.existsSync(scssDumpedThemeVariables)) ? scssDumpedThemeVariables : scssDumpedFallbackVariables;
-
-    if (fs.existsSync(scssDumpedThemeVariables) && isDebugMode) {
-        console.log(chalk.bgCyanBright.black(`# Theme variable file: ${scssDumpedVariables}`));
-    }
-    if (!fs.existsSync(scssDumpedThemeVariables)) {
-        console.log(chalk.bgHex('#b30000').white(
-            '\n# No custom theme-variables found. Execute ' +
-            chalk.bold('bin/console theme:compile') +
-            ' to create these files'
-        ));
-        console.log(chalk.bgHex('#b30000').white('# Styling can be wrong in HotMode. Falling back to default var/theme-variables.scss\n'));
-    }
-
-    const scssEntryFileContent = (() => {
-        const fileComment = '// ATTENTION! This file is auto generated by webpack.hot.config.js and should not be edited.\n\n';
-        const dumpedVariablesImport = `@import "${scssDumpedVariables}";\n`;
-        const assetOverrides = `
-            $app-css-relative-asset-path: '/theme/${themeId}/assets';
-            $sw-asset-public-url: '';
-            $sw-asset-theme-url: '';
-            $sw-asset-asset-url: '';
-            $sw-asset-sitemap-url: '';
-        `;
-
-        const collectedImports = [dumpedVariablesImport, assetOverrides, ...themeFiles.style.map((value) => {
-            return `@import "${value.filepath}";\n`;
-        })];
-
-        return fileComment + scssFeatureConfig + collectedImports.join('');
-    })();
-
-    /**
-     * Auto generates file under given path.
-     * The generated file is used by webpack.hot.config.js as a single entry point.
-     */
-    try {
-        fs.writeFileSync(scssEntryFilePath, scssEntryFileContent, 'utf8');
-    } catch (error) {
-        throw new Error(`Unable to write file "${scssEntryFilePath}". ${error.message}`);
-    }
-
-    coreConfig.entry['hot-reloading'] = [scssEntryFilePath];
-}
 
 const mergedCoreConfig = merge([
     coreConfig,

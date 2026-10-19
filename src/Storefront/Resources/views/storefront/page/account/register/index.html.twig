@@ -11,7 +11,7 @@
             {% block page_account_register_inner %}
                 <div class="row">
                     {% block page_account_register_login_container %}
-                        <div class="col-lg-4">
+                        <div class="lg:col-4">
                             {% sw_include '@Storefront/storefront/component/account/login.html.twig' with {
                                 cardTitle: 'account.loginHeader'|trans|sw_sanitize
                             } %}
@@ -49,7 +49,7 @@
                     {% endblock %}
 
                     {% block page_account_register_container %}
-                        <div class="col-lg-8">
+                        <div class="lg:col-8">
                             {% sw_include '@Storefront/storefront/component/account/register.html.twig' with {
                                 cardTitle: 'account.registerPersonalHeader'|trans|sw_sanitize
                             } %}

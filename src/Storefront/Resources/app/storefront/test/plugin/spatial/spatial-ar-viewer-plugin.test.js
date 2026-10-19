@@ -1,4 +1,15 @@
+import Dialog from 'bootstrap/js/dist/dialog.js';
 import SpatialArViewerPlugin from 'src/plugin/spatial/spatial-ar-viewer-plugin';
+
+jest.mock('bootstrap/js/dist/dialog.js', () => {
+    const Dialog = jest.fn();
+    Dialog.prototype.show = jest.fn();
+
+    return {
+        __esModule: true,
+        default: Dialog,
+    };
+});
 
 jest.mock('src/plugin/spatial/utils/spatial-dive-load-util');
 
@@ -92,6 +103,10 @@ describe('SpatialArViewerPlugin', () => {
 
     beforeEach(() => {
         jest.clearAllMocks();
+        Dialog.mockImplementation(function mockDialog(element) {
+            this._element = element;
+            this.show = Dialog.prototype.show;
+        });
 
         document.body.innerHTML = `
             <button class="ar-button">
@@ -125,7 +140,7 @@ describe('SpatialArViewerPlugin', () => {
         SpatialArViewerPluginObject.launchingAR = false;
         SpatialArViewerPluginObject.qrModalAutostartAR = null;
         SpatialArViewerPluginObject.model = "1";
-        const modalShowSpy = jest.spyOn(window.bootstrap.Modal.prototype, 'show')
+        const modalShowSpy = jest.spyOn(Dialog.prototype, 'show')
             .mockReturnValue({});
 
         window.focusHandler = {
@@ -424,7 +439,7 @@ describe('SpatialArViewerPlugin', () => {
             expect(consoleErrorSpy).toHaveBeenCalledWith(expect.stringContaining('#ar-qr-modal-error-solution not found in ARUnsupportedModalTemplate'));
         });
 
-        test('on ARDesktopPlatformError, prints error to console as shows correct modal content', async () => {
+        test('on ARDesktopPlatformError, prints error to console as shows correct dialog content', async () => {
             jest.spyOn(SpatialArViewerPluginObject.arSystem, 'launch').mockRejectedValue(new window.DIVEARPlugin.ARDesktopPlatformError('fail'));
             const consoleErrorSpy = jest.spyOn(console, 'error').mockImplementationOnce(() => {});
 
@@ -444,7 +459,7 @@ describe('SpatialArViewerPlugin', () => {
             expect(errorSolution.textContent).toBe(arViewerOptions.snippets.arErrors.desktopNotSupported.solution);
         });
 
-        test('on ARQuickLookNotSafariError, prints error to console as shows correct modal content', async () => {
+        test('on ARQuickLookNotSafariError, prints error to console as shows correct dialog content', async () => {
             jest.spyOn(SpatialArViewerPluginObject.arSystem, 'launch').mockRejectedValue(new window.DIVEARPlugin.ARQuickLookNotSafariError('fail'));
             const consoleErrorSpy = jest.spyOn(console, 'error').mockImplementationOnce(() => {});
 
@@ -464,7 +479,7 @@ describe('SpatialArViewerPlugin', () => {
             expect(errorSolution.textContent).toBe(arViewerOptions.snippets.arErrors.notSafariOnIOS.solution);
         });
 
-        test('on ARQuickLookVersionMismatchError, prints error to console as shows correct modal content', async () => {
+        test('on ARQuickLookVersionMismatchError, prints error to console as shows correct dialog content', async () => {
             jest.spyOn(SpatialArViewerPluginObject.arSystem, 'launch').mockRejectedValue(new window.DIVEARPlugin.ARQuickLookVersionMismatchError('fail'));
             const consoleErrorSpy = jest.spyOn(console, 'error').mockImplementationOnce(() => {});
 
@@ -484,7 +499,7 @@ describe('SpatialArViewerPlugin', () => {
             expect(errorSolution.textContent).toBe(arViewerOptions.snippets.arErrors.IOSVersionMismatch.solution);
         });
 
-        test('on ARQuickLookUnknownError, prints error to console as shows correct modal content', async () => {
+        test('on ARQuickLookUnknownError, prints error to console as shows correct dialog content', async () => {
             jest.spyOn(SpatialArViewerPluginObject.arSystem, 'launch').mockRejectedValue(new window.DIVEARPlugin.ARQuickLookUnknownError('fail'));
             const consoleErrorSpy = jest.spyOn(console, 'error').mockImplementationOnce(() => {});
 
@@ -504,9 +519,9 @@ describe('SpatialArViewerPlugin', () => {
             expect(errorSolution.textContent).toBe(arViewerOptions.snippets.arErrors.unknownIOSError.solution);
         });
 
-        test('on launch error without spatialArId, appends generic modal and shows', async () => {
+        test('on launch error without spatialArId, appends generic dialog and shows', async () => {
             const focusSpy = jest.spyOn(window.focusHandler, 'saveFocusState');
-            const modalShowSpy = jest.spyOn(window.bootstrap.Modal.prototype, 'show').mockReturnValue({});
+            const modalShowSpy = jest.spyOn(Dialog.prototype, 'show').mockReturnValue({});
             const consoleErrorSpy = jest.spyOn(console, 'error').mockImplementationOnce(() => {});
 
             const plugin = new SpatialArViewerPlugin(
@@ -525,31 +540,31 @@ describe('SpatialArViewerPlugin', () => {
             expect(consoleErrorSpy).toHaveBeenCalledTimes(1);
         });
 
-        test('should invoke resumeFocusState and removeEventListener on hidden event for unsupported modal', async () => {
+        test('should invoke resumeFocusState and removeEventListener on hidden event for unsupported dialog', async () => {
             // simulate ARSystem.launch failure
             jest.spyOn(SpatialArViewerPluginObject.arSystem, 'launch').mockRejectedValue(new window.DIVEARPlugin.ARError('fail'));
             jest.spyOn(console, 'error').mockImplementationOnce(() => {});
-            // prepare fake modal with capturable callback
+            // prepare fake dialog with capturable callback
             let capturedCb;
             const mockElement = {
                 addEventListener: jest.fn((event, cb) => {
-                    if (event === 'hidden.bs.modal') capturedCb = cb;
+                    if (event === 'hidden.bs.dialog') capturedCb = cb;
                 }),
                 removeEventListener: jest.fn(),
             };
             const mockModal = { _element: mockElement, show: jest.fn() };
             // override Modal constructor
-            jest.spyOn(window.bootstrap, 'Modal').mockImplementation(() => mockModal);
+            Dialog.mockImplementation(() => mockModal);
             // call startARViewAsync
             await SpatialArViewerPluginObject.startARViewAsync();
             // ensure initial behaviors
             expect(window.focusHandler.saveFocusState).toHaveBeenCalledWith('spatial-ar-viewer');
             expect(mockModal.show).toHaveBeenCalled();
-            expect(mockElement.addEventListener).toHaveBeenCalledWith('hidden.bs.modal', expect.any(Function));
+            expect(mockElement.addEventListener).toHaveBeenCalledWith('hidden.bs.dialog', expect.any(Function));
             // simulate hidden event to cover resume and removal (lines 75-77)
             capturedCb();
             expect(window.focusHandler.resumeFocusState).toHaveBeenCalledWith('spatial-ar-viewer');
-            expect(mockElement.removeEventListener).toHaveBeenCalledWith('hidden.bs.modal', capturedCb);
+            expect(mockElement.removeEventListener).toHaveBeenCalledWith('hidden.bs.dialog', capturedCb);
         });
     });
 
@@ -610,7 +625,7 @@ describe('SpatialArViewerPlugin', () => {
             expect(spyShowARAutostartModal).not.toHaveBeenCalled();
         });
 
-        test('should not show autostart modal if autostartingARView is already true', () => {
+        test('should not show autostart dialog if autostartingARView is already true', () => {
             const spyShowARAutostartModal = jest.spyOn(SpatialArViewerPluginObject, 'showARAutostartModal');
 
             mockLocationSearch('?autostartAr=1');
@@ -623,9 +638,9 @@ describe('SpatialArViewerPlugin', () => {
             expect(spyShowARAutostartModal).not.toHaveBeenCalled();
         });
 
-        test('should not show autostart modal if no open-session element is found', () => {
+        test('should not show autostart dialog if no open-session element is found', () => {
             const spyShowARAutostartModal = jest.spyOn(SpatialArViewerPluginObject, 'showARAutostartModal');
-            const spyModalShow = jest.spyOn(window.bootstrap.Modal.prototype, 'show').mockReturnValue({});
+            const spyModalShow = jest.spyOn(Dialog.prototype, 'show').mockReturnValue({});
 
             document.body.innerHTML = `
                 <button class="ar-button">
@@ -659,9 +674,9 @@ describe('SpatialArViewerPlugin', () => {
             expect(spyModalShow).not.toHaveBeenCalled();
         });
 
-        test('should not show autostart modal if no button in open-session element is found', () => {
+        test('should not show autostart dialog if no button in open-session element is found', () => {
             const spyShowARAutostartModal = jest.spyOn(SpatialArViewerPluginObject, 'showARAutostartModal');
-            const spyModalShow = jest.spyOn(window.bootstrap.Modal.prototype, 'show').mockReturnValue({});
+            const spyModalShow = jest.spyOn(Dialog.prototype, 'show').mockReturnValue({});
 
             document.body.innerHTML = `
                 <button class="ar-button">
@@ -696,9 +711,9 @@ describe('SpatialArViewerPlugin', () => {
             expect(spyModalShow).not.toHaveBeenCalled();
         });
 
-        test('should show autostart modal if button in open-session element is found and bind click', () => {
+        test('should show autostart dialog if button in open-session element is found and bind click', () => {
             const spyShowARAutostartModal = jest.spyOn(SpatialArViewerPluginObject, 'showARAutostartModal');
-            const spyModalShow = jest.spyOn(window.bootstrap.Modal.prototype, 'show').mockReturnValue({});
+            const spyModalShow = jest.spyOn(Dialog.prototype, 'show').mockReturnValue({});
 
             const qrModalAutostartModal = document.querySelector(
                 `.ar-qr-modal-open-session`
@@ -734,7 +749,7 @@ describe('SpatialArViewerPlugin', () => {
         });
 
         test('calls ARSystem.launch with correct args, set the ar button text, set the qrModalAutostartAR button text', async () => {
-            const modalShowSpy = jest.spyOn(window.bootstrap.Modal.prototype, 'show').mockReturnValue({});
+            const modalShowSpy = jest.spyOn(Dialog.prototype, 'show').mockReturnValue({});
 
             const spyStartARViewAsync = jest.spyOn(SpatialArViewerPluginObject, 'startARViewAsync');
 
@@ -757,7 +772,7 @@ describe('SpatialArViewerPlugin', () => {
             const autostartArModalButtonText = SpatialArViewerPluginObject.autostartArModalButton.querySelector('#ar-btn-open-session-text');
             expect(autostartArModalButtonText).toBeDefined();
 
-            // we start ar view automatically after the modal is shown
+            // we start ar view automatically after the dialog is shown
             expect(modalShowSpy).toHaveBeenCalled();
             expect(launchSpy).toHaveBeenCalled();
 

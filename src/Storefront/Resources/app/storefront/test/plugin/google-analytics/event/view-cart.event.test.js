@@ -23,12 +23,12 @@ describe('plugin/google-analytics/events/view-cart.event', () => {
         expect(new ViewCartEvent().supports('', '', 'frontend.checkout.cart.page')).toBe(true);
     });
 
-    test('supports returns false on other pages when offcanvas tracking disabled', () => {
+    test('supports returns false on other pages when drawer tracking disabled', () => {
         window.trackOffcanvasCart = '0';
         expect(new ViewCartEvent().supports('', '', 'frontend.detail.page')).toBe(false);
     });
 
-    test('supports returns true on other pages when offcanvas tracking enabled', () => {
+    test('supports returns true on other pages when drawer tracking enabled', () => {
         window.trackOffcanvasCart = '1';
         expect(new ViewCartEvent().supports('', '', 'frontend.detail.page')).toBe(true);
     });
@@ -73,7 +73,7 @@ describe('plugin/google-analytics/events/view-cart.event', () => {
         expect(window.gtag).not.toHaveBeenCalled();
     });
 
-    test('fires view_cart event when offcanvas opens and tracking enabled', () => {
+    test('fires view_cart event when drawer opens and tracking enabled', () => {
         window.trackOffcanvasCart = '1';
         window.activeRoute = 'frontend.detail.page';
         document.body.innerHTML = `
@@ -91,7 +91,7 @@ describe('plugin/google-analytics/events/view-cart.event', () => {
         const event = new ViewCartEvent();
         event.execute();
 
-        // Simulate offcanvas cart change (happens on open, quantity change, etc.)
+        // Simulate drawer cart change (happens on open, quantity change, etc.)
         event._onOffCanvasCartChange();
         jest.advanceTimersByTime(50);
 
@@ -198,7 +198,7 @@ describe('plugin/google-analytics/events/view-cart.event', () => {
         const event = new ViewCartEvent();
         event.execute();
 
-        // Simulate initial offcanvas open
+        // Simulate initial drawer open
         event._onOffCanvasCartChange();
         jest.advanceTimersByTime(50);
         expect(window.gtag).toHaveBeenCalledTimes(1);

@@ -1,0 +1,19 @@
+/*
+Load Bootstrap 6 once, with Shopware breakpoint and theme-color configuration.
+`$enable-important-utilities` was removed in Bootstrap 6. Utilities are not `!important` by default.
+
+@sw-package framework
+*/
+
+@use 'abstract/sw-tokens' as tokens;
+
+@forward 'bootstrap/scss/config' with (
+    $breakpoints: tokens.$sw-breakpoints,
+    $grid-gutter-x: 40px
+);
+
+@forward 'bootstrap/scss/theme' with (
+    $theme-colors: tokens.$sw-theme-colors
+);
+
+@use 'bootstrap/scss/bootstrap';

@@ -14,7 +14,7 @@ describe('GallerySliderPlugin tests', () => {
         document.body.innerHTML = `
             <div class="row gallery-slider-row is-loading js-gallery-zoom-modal-container js-slider-initialized"
                  data-gallery-slider="true">
-                <div class="gallery-slider-col col order-1 order-md-2">
+                <div class="gallery-slider-col col order-1 md:order-2">
                     <div class="base-slider gallery-slider">
                         <div class="gallery-slider-container" data-gallery-slider-container="true">
                             <div class="gallery-slider-item-container">
@@ -39,7 +39,7 @@ describe('GallerySliderPlugin tests', () => {
                         </div>
                     </div>
                 </div>
-                <div class="gallery-slider-thumbnails-col col-0 col-md-auto order-2 order-md-1 is-left">
+                <div class="gallery-slider-thumbnails-col col-0 md:col-auto order-2 md:order-1 is-left">
                     <div class="gallery-slider-thumbnails-container">
                         <div class="gallery-slider-thumbnails" data-gallery-slider-thumbnails="true">
                             <div class="gallery-slider-thumbnails-item"><div class="gallery-slider-thumbnails-item-inner"><img src="#" class="gallery-slider-thumbnails-image" alt="thumb1"></div></div>

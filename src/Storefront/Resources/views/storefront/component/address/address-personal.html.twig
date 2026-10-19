@@ -68,7 +68,7 @@
                         options: accountTypeOptions,
                         validationRules: 'required',
                         disabled: (onlyCompanyRegistration) ? 'true',
-                        additionalClass: 'col-md-6 contact-type',
+                        additionalClass: 'md:col-6 contact-type',
                         additionalSelectClass: 'contact-select',
                         autocomplete: 'off',
                         attributes: {
@@ -120,7 +120,7 @@
                                 options: salutationOptions,
                                 autocomplete: 'section-personal honorific-prefix',
                                 violationPath: '/salutationId',
-                                additionalClass: 'col-md-3 col-sm-6',
+                                additionalClass: 'md:col-3 sm:col-6',
                             } %}
                         {% endblock %}
                     {% endif %}
@@ -142,7 +142,7 @@
                                 value: data.get('title'),
                                 autocomplete: 'section-personal honorific-prefix',
                                 violationPath: violationPath,
-                                additionalClass: 'col-md-3 col-sm-6',
+                                additionalClass: 'md:col-3 sm:col-6',
                             } %}
                         {% endblock %}
                     {% endif %}
@@ -174,7 +174,7 @@
                         autocomplete: 'section-personal given-name',
                         violationPath: violationPath,
                         validationRules: 'required',
-                        additionalClass: 'col-sm-6',
+                        additionalClass: 'sm:col-6',
                     } %}
                 {% endblock %}
             {% endblock %}
@@ -199,7 +199,7 @@
                         autocomplete: 'section-personal family-name',
                         violationPath: violationPath,
                         validationRules: 'required',
-                        additionalClass: 'col-sm-6',
+                        additionalClass: 'sm:col-6',
                     } %}
                 {% endblock %}
             {% endblock %}
@@ -226,7 +226,7 @@
                                     autocomplete: 'section-personal organization',
                                     violationPath: violationPath,
                                     validationRules: 'required',
-                                    additionalClass: 'col-sm-6',
+                                    additionalClass: 'sm:col-6',
                                 } %}
                             {% endblock %}
                         {% endblock %}
@@ -279,7 +279,7 @@
             {% sw_include '@Storefront/storefront/component/form/form-select-birthday.html.twig' with {
                 label: 'account.personalBirthdayLabel'|trans|sw_sanitize,
                 validationRules: config('core.loginRegistration.birthdayFieldRequired') ? 'required' : '',
-                additionalClass: 'col-sm-6',
+                additionalClass: 'sm:col-6',
             } %}
         {% endif %}
     {% endblock %}

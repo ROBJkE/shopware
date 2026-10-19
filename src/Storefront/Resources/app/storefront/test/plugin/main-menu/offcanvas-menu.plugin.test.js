@@ -11,14 +11,14 @@ describe('OffCanvasMenuPlugin tests', () => {
                     <li class="navigation-offcanvas-list-item">
                         <a href="#"
                            class="navigation-offcanvas-link nav-item nav-link js-navigation-offcanvas-link"
-                           data-href="/widgets/menu/offcanvas?navigationId=0188fd3e4ffb7079959622b2785167eb">
+                           data-href="/widgets/menu/drawer?navigationId=0188fd3e4ffb7079959622b2785167eb">
                             Cars
                         </a>
                     </li>
                     <li class="navigation-offcanvas-list-item">
                         <a href="#"
                            class="navigation-offcanvas-link nav-item nav-link js-navigation-offcanvas-link"
-                           data-href="/widgets/menu/offcanvas?navigationId=0188fd3e4ffb7079959622b2785167eb">
+                           data-href="/widgets/menu/drawer?navigationId=0188fd3e4ffb7079959622b2785167eb">
                             Smartphones
                         </a>
                     </li>
@@ -35,14 +35,14 @@ describe('OffCanvasMenuPlugin tests', () => {
                     <li class="navigation-offcanvas-list-item">
                         <a href="#"
                            class="navigation-offcanvas-link nav-item nav-link js-navigation-offcanvas-link"
-                           data-href="/widgets/menu/offcanvas?navigationId=0188fd3e4ffb7079959622b2785167eb">
+                           data-href="/widgets/menu/drawer?navigationId=0188fd3e4ffb7079959622b2785167eb">
                             Outdoors
                         </a>
                     </li>
                     <li class="navigation-offcanvas-list-item">
                         <a href="#"
                            class="navigation-offcanvas-link nav-item nav-link js-navigation-offcanvas-link"
-                           data-href="/widgets/menu/offcanvas?navigationId=0188fd3e4ffb7079959622b2785167eb">
+                           data-href="/widgets/menu/drawer?navigationId=0188fd3e4ffb7079959622b2785167eb">
                             Automotive
                         </a>
                     </li>
@@ -70,7 +70,7 @@ describe('OffCanvasMenuPlugin tests', () => {
             </button>
 
             <div class="js-navigation-offcanvas-initial-content d-none">
-                <div class="offcanvas-body">
+                <div class="drawer-body">
                     <p>Initial content</p>
 
                     <div class="navigation-offcanvas-container"></div>
@@ -132,7 +132,7 @@ describe('OffCanvasMenuPlugin tests', () => {
 
     test('Open the OffCanvas menu via URL parameter', async () => {
         // Simulate URL parameter
-        window.history.pushState({}, '', '?offcanvas=menu');
+        window.history.pushState({}, '', '?drawer=menu');
 
         // Open OffCanvas menu
         plugin._openMenuViaUrlParameter();
@@ -142,7 +142,7 @@ describe('OffCanvasMenuPlugin tests', () => {
         offCanvasMenuButton.click();
         await new Promise(process.nextTick);
 
-        // Ensure JS events are registered within the offcanvas
+        // Ensure JS events are registered within the drawer
         expect(window.PluginManager.initializePluginsInParentElement).toHaveBeenCalled();
         // Ensure the parameter is removed from the URL
         expect(window.history.replaceState).toHaveBeenCalled();

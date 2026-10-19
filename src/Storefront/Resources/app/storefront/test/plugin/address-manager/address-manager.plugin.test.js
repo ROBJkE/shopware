@@ -32,7 +32,7 @@ describe('AddressManagerPlugin test', () => {
         expect(addressManager.options.initialTab).toBe('shipping');
     });
 
-    test('open address manager modal', async () => {
+    test('open address manager dialog', async () => {
         create();
 
         const button = document.querySelector('.btn');
@@ -71,7 +71,7 @@ describe('AddressManagerPlugin test', () => {
         expect(billingTab.classList).toContain('active', 'show');
     });
 
-    test('open modal with billing tag', async () => {
+    test('open dialog with billing tag', async () => {
         create('billing');
 
         const button = document.querySelector('.btn');
@@ -200,18 +200,18 @@ function create(initialTab = 'shipping') {
              <button class="btn" data-address-manager="true">Open address manager</button>
              
              <div class="js-pseudo-modal-template">
-                <div class="modal fade" tabindex="-1" role="dialog">
-                    <div class="modal-dialog" role="document">
-                        <div class="modal-content js-pseudo-modal-template-root-element">
-                            <div class="modal-header only-close">
-                                <h5 class="modal-title js-pseudo-modal-template-title-element"></h5>
-                                <button type="button" class="modal-close close" data-dismiss="modal" aria-label="Close">x</button>
+                <dialog class="dialog fade" tabindex="-1" role="dialog">
+                    <div  role="document">
+                        <div class="js-pseudo-modal-template-root-element">
+                            <div class="dialog-header only-close">
+                                <h5 class="dialog-title js-pseudo-modal-template-title-element"></h5>
+                                <button type="button" class="modal-close close" data-dismiss="dialog" aria-label="Close">x</button>
                             </div>
-                            <div class="modal-body js-pseudo-modal-template-content-element">
+                            <div class="dialog-body js-pseudo-modal-template-content-element">
                             </div>
                         </div>
                     </div>
-                </div>
+                </dialog>
             </div>
         `;
 
@@ -238,7 +238,7 @@ function create(initialTab = 'shipping') {
                     </div>
                     <button class="address-manager-modal-address-form" data-address-type="shipping"></button>
                </div>
-               <div id="billing-address-tab-pane" class="">
+               <div id="billing-address-tab-pane" >
                     <div data-address-id="address-dummy-id" data-address-type="billing">
                          <div class="address-manager-select-address">
                              <input

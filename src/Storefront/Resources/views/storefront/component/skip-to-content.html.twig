@@ -14,7 +14,7 @@
     {% endif %}
 
     {% block component_skip_to_content_element %}
-        <div id="page-top" class="skip-to-content bg-primary-subtle text-primary-emphasis overflow-hidden" tabindex="-1">
+        <div id="page-top" class="skip-to-content bg-subtle-primary fg-emphasis-primary overflow-hidden" tabindex="-1">
             <div class="container skip-to-content-container d-flex justify-content-center visually-hidden-focusable">
                 {% block component_skip_to_content_inner %}
                     {% block component_skip_to_content_main_content %}
@@ -27,7 +27,7 @@
 
                     {% block component_skip_to_content_search %}
                         {% if skipToSearch %}
-                            <a href="#header-main-search-input" class="skip-to-content-link d-inline-flex text-decoration-underline m-1 p-2 fw-bold gap-2 d-none d-sm-block">
+                            <a href="#header-main-search-input" class="skip-to-content-link d-inline-flex text-decoration-underline m-1 p-2 fw-bold gap-2 d-none sm:d-block">
                                 {{ 'general.skipToSearch'|trans|sw_sanitize }}
                             </a>
                         {% endif %}
@@ -35,7 +35,7 @@
 
                     {% block component_skip_to_content_main_nav %}
                         {% if skipToMainNav %}
-                            <a href="#main-navigation-menu" class="skip-to-content-link d-inline-flex text-decoration-underline m-1 p-2 fw-bold gap-2 d-none d-lg-block">
+                            <a href="#main-navigation-menu" class="skip-to-content-link d-inline-flex text-decoration-underline m-1 p-2 fw-bold gap-2 d-none lg:d-block">
                                 {{ 'general.skipToNavigation'|trans|sw_sanitize }}
                             </a>
                         {% endif %}

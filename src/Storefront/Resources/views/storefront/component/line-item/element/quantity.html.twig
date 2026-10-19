@@ -88,7 +88,7 @@
                                                 <button
                                                     {% if isDigital %}disabled="disabled"{% endif %}
                                                     type="button"
-                                                    class="btn btn-outline-light btn-minus js-btn-minus"
+                                                    class="btn btn-outline theme-light btn-minus js-btn-minus"
                                                     aria-label="{{ 'component.product.quantitySelect.decreaseOfProduct'|trans({ '%product%': lineItem.label })|striptags }}"
                                                     data-focus-id="line-item-{{ displayMode }}-quantity-down-{{ lineItem.id }}"
                                                 >
@@ -98,7 +98,7 @@
                                                     {% if isDigital %}disabled="disabled"{% endif %}
                                                     type="number"
                                                     name="quantity"
-                                                    class="form-control js-quantity-selector quantity-selector-group-input quantity-input-{{ lineItem.id }} {% if displayMode === 'offcanvas' %} js-offcanvas-cart-change-quantity-number{% endif %}"
+                                                    class="form-control js-quantity-selector quantity-selector-group-input quantity-input-{{ lineItem.id }} {% if displayMode === 'drawer' %} js-offcanvas-cart-change-quantity-number{% endif %}"
                                                     min="{{ quantityInformation.minPurchase }}"
                                                     max="{{ maxQuantity }}"
                                                     step="{{ quantityInformation.purchaseSteps }}"
@@ -109,7 +109,7 @@
                                                 <button
                                                     {% if isDigital %}disabled="disabled"{% endif %}
                                                     type="button"
-                                                    class="btn btn-outline-light btn-plus js-btn-plus"
+                                                    class="btn btn-outline theme-light btn-plus js-btn-plus"
                                                     aria-label="{{ 'component.product.quantitySelect.increaseOfProduct'|trans({ '%product%': lineItem.label })|striptags }}"
                                                     data-focus-id="line-item-{{ displayMode }}-quantity-up-{{ lineItem.id }}"
                                                 >
@@ -135,7 +135,7 @@
                         {% endblock %}
                     {% else %}
                         {% block component_line_item_quantity_display %}
-                            <div class="d-flex justify-content-sm-center justify-content-end">
+                            <div class="d-flex sm:justify-content-center justify-content-end">
                                 {{ lineItem.quantity }}
                             </div>
                         {% endblock %}

@@ -9,7 +9,7 @@ export default class ViewCartEvent extends AnalyticsEvent
             return true;
         }
 
-        // Also support on any page if offcanvas tracking is enabled
+        // Also support on any page if drawer tracking is enabled
         return this._isOffcanvasTrackingEnabled();
     }
 
@@ -25,9 +25,9 @@ export default class ViewCartEvent extends AnalyticsEvent
             this._fireViewCartEvent();
         }
 
-        // Register offcanvas listener if tracking is enabled
-        // This tracks all offcanvas cart openings (both from cart button clicks and add-to-cart)
-        // For accurate funnel tracking, disable "Open offcanvas after add to cart" in cart settings
+        // Register drawer listener if tracking is enabled
+        // This tracks all drawer cart openings (both from cart button clicks and add-to-cart)
+        // For accurate funnel tracking, disable "Open drawer after add to cart" in cart settings
         if (this._isOffcanvasTrackingEnabled()) {
             this._registerOffcanvasListener();
         }
@@ -51,7 +51,7 @@ export default class ViewCartEvent extends AnalyticsEvent
         }
 
         instances.forEach((pluginInstance) => {
-            // Fire on initial offcanvas opening
+            // Fire on initial drawer opening
             pluginInstance.$emitter.subscribe('offCanvasOpened', this._onOffCanvasCartChange.bind(this));
             // Fire on cart content updates (quantity change, product removal, promotion, shipping)
             // registerEvents fires at the very end after DOM is fully updated

@@ -1,22 +1,22 @@
 {# @experimental stableVersion:v6.8.0 feature:SPATIAL_BASES #}
 {% block spatial_ar_qr_code_modal %}
     {% block spatial_ar_qr_code_modal_show_qr %}
-        <div class="modal ar-qr-modal"
+        <dialog class="dialog ar-qr-modal"
              tabindex="-1"
              role="dialog"
              aria-modal="true"
              aria-hidden="true"
              aria-labelledby="ar-qr-modal-title">
-            <div class="modal-dialog">
-                <div class="modal-content ar-qr-modal-content">
-                    <div class="modal-header ar-qr-modal-header">
+            <div>
+                <div class="ar-qr-modal-content">
+                    <div class="dialog-header ar-qr-modal-header">
                         {# @experimental stableVersion:v6.8.0 feature:SPATIAL_BASES #}
                         {% block spatial_ar_qr_code_modal_show_qr_header %}
-                            <h3 id="ar-qr-modal-title" class="modal-title text-center w-100">{{ 'spatial.ar.scanQrCode'|trans|striptags }}</h3>
-                            <button type="button" class="btn-close close" data-bs-dismiss="modal" aria-label="{{ 'global.default.close'|trans|striptags }}"></button>
+                            <h3 id="ar-qr-modal-title" class="dialog-title text-center w-100">{{ 'spatial.ar.scanQrCode'|trans|striptags }}</h3>
+                            <button type="button" class="btn-close close" data-bs-dismiss="dialog" aria-label="{{ 'global.default.close'|trans|striptags }}"></button>
                         {% endblock %}
                     </div>
-                    <div class="modal-body ar-qr-modal-body">
+                    <div class="dialog-body ar-qr-modal-body">
                         {# @experimental stableVersion:v6.8.0 feature:SPATIAL_BASES #}
                         {% block spatial_ar_qr_code_modal_show_qr_body %}
                             <div class="text-center ar-qr-modal-body-text">
@@ -27,7 +27,7 @@
                             </div>
                         {% endblock %}
                     </div>
-                    <div class="modal-footer ar-qr-modal-footer">
+                    <div class="dialog-footer ar-qr-modal-footer">
                         {# @experimental stableVersion:v6.8.0 feature:SPATIAL_BASES #}
                         {% block spatial_ar_qr_code_modal_show_qr_footer %}
                             <div class="text-center ar-qr-modal-footer-headline">
@@ -41,26 +41,26 @@
                     </div>
                 </div>
             </div>
-        </div>
+        </dialog>
     {% endblock %}
 
     {% block spatial_ar_qr_code_modal_open_ar_session %}
-        <div class="modal is-fullscreen ar-qr-modal-open-session"
+        <dialog class="dialog is-fullscreen ar-qr-modal-open-session"
              tabindex="-1"
              role="dialog"
              aria-modal="true"
              aria-hidden="true"
              aria-labelledby="ar-qr-session-modal-title">
-            <div class="modal-dialog" role="document">
-                <div class="modal-content">
-                    <div class="modal-header p-2">
+            <div  role="document">
+                <div>
+                    <div class="dialog-header p-2">
                         {# @experimental stableVersion:v6.8.0 feature:SPATIAL_BASES #}
                         {% block spatial_ar_qr_code_modal_open_ar_session_header %}
-                            <h5 id="ar-qr-session-modal-title" class="modal-title">{{ 'spatial.ar.augmentedRealityView'|trans|striptags }}</h5>
-                            <button type="button" class="btn-close close m-1" data-bs-dismiss="modal" aria-label="{{ 'global.default.close'|trans|striptags }}"></button>
+                            <h5 id="ar-qr-session-modal-title" class="dialog-title">{{ 'spatial.ar.augmentedRealityView'|trans|striptags }}</h5>
+                            <button type="button" class="btn-close close m-1" data-bs-dismiss="dialog" aria-label="{{ 'global.default.close'|trans|striptags }}"></button>
                         {% endblock %}
                     </div>
-                    <div class="modal-body">
+                    <div class="dialog-body">
                         {# @experimental stableVersion:v6.8.0 feature:SPATIAL_BASES #}
                         {% block spatial_ar_qr_code_modal_open_ar_session_body %}
                             <div class="ar-splash-screen text-center m-3 position-relative">
@@ -75,7 +75,7 @@
                                         color: '#000'
                                     } %}
                                 </div>
-                                <button class="ar-btn-open-session btn btn-primary mx-auto position-absolute mb-2"
+                                <button class="ar-btn-open-session btn btn-solid theme-primary mx-auto position-absolute mb-2"
                                     {% if qrCodeOptions.params.autostartAr %}data-modal-open-ar-session-autostart="{{ qrCodeOptions.params.autostartAr }}"{% endif %}>
                                     <div class="ar-btn-icon-with-label">
                                         {% sw_icon 'augmented' style {
@@ -89,6 +89,6 @@
                     </div>
                 </div>
             </div>
-        </div>
+        </dialog>
     {% endblock %}
 {% endblock %}

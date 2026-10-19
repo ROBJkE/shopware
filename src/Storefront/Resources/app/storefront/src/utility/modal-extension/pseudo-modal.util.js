@@ -1,3 +1,4 @@
+import Dialog from 'bootstrap/js/dist/dialog.js';
 import { REMOVE_BACKDROP_DELAY } from 'src/utility/backdrop/backdrop.util';
 
 const PSEUDO_MODAL_CLASS = 'js-pseudo-modal';
@@ -25,7 +26,7 @@ export default class PseudoModalUtil {
     }
 
     /**
-     * opens the modal
+     * opens the dialog
      *
      * @param {function} cb
      * @param {Number} delay
@@ -37,17 +38,17 @@ export default class PseudoModalUtil {
     }
 
     /**
-     * closes the modal
+     * closes the dialog
      */
     close() {
-        const modal = this.getModal();
+        const dialog = this.getModal();
 
-        this._modalInstance = bootstrap.Modal.getInstance(modal);
+        this._modalInstance = Dialog.getInstance(dialog);
         this._modalInstance.hide();
     }
 
     /**
-     * returns the modal element
+     * returns the dialog element
      *
      * @returns {HTMLElement}
      */
@@ -58,14 +59,14 @@ export default class PseudoModalUtil {
     }
 
     /**
-     * updates the modal position
+     * updates the dialog position
      */
     updatePosition() {
         this._modalInstance.handleUpdate();
     }
 
     /**
-     * This method can be used to update a modal's content.
+     * This method can be used to update a dialog's content.
      * A callback may be provided, for example to re-initialise all plugins once
      * the markup is changed.
      *
@@ -83,19 +84,19 @@ export default class PseudoModalUtil {
     }
 
     /**
-     * Before opening a new pseudo modal, check if there is any existing pseudo modal already.
-     * Hide an existing pseudo modal first to avoid multiple modals or backdrops.
+     * Before opening a new pseudo dialog, check if there is any existing pseudo dialog already.
+     * Hide an existing pseudo dialog first to avoid multiple modals or backdrops.
      *
      * @private
      */
     _hideExistingModal() {
         try {
-            const existingModalEl = document.querySelector(`.${PSEUDO_MODAL_CLASS} .modal`);
+            const existingModalEl = document.querySelector(`.${PSEUDO_MODAL_CLASS} .dialog`);
             if (!existingModalEl) {
                 return;
             }
 
-            const existingModalInstance = bootstrap.Modal.getInstance(existingModalEl);
+            const existingModalInstance = Dialog.getInstance(existingModalEl);
             if (!existingModalInstance) {
                 return;
             }
@@ -104,7 +105,7 @@ export default class PseudoModalUtil {
             // @todo: Remove when upstream issue https://github.com/twbs/bootstrap/issues/42503 is resolved.
             window.focusHandler._removeFocusTrapGuard();
         } catch (err) {
-            console.warn(`[PseudoModalUtil] Unable to hide existing pseudo modal before opening pseudo modal: ${err.message}`);
+            console.warn(`[PseudoModalUtil] Unable to hide existing pseudo dialog before opening pseudo modal: ${err.message}`);
         }
     }
 
@@ -115,27 +116,27 @@ export default class PseudoModalUtil {
     _open(cb) {
         this.getModal();
 
-        this._modal.addEventListener('hidden.bs.modal', this._modalWrapper.remove);
-        this._modal.addEventListener('shown.bs.modal', cb);
+        this._modal.addEventListener('hidden.bs.dialog', this._modalWrapper.remove);
+        this._modal.addEventListener('shown.bs.dialog', cb);
 
-        // An open offcanvas focus-trap pulls the focus back out before the modal's focus-trap is active.
-        this._modal.addEventListener('shown.bs.modal', () => {
+        // An open drawer focus-trap pulls the focus back out before the dialog's focus-trap is active.
+        this._modal.addEventListener('shown.bs.dialog', () => {
             if (!this._modal.contains(document.activeElement)) {
                 this._modal.focus();
             }
         });
 
-        // Keep the Bootstrap focus-trap working when the modal is the last element before `</body>`.
+        // Keep the Bootstrap focus-trap working when the dialog is the last element before `</body>`.
         // @todo: Remove when upstream issue https://github.com/twbs/bootstrap/issues/42503 is resolved.
-        this._modal.addEventListener('hidden.bs.modal', () => window.focusHandler._removeFocusTrapGuard());
+        this._modal.addEventListener('hidden.bs.dialog', () => window.focusHandler._removeFocusTrapGuard());
 
         /**
-         * Fix bootstrap modal accessibility errors.
+         * Fix bootstrap dialog accessibility errors.
          *
-         * The bootstrap modal adds the `aria-hidden` attribute on the modal element when closed.
-         * This leads to console errors in some browsers, if an element within the modal still has focus.
+         * The bootstrap dialog adds the `aria-hidden` attribute on the dialog element when closed.
+         * This leads to console errors in some browsers, if an element within the dialog still has focus.
          */
-        this._modal.addEventListener('hide.bs.modal', () => {
+        this._modal.addEventListener('hide.bs.dialog', () => {
             if (document.activeElement instanceof HTMLElement) {
                 document.activeElement.blur();
             }
@@ -161,7 +162,7 @@ export default class PseudoModalUtil {
         this._modalWrapper.innerHTML = this._content;
         this._modal = this._createModalMarkup();
 
-        this._modalInstance = new bootstrap.Modal(this._modal, {
+        this._modalInstance = new Dialog(this._modal, {
             backdrop: this._useBackdrop,
         });
 
@@ -169,7 +170,7 @@ export default class PseudoModalUtil {
     }
 
     /**
-     * creates the modal wrapper
+     * creates the dialog wrapper
      *
      * @private
      */
@@ -181,13 +182,13 @@ export default class PseudoModalUtil {
             this._modalWrapper.classList.add(PSEUDO_MODAL_CLASS);
         }
 
-        // An open offcanvas makes the rest of the page inert, including a wrapper left over from an earlier modal.
+        // An open drawer makes the rest of the page inert, including a wrapper left over from an earlier dialog.
         this._modalWrapper.inert = false;
         this._modalWrapper.removeAttribute('aria-hidden');
     }
 
     /**
-     * creates the modal markup if
+     * creates the dialog markup if
      * it's not existing already
      *
      * @returns {HTMLElement}
@@ -195,10 +196,10 @@ export default class PseudoModalUtil {
      * @private
      */
     _createModalMarkup() {
-        const modal = this._modalWrapper.querySelector('.modal');
+        const dialog = this._modalWrapper.querySelector('.dialog');
 
-        if (modal) {
-            return modal;
+        if (dialog) {
+            return dialog;
         }
 
         const content = this._modalWrapper.innerHTML;
@@ -206,11 +207,11 @@ export default class PseudoModalUtil {
 
         this._setModalContent(content);
 
-        return this._modalWrapper.querySelector('.modal');
+        return this._modalWrapper.querySelector('.dialog');
     }
 
     /**
-     * This method is used to set the modal element's title.
+     * This method is used to set the dialog element's title.
      *
      * @param {string} title
      * @private
@@ -225,7 +226,7 @@ export default class PseudoModalUtil {
     }
 
     /**
-     * This method is used to set the modal element's content.
+     * This method is used to set the dialog element's content.
      *
      * @private
      */

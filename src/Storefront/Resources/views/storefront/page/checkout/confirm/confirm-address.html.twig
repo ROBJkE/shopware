@@ -35,7 +35,7 @@
                     {% set lineItems = page.order.lineItems %}
                 {% endif %}
                 {% if not page.isHideShippingAddress() %}
-                    <div class="col-sm-6 card-col confirm-shipping-address">
+                    <div class="sm:col-6 card-col confirm-shipping-address">
                         <div class="card checkout-card">
                             <div class="card-body">
                                 {% block page_checkout_confirm_address_shipping_title %}
@@ -64,7 +64,7 @@
                                         {% block page_checkout_confirm_address_shipping_actions_link %}
                                             <a href="{{ path('frontend.account.address.edit.page', {addressId: shippingAddress.id}) }}"
                                                title="{{ 'account.overviewChangeShipping'|trans|striptags }}"
-                                               class="btn btn-light"
+                                               class="btn btn-solid theme-light"
                                                data-address-manager="true"
                                                data-address-manager-options="{{ addressManagerOptions|json_encode }}"
                                             >
@@ -80,7 +80,7 @@
             {% endblock %}
 
             {% block page_checkout_confirm_address_billing %}
-                <div class="col-sm-6 card-col confirm-billing-address">
+                <div class="sm:col-6 card-col confirm-billing-address">
                     <div class="card checkout-card">
                         <div class="card-body">
                             {% block page_checkout_confirm_address_billing_title %}
@@ -117,7 +117,7 @@
                                     {% block page_checkout_confirm_address_billing_actions_link %}
                                         <a href="{{ path('frontend.account.address.edit.page', {addressId: billingAddress.id}) }}"
                                            title="{{ 'account.overviewChangeBilling'|trans|striptags }}"
-                                           class="btn btn-light"
+                                           class="btn btn-solid theme-light"
                                            data-address-manager="true"
                                            data-address-manager-options="{{ addressManagerOptions|json_encode }}"
                                         >

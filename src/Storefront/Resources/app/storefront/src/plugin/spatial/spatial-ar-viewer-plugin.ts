@@ -1,3 +1,4 @@
+import Dialog from 'bootstrap/js/dist/dialog.js';
 import Plugin from 'src/plugin-system/plugin.class';
 import { loadDIVE } from './utils/spatial-dive-load-util';
 import type NativeEventEmitter from 'src/helper/emitter.helper';
@@ -10,12 +11,6 @@ declare global {
             resumeFocusState: (state: string) => void;
         };
     }
-    const bootstrap: {
-        Modal: new (element: Element) => {
-            _element: Element;
-            show: () => void;
-        };
-    };
 }
 
 /**
@@ -162,7 +157,7 @@ export default class SpatialArViewerPlugin extends Plugin {
             window.autostartingARView = true;
             this.showARAutostartModal(this.spatialArId);
 
-            // start the AR view immediately after the autostart modal is shown
+            // start the AR view immediately after the autostart dialog is shown
             void this.startARViewAsync();
         }
     }
@@ -174,14 +169,14 @@ export default class SpatialArViewerPlugin extends Plugin {
             return;
         }
 
-        // find the modal template in the document
+        // find the dialog template in the document
         const qrModalOnError = this.getARUnsupportedModal(spatialArId);
         if (!qrModalOnError) {
             console.error('spatial-ar-viewer-plugin.ts: Twig structure error: ARUnsupportedModalTemplate not found in document');
             return;
         }
 
-        // search for reason and solution spans to append in the modal
+        // search for reason and solution spans to append in the dialog
         const errorReason = qrModalOnError.querySelector('#ar-qr-modal-error-reason') ;
         const errorSolution = qrModalOnError.querySelector('#ar-qr-modal-error-solution') ;
 
@@ -243,7 +238,7 @@ export default class SpatialArViewerPlugin extends Plugin {
             console.error('spatial-ar-viewer-plugin.ts: Unknown DIVEARPlugin error:', 'ErrorType: ' + error.type, 'ErrorMessage: ' + error.message);
         }
 
-        // show the modal
+        // show the dialog
         this.showARUnsupportedModal(qrModalOnError);
     }
 
@@ -252,12 +247,12 @@ export default class SpatialArViewerPlugin extends Plugin {
 
         const refocusButton = () => {
             window.focusHandler.resumeFocusState('spatial-ar-viewer');
-            modal._element.removeEventListener('hidden.bs.modal', refocusButton);
+            dialog._element.removeEventListener('hidden.bs.dialog', refocusButton);
         };
 
-        const modal = new bootstrap.Modal(qrModal);
-        modal._element.addEventListener('hidden.bs.modal', refocusButton);
-        modal.show();
+        const dialog = new Dialog(qrModal);
+        dialog._element.addEventListener('hidden.bs.dialog', refocusButton);
+        void dialog.show();
     }
 
     private getARUnsupportedModal(spatialArId: string): HTMLElement | null {
@@ -295,6 +290,6 @@ export default class SpatialArViewerPlugin extends Plugin {
         });
 
         autostartArModal.closest('body')?.appendChild(autostartArModal);
-        new bootstrap.Modal(autostartArModal).show();
+        void new Dialog(autostartArModal).show();
     }
 }

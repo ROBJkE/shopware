@@ -23,7 +23,7 @@ export default class ListingPlugin extends Plugin {
         activeFilterLabelClasses: 'filter-active btn',
         activeFilterLabelSelector: '.filter-active',
         activeFilterLabelPreviewClass: 'filter-active-preview',
-        resetAllFilterButtonClasses: 'filter-reset-all btn btn-outline-danger',
+        resetAllFilterButtonClasses: 'filter-reset-all btn btn-outline theme-danger',
         resetAllFilterButtonSelector: '.filter-reset-all',
         loadingIndicatorClass: 'is-loading',
         loadingElementLoaderClass: 'has-element-loader',

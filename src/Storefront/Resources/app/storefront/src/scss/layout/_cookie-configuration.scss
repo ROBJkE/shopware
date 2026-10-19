@@ -5,6 +5,7 @@ Offcanvas containing a list of cookies which need to be manually selected by the
 
 @sw-package framework
 */
+@use 'abstract/bootstrap-mixins' as *;
 
 .offcanvas-cookie {
     &-description,

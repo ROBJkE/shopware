@@ -41,7 +41,7 @@ describe('pseudo-modal.util tests', () => {
         jest.useRealTimers();
     });
 
-    test('it should open the modal', () => {
+    test('it should open the dialog', () => {
         const spyModalOpen = jest.spyOn(pseudoModal, '_open');
 
         pseudoModal.open();
@@ -49,15 +49,15 @@ describe('pseudo-modal.util tests', () => {
 
         expect(spyModalOpen).toHaveBeenCalled();
 
-        // Ensure opened modal is found in DOM
-        const openedModal = document.querySelector('.modal.fade.show');
+        // Ensure opened dialog is found in DOM
+        const openedModal = document.querySelector('dialog.dialog[open]');
         expect(openedModal).toBeTruthy();
 
-        // Ensure content is found inside opened modal DOM
-        expect(openedModal.querySelector('.modal-body').innerHTML).toContain('<div>Modal content</div>');
+        // Ensure content is found inside opened dialog DOM
+        expect(openedModal.querySelector('.dialog-body').innerHTML).toContain('<div>Modal content</div>');
     });
 
-    test('it should open the modal with delay', () => {
+    test('it should open the dialog with delay', () => {
         const spyModalOpen = jest.spyOn(pseudoModal, '_open');
         const spyCallback = jest.fn();
 
@@ -67,34 +67,34 @@ describe('pseudo-modal.util tests', () => {
         expect(spyModalOpen).toHaveBeenCalled();
         expect(spyCallback).toHaveBeenCalled();
 
-        // Ensure opened modal is found in DOM
-        const openedModal = document.querySelector('.modal.fade.show');
+        // Ensure opened dialog is found in DOM
+        const openedModal = document.querySelector('dialog.dialog[open]');
         expect(openedModal).toBeTruthy();
 
-        // Ensure content is found inside opened modal DOM
-        expect(openedModal.querySelector('.modal-body').innerHTML).toContain('<div>Modal content</div>');
+        // Ensure content is found inside opened dialog DOM
+        expect(openedModal.querySelector('.dialog-body').innerHTML).toContain('<div>Modal content</div>');
     });
 
-    test('it should close the modal', () => {
+    test('it should close the dialog', () => {
         pseudoModal.open();
         jest.runAllTimers();
 
-        // Ensure opened modal is found in DOM
-        expect(document.querySelector('.modal.fade.show')).toBeTruthy();
+        // Ensure opened dialog is found in DOM
+        expect(document.querySelector('dialog.dialog[open]')).toBeTruthy();
 
-        // Now we close the modal again
+        // Now we close the dialog again
         pseudoModal.close();
         jest.runAllTimers();
 
-        // Ensure the modal with "show" class is not present after close
-        expect(document.querySelector('.modal.fade.show')).toBeFalsy();
+        // Ensure the dialog with "show" class is not present after close
+        expect(document.querySelector('dialog.dialog[open]')).toBeFalsy();
     });
 
-    test('it moves the focus into the modal when another focus-trap pulled it out while opening', () => {
+    test('it moves the focus into the dialog when another focus-trap pulled it out while opening', () => {
         const offcanvasButton = document.createElement('button');
         document.body.appendChild(offcanvasButton);
 
-        // Simulates the focus-trap of an open offcanvas
+        // Simulates the focus-trap of an open drawer
         document.addEventListener('focusin', () => offcanvasButton.focus(), { once: true });
 
         pseudoModal.open();
@@ -103,7 +103,7 @@ describe('pseudo-modal.util tests', () => {
         expect(document.activeElement).toBe(pseudoModal.getModal());
     });
 
-    test('it makes a wrapper left over from an earlier modal interactive again', () => {
+    test('it makes a wrapper left over from an earlier dialog interactive again', () => {
         const leftOverWrapper = document.createElement('div');
         leftOverWrapper.classList.add('js-pseudo-modal');
         leftOverWrapper.inert = true;
@@ -118,64 +118,65 @@ describe('pseudo-modal.util tests', () => {
         expect(leftOverWrapper.hasAttribute('aria-hidden')).toBe(false);
     });
 
-    test('it has title template placeholder in modal header', () => {
+    test('it has title template placeholder in dialog header', () => {
         const templateTitle = document.querySelector(selector.templateTitle);
 
         expect(templateTitle).not.toBeNull();
         expect(templateTitle.textContent).toBe('');
     });
 
-    test('it can move modal title from modal body to header', () => {
-        const modal = pseudoModal.getModal();
-        const modalTitle = modal.querySelector(`h5${selector.templateTitle}`);
+    test('it can move dialog title from dialog body to header', () => {
+        const dialog = pseudoModal.getModal();
+        const modalTitle = dialog.querySelector(`h5${selector.templateTitle}`);
 
         expect(modalTitle).not.toBeNull();
         expect(modalTitle.textContent).toBe('Modal title');
     });
 
-    test('it can remove modal title from body after moving to header', () => {
-        const modal = pseudoModal.getModal();
-        const titleElement = modal.querySelectorAll(selector.templateTitle);
+    test('it can remove dialog title from body after moving to header', () => {
+        const dialog = pseudoModal.getModal();
+        const titleElement = dialog.querySelectorAll(selector.templateTitle);
 
         expect(titleElement).toHaveLength(1);
     });
 
-    test('it closes existing modal before opening new modal', () => {
+    test('it closes existing dialog before opening new dialog', () => {
         pseudoModal.open();
         jest.runAllTimers();
 
-        // Ensure first modal is opened
-        const openedModal = document.querySelector('.js-pseudo-modal .modal.fade.show');
-        expect(openedModal.querySelector('.modal-body').innerHTML).toContain('<div>Modal content</div>');
+        // Ensure first dialog is opened
+        const openedModal = document.querySelector('.js-pseudo-modal dialog.dialog[open]');
+        expect(openedModal.querySelector('.dialog-body').innerHTML).toContain('<div>Modal content</div>');
 
-        // While the first modal is still open, some other modal is opened with new instance of PseudoModalUtil
-        const newPseudoModal = new PseudoModalUtil('<div>New modal content</div>');
+        // While the first dialog is still open, some other dialog is opened with new instance of PseudoModalUtil
+        const newPseudoModal = new PseudoModalUtil('<div>New dialog content</div>');
         newPseudoModal.open();
         jest.runAllTimers();
 
-        // Ensure new modal is opened with new content
-        const newModal = document.querySelector('.js-pseudo-modal .modal.fade.show');
-        expect(newModal.querySelector('.modal-body').innerHTML).toContain('<div>New modal content</div>');
+        // Ensure new dialog is opened with new content
+        const newModal = document.querySelector('.js-pseudo-modal dialog.dialog[open]');
+        expect(newModal.querySelector('.dialog-body').innerHTML).toContain('<div>New dialog content</div>');
 
-        // Ensure only a single backdrop exists
-        expect(document.querySelectorAll('.modal-backdrop').length).toBe(1);
+        // Bootstrap 6 dialogs use the native backdrop, so only one pseudo dialog stays open.
+        expect(document.querySelectorAll('.js-pseudo-modal')).toHaveLength(1);
+        expect(document.querySelectorAll('dialog.dialog[open]')).toHaveLength(1);
     });
 
-    test('it should place the content below the modal content', () => {
-        const newPseudoModal = new PseudoModalUtil('<div class="`${selector.templateRoot}`"><h1>New modal content</h1></div>');
+    test('it should place the content below the dialog content', () => {
+        const newPseudoModal = new PseudoModalUtil(`<div class="${selector.templateRoot.slice(1)}"><h1>New dialog content</h1></div>`);
         newPseudoModal.open();
         jest.runAllTimers();
 
-        const newModal = document.querySelector('.js-pseudo-modal .modal.fade.show');
-        expect(newModal.querySelector('.modal-content').innerHTML).toContain('<h1>New modal content</h1>');
+        const newModal = document.querySelector('.js-pseudo-modal dialog.dialog[open]');
+        expect(newModal.querySelector(selector.templateRoot).innerHTML).toContain('<h1>New dialog content</h1>');
     });
 
     test('it should handle just a string', () => {
-        const newPseudoModal = new PseudoModalUtil('New modal content string');
+        const newPseudoModal = new PseudoModalUtil('New dialog content string');
         newPseudoModal.open();
         jest.runAllTimers();
 
-        const newModal = document.querySelector('.js-pseudo-modal .modal.fade.show');
-        expect(newModal.querySelector('.modal-body').innerHTML).toContain('New modal content string');
+        const newModal = document.querySelector('.js-pseudo-modal dialog.dialog[open]');
+        expect(newModal.querySelector('.dialog-body').innerHTML).toContain('New dialog content string');
     });
 });

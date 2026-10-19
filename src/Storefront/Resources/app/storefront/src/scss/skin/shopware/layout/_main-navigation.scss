@@ -6,11 +6,12 @@ Custom styling for main navigation on larger screens.
 Based on bootstrap nav:
 https://getbootstrap.com/docs/5.2/components/navs-tabs
 */
+@use 'abstract/bootstrap-mixins' as *;
 
 @include media-breakpoint-up(md) {
     .main-navigation-menu {
-        --#{$prefix}navbar-color: #{$body-color};
-        --#{$prefix}navbar-nav-link-padding-x: 0;
+        --navbar-color: #{$body-color};
+        --navbar-nav-link-padding-x: 0;
 
         .nav-item:not(:last-child) {
             padding-right: 1rem;
@@ -30,19 +31,19 @@ https://getbootstrap.com/docs/5.2/components/navs-tabs
 }
 
 .main-navigation-menu {
-    .dropdown-menu::after {
+    .menu::after {
         content: '';
         position: absolute;
-        height: calc(1 * var(--#{$prefix}dropdown-spacer) + 1px);
+        height: calc(1 * var(--menu-spacer) + 1px);
         left: 0;
         right: 0;
     }
 
-    .dropdown:not(.dropup) .dropdown-menu::after {
-        top: calc(-1 * var(--#{$prefix}dropdown-spacer) - 1px);
+    .dropdown:not(.dropup) .menu::after {
+        top: calc(-1 * var(--menu-spacer) - 1px);
     }
 
-    .dropup .dropdown-menu::after {
-        bottom: calc(-1 * var(--#{$prefix}dropdown-spacer) - 1px);
+    .dropup .menu::after {
+        bottom: calc(-1 * var(--menu-spacer) - 1px);
     }
 }

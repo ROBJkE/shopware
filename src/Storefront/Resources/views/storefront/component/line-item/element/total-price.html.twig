@@ -25,7 +25,7 @@
             {% set referencePrice = lineItem.price.referencePrice %}
 
             {% block component_line_item_reference_price %}
-                {% if referencePrice is not null and displayMode == 'offcanvas' %}
+                {% if referencePrice is not null and displayMode == 'drawer' %}
                     <br>
                     <small class="line-item-reference-price">
                         ({{ referencePrice.price|currency(currency) }} / {{ referencePrice.referenceUnit }}&nbsp;{{ referencePrice.unitName }})

@@ -1,7 +1,8 @@
+@use 'abstract/bootstrap-mixins' as *;
 .product-detail-tabs-content {
     display: none;
 
-    .offcanvas-body {
+    .drawer-body {
         overflow: initial;
         padding: 0;
     }

@@ -91,6 +91,10 @@ class ThemeCompilerTest extends TestCase
 
     private ThemeFilesystemResolver&Stub $themeFilesystemResolver;
 
+    private string $storefrontRoot;
+
+    private ThemeFilesystem $storefrontFilesystem;
+
     /**
      * @var CopyBatchInputFactory&Stub
      */
@@ -110,49 +114,85 @@ class ThemeCompilerTest extends TestCase
         $this->filesystem = new Filesystem(new InMemoryFilesystemAdapter());
         $this->tempFilesystem = new Filesystem(new InMemoryFilesystemAdapter());
         $this->mockSalesChannelId = '98432def39fc4624b33213a56b8c944d';
+
+        $this->storefrontRoot = sys_get_temp_dir() . '/sw-storefront-' . bin2hex(random_bytes(4));
+        $cssDirectory = $this->storefrontRoot . '/Resources/app/storefront/dist/css';
+        $io = new SymfonyFilesystem();
+        $io->mkdir($cssDirectory);
+        $io->dumpFile($cssDirectory . '/storefront.css', "body{color:#0042a0}\n");
+        $this->storefrontFilesystem = new ThemeFilesystem($this->storefrontRoot);
+
+        $this->themeFilesystemResolver->method('getFilesystemForStorefrontConfig')
+            ->willReturnCallback(function (StorefrontPluginConfiguration $configuration): ThemeFilesystem {
+                if ($configuration->getTechnicalName() === 'Storefront') {
+                    return $this->storefrontFilesystem;
+                }
+
+                return new StaticFilesystem();
+            });
     }
 
-    public function testThemeCompileExceptionIsThrownWhenFilesAreNotResolved(): void
+    protected function tearDown(): void
     {
-        $this->themeFileResolver->method('resolveStyleFiles')->willThrowException(new \InvalidArgumentException());
-        $compiler = $this->getThemeCompiler();
+        (new SymfonyFilesystem())->remove($this->storefrontRoot);
+    }
+
+    public function testThemeCompileExceptionIsThrownWhenWebpackStylesheetIsMissing(): void
+    {
+        $emptyRoot = sys_get_temp_dir() . '/sw-storefront-missing-' . bin2hex(random_bytes(4));
+        (new SymfonyFilesystem())->mkdir($emptyRoot);
+        $resolver = static::createStub(ThemeFilesystemResolver::class);
+        $resolver->method('getFilesystemForStorefrontConfig')
+            ->willReturn(new ThemeFilesystem($emptyRoot));
+        $compiler = $this->getThemeCompiler(themeFilesystemResolver: $resolver);
+
+        $config = new StorefrontPluginConfiguration('Storefront');
+        $config->setName('Storefront');
+
+        $this->filesystem->write('theme/kept/all.js', 'keep');
+
+        try {
+            $compiler->compileTheme(
+                TestDefaults::SALES_CHANNEL,
+                'theme-id',
+                $config,
+                new StorefrontPluginConfigurationCollection(),
+                true,
+                Context::createDefaultContext()
+            );
+            static::fail('A missing Webpack stylesheet must fail the compile.');
+        } catch (ThemeCompileException $exception) {
+            static::assertSame(
+                'Unable to compile the theme "Storefront - Theme-ID: theme-id". The storefront stylesheet "dist/css/storefront.css" is missing. Run the storefront build (`bin/build-storefront.sh` or `composer build:js:storefront`).',
+                $exception->getMessage()
+            );
+            static::assertSame('keep', $this->filesystem->read('theme/kept/all.js'));
+        } finally {
+            (new SymfonyFilesystem())->remove($emptyRoot);
+        }
+    }
+
+    public function testCompileCopiesWebpackStylesheetWithoutCompilingScss(): void
+    {
+        $scssPhpCompiler = $this->createMock(ScssPhpCompiler::class);
+        $scssPhpCompiler->expects($this->never())->method('compileString');
+        $compiler = $this->getThemeCompiler(scssPhpCompiler: $scssPhpCompiler);
 
         $config = new StorefrontPluginConfiguration('test');
-        $config->setName('faultyTheme');
 
-        $this->expectExceptionObject(new ThemeCompileException('faultyTheme'));
         $compiler->compileTheme(
             TestDefaults::SALES_CHANNEL,
             'test',
             $config,
             new StorefrontPluginConfigurationCollection(),
-            true,
+            false,
             Context::createDefaultContext()
         );
-    }
 
-    public function testThemeCompileExceptionIsThrownWhenConcatenateFails(): void
-    {
-        $this->themeFileResolver->method('resolveFiles')->willReturn(
-            [ThemeFileResolver::STYLE_FILES => FileCollection::createFromArray(['foo'])]
-        );
-
-        $this->eventDispatcher->method('dispatch')->willThrowException(new \Exception());
-
-        $compiler = $this->getThemeCompiler();
-
-        $config = new StorefrontPluginConfiguration('test');
-        $config->setName('faultyTheme');
-
-        $this->expectExceptionObject(new ThemeCompileException('faultyTheme'));
-        $compiler->compileTheme(
-            TestDefaults::SALES_CHANNEL,
-            'test',
-            $config,
-            new StorefrontPluginConfigurationCollection(),
-            true,
-            Context::createDefaultContext()
-        );
+        $cssPath = 'theme/9a11a759d278b4a55cb5e2c3414733c1/css/all.css';
+        static::assertTrue($this->filesystem->fileExists($cssPath));
+        static::assertSame("body{color:#0042a0}\n", $this->filesystem->read($cssPath));
+        static::assertFalse($this->tempFilesystem->fileExists('theme-variables.scss'));
     }
 
     public function testThemeCompileExceptionIsThrownWhenCollectCompiledFilesFails(): void
@@ -178,236 +218,6 @@ class ThemeCompilerTest extends TestCase
             true,
             Context::createDefaultContext()
         );
-    }
-
-    /**
-     * @param array<string, mixed> $config
-     */
-    #[DataProvider('configForDumpVariables')]
-    public function testDumpVariables(array $config, string $expected): void
-    {
-        $themeConfig = new StorefrontPluginConfiguration('test');
-        $themeConfig->setThemeConfig($config);
-
-        $this->getThemeCompiler()->compileTheme(
-            TestDefaults::SALES_CHANNEL,
-            'themeId',
-            $themeConfig,
-            new StorefrontPluginConfigurationCollection(),
-            false,
-            Context::createDefaultContext()
-        );
-
-        static::assertSame($expected, $this->tempFilesystem->read('theme-variables.scss'));
-        static::assertSame($expected, $this->tempFilesystem->read('theme-variables/themeId.scss'));
-    }
-
-    public static function configForDumpVariables(): \Generator
-    {
-        yield 'finds config fields and returns string with scss variables' => [
-            [
-                'fields' => [
-                    'sw-color-brand-primary' => [
-                        'name' => 'sw-color-brand-primary',
-                        'type' => 'color',
-                        'value' => '#008490',
-                    ],
-                    'sw-color-brand-secondary' => [
-                        'name' => 'sw-color-brand-secondary',
-                        'type' => 'color',
-                        'value' => '#526e7f',
-                    ],
-                    'sw-border-color' => [
-                        'name' => 'sw-border-color',
-                        'type' => 'color',
-                        'value' => '#bcc1c7',
-                    ],
-                    'sw-custom-header' => [
-                        'name' => 'sw-custom-header',
-                        'type' => 'checkbox',
-                        'value' => false,
-                    ],
-                    'sw-custom-footer' => [
-                        'name' => 'sw-custom-header',
-                        'type' => 'checkbox',
-                        'value' => true,
-                    ],
-                    'sw-custom-cart' => [
-                        'name' => 'sw-custom-header',
-                        'type' => 'switch',
-                        'value' => false,
-                    ],
-                    'sw-custom-product-box' => [
-                        'name' => 'sw-custom-header',
-                        'type' => 'switch',
-                        'value' => true,
-                    ],
-                    'sw-text-field' => [
-                        'name' => 'sw-text-field',
-                        'type' => 'text',
-                        'value' => '2px solid #000',
-                    ],
-                    'sw-custom-textarea' => [
-                        'name' => 'sw-custom-textarea',
-                        'type' => 'textarea',
-                        'value' => '123',
-                    ],
-                    'sw-invalid-textarea' => [
-                        'name' => 'sw-invalid-textarea',
-                        'type' => 'media',
-                        'value' => [123],
-                    ],
-                    'sw-custom-url' => [
-                        'name' => 'sw-custom-url',
-                        'type' => 'url',
-                        'value' => 'https://www.shopware.com',
-                    ],
-                    'sw-custom-media' => [
-                        'name' => 'sw-custom-media',
-                        'type' => 'media',
-                        'value' => '456',
-                    ],
-                    'sw-invalid-media' => [
-                        'name' => 'sw-invalid-media',
-                        'type' => 'media',
-                        'value' => [false],
-                    ],
-                    'sw-invalid-type' => [
-                        'name' => 'sw-invalid-type',
-                        'value' => [false],
-                    ],
-                    'sw-multi-test' => [
-                        'name' => 'sw-multi-test',
-                        'type' => 'text',
-                        'value' => [
-                            'top',
-                            'bottom',
-                        ],
-                        'custom' => [
-                            'componentName' => 'sw-multi-select',
-                            'options' => [
-                                [
-                                    'value' => 'bottom',
-                                ],
-                                [
-                                    'value' => 'top',
-                                ],
-                            ],
-                        ],
-                    ],
-                ],
-            ],
-            <<<PHP_EOL
-// ATTENTION! This file is auto generated by the Shopware\Storefront\Theme\ThemeCompiler and should not be edited.
-
-\$theme-id: themeId;
-\$sw-color-brand-primary: #008490;
-\$sw-color-brand-secondary: #526e7f;
-\$sw-border-color: #bcc1c7;
-\$sw-custom-header: 0;
-\$sw-custom-footer: 1;
-\$sw-custom-cart: 0;
-\$sw-custom-product-box: 1;
-\$sw-text-field: 2px solid #000;
-\$sw-custom-textarea: '123';
-\$sw-custom-url: 'https://www.shopware.com';
-\$sw-custom-media: '456';
-\$sw-asset-theme-url: 'http://localhost';
-
-PHP_EOL,
-        ];
-
-        yield 'ignores fields with scss config property set to false' => [
-            [
-                'fields' => [
-                    'sw-color-brand-primary' => [
-                        'name' => 'sw-color-brand-primary',
-                        'type' => 'color',
-                        'value' => '#008490',
-                    ],
-                    'sw-color-brand-secondary' => [
-                        'name' => 'sw-color-brand-secondary',
-                        'type' => 'color',
-                        'value' => '#526e7f',
-                    ],
-                    // Prevent adding field as sass variable
-                    'sw-ignore-me' => [
-                        'name' => 'sw-border-color',
-                        'type' => 'text',
-                        'value' => 'Foo bar',
-                        'scss' => false,
-                    ],
-                ],
-            ],
-            <<<PHP_EOL
-// ATTENTION! This file is auto generated by the Shopware\Storefront\Theme\ThemeCompiler and should not be edited.
-
-\$theme-id: themeId;
-\$sw-color-brand-primary: #008490;
-\$sw-color-brand-secondary: #526e7f;
-\$sw-asset-theme-url: 'http://localhost';
-
-PHP_EOL,
-        ];
-        yield 'HasNoConfigFieldsAndReturnsOnlyDefaultVariables' => [
-            [
-                'blocks' => [
-                    'themeColors' => [
-                        'label' => [
-                            'en-GB' => 'Theme colours',
-                            'de-DE' => 'Theme-Farben',
-                        ],
-                    ],
-                    'typography' => [
-                        'label' => [
-                            'en-GB' => 'Typography',
-                            'de-DE' => 'Typografie',
-                        ],
-                    ],
-                ],
-            ],
-            '// ATTENTION! This file is auto generated by the Shopware\Storefront\Theme\ThemeCompiler and should not be edited.
-
-$theme-id: themeId;
-$sw-asset-theme-url: \'http://localhost\';
-',
-        ];
-        yield 'MayHaveZeroValueButNotNull' => [
-            [
-                'fields' => [
-                    'sw-zero-margin' => [
-                        'name' => 'sw-zero-margin',
-                        'type' => 'text',
-                        'value' => 0,
-                    ],
-                    'sw-null-margin' => [
-                        'name' => 'sw-null-margin',
-                        'type' => 'text',
-                        'value' => null,
-                    ],
-                    'sw-unset-margin' => [
-                        'name' => 'sw-unset-margin',
-                        'type' => 'text',
-                    ],
-                    'sw-empty-margin' => [
-                        'name' => 'sw-empty-margin',
-                        'type' => 'text',
-                        'value' => '',
-                    ],
-                ],
-            ],
-            <<<PHP_EOL
-// ATTENTION! This file is auto generated by the Shopware\Storefront\Theme\ThemeCompiler and should not be edited.
-
-\$theme-id: themeId;
-\$sw-zero-margin: 0;
-\$sw-null-margin: null;
-\$sw-unset-margin: null;
-\$sw-empty-margin: null;
-\$sw-asset-theme-url: 'http://localhost';
-
-PHP_EOL,
-        ];
     }
 
     public function testScssVariablesEventAddsNewVariablesToArray(): void
@@ -502,8 +312,6 @@ PHP_EOL,
             ThemeFileResolver::SCRIPT_FILES => new FileCollection(),
             ThemeFileResolver::STYLE_FILES => new FileCollection(),
         ]);
-        $this->themeFilesystemResolver->method('getFilesystemForStorefrontConfig')
-            ->willReturn(new StaticFilesystem(['Resources/assets' => 'directory']));
         $stream = $this->tempFilesystem->readStream('logo.png');
         $this->copyBatchInputFactory->method('fromDirectory')->willReturn([
             new CopyBatchInput($stream, ['theme/test/logo.png']),
@@ -542,8 +350,6 @@ PHP_EOL,
 
         $config = new StorefrontPluginConfiguration('test');
         $config->setAssetPaths(['assets']);
-        $this->themeFilesystemResolver->method('getFilesystemForStorefrontConfig')
-            ->willReturn(new StaticFilesystem(['Resources/assets' => 'directory']));
         $this->themeFileResolver->method('resolveFiles')->willReturn([
             ThemeFileResolver::SCRIPT_FILES => new FileCollection(),
             ThemeFileResolver::STYLE_FILES => new FileCollection(),
@@ -576,10 +382,17 @@ PHP_EOL,
         $fs = new StaticFilesystem(['Resources/assets' => 'directory']);
 
         $themeFilesystemResolver = $this->createMock(ThemeFilesystemResolver::class);
-        $themeFilesystemResolver->expects($this->once())
+        $themeFilesystemResolver->expects($this->exactly(2))
             ->method('getFilesystemForStorefrontConfig')
-            ->with($config)
-            ->willReturn($fs);
+            ->willReturnCallback(function (StorefrontPluginConfiguration $configuration) use ($fs): ThemeFilesystem {
+                if ($configuration->getTechnicalName() === 'Storefront') {
+                    return $this->storefrontFilesystem;
+                }
+
+                static::assertSame('test', $configuration->getTechnicalName());
+
+                return $fs;
+            });
 
         $this->themeFileResolver->method('resolveFiles')->willReturn([
             ThemeFileResolver::SCRIPT_FILES => new FileCollection(),
@@ -630,10 +443,15 @@ PHP_EOL,
         $this->filesystem->createDirectory('theme/9a11a759d278b4a55cb5e2c3414733c1');
         $this->filesystem->write('theme/9a11a759d278b4a55cb5e2c3414733c1/all.js', '');
 
-        $scssPhpCompiler = $this->createMock(ScssPhpCompiler::class);
-        $scssPhpCompiler->expects($this->once())->method('compileString')->willThrowException(new \Exception());
+        $emptyRoot = sys_get_temp_dir() . '/sw-storefront-missing-' . bin2hex(random_bytes(4));
+        (new SymfonyFilesystem())->mkdir($emptyRoot);
+        $resolver = static::createStub(ThemeFilesystemResolver::class);
+        $resolver->method('getFilesystemForStorefrontConfig')->willReturn(new ThemeFilesystem($emptyRoot));
 
-        $compiler = $this->getThemeCompiler(scssPhpCompiler: $scssPhpCompiler);
+        $scssPhpCompiler = $this->createMock(ScssPhpCompiler::class);
+        $scssPhpCompiler->expects($this->never())->method('compileString');
+
+        $compiler = $this->getThemeCompiler(themeFilesystemResolver: $resolver, scssPhpCompiler: $scssPhpCompiler);
 
         $config = new StorefrontPluginConfiguration('test');
         $config->setAssetPaths(['assets']);
@@ -658,6 +476,7 @@ PHP_EOL,
 
         static::assertTrue($wasThrown);
         static::assertTrue($this->filesystem->fileExists('theme/9a11a759d278b4a55cb5e2c3414733c1/all.js'));
+        (new SymfonyFilesystem())->remove($emptyRoot);
     }
 
     public function testNewFilesAreDeletedOnCompileError(): void
@@ -675,8 +494,13 @@ PHP_EOL,
         $copyBatchInputFactory->expects($this->never())
             ->method('fromDirectory');
 
+        $emptyRoot = sys_get_temp_dir() . '/sw-storefront-missing-' . bin2hex(random_bytes(4));
+        (new SymfonyFilesystem())->mkdir($emptyRoot);
+        $resolver = static::createStub(ThemeFilesystemResolver::class);
+        $resolver->method('getFilesystemForStorefrontConfig')->willReturn(new ThemeFilesystem($emptyRoot));
+
         $scssPhpCompiler = $this->createMock(ScssPhpCompiler::class);
-        $scssPhpCompiler->expects($this->once())->method('compileString')->willThrowException(new \Exception());
+        $scssPhpCompiler->expects($this->never())->method('compileString');
 
         $this->pathBuilder = $this->createMock(MD5ThemePathBuilder::class);
         $this->pathBuilder->method('assemblePath')->willReturn('current');
@@ -685,6 +509,7 @@ PHP_EOL,
 
         $compiler = $this->getThemeCompiler(
             copyBatchInputFactory: $copyBatchInputFactory,
+            themeFilesystemResolver: $resolver,
             scssPhpCompiler: $scssPhpCompiler,
         );
 
@@ -709,6 +534,7 @@ PHP_EOL,
         static::assertTrue($wasThrown);
         static::assertTrue($this->filesystem->fileExists('theme/current/all.js'));
         static::assertFalse($this->filesystem->fileExists('theme/new/all.js'));
+        (new SymfonyFilesystem())->remove($emptyRoot);
     }
 
     public function testOldThemeFilesAreDeletedDelayedOnThemeCompileSuccess(): void
@@ -721,9 +547,6 @@ PHP_EOL,
 
         $this->filesystem->createDirectory('theme/current');
         $this->filesystem->write('theme/current/all.js', '');
-
-        $scssPhpCompiler = $this->createMock(ScssPhpCompiler::class);
-        $scssPhpCompiler->expects($this->once())->method('compileString')->willReturn('');
 
         $this->pathBuilder = $this->createMock(MD5ThemePathBuilder::class);
         $this->pathBuilder->method('assemblePath')->willReturn('current');
@@ -738,7 +561,7 @@ PHP_EOL,
             ->method('saveSeed')
             ->with(TestDefaults::SALES_CHANNEL, 'test');
 
-        $compiler = $this->getThemeCompiler(scssPhpCompiler: $scssPhpCompiler);
+        $compiler = $this->getThemeCompiler();
 
         $config = new StorefrontPluginConfiguration('test');
         $config->setAssetPaths(['assets']);
@@ -753,6 +576,7 @@ PHP_EOL,
         );
 
         static::assertTrue($this->filesystem->fileExists('theme/current/all.js'));
+        static::assertSame("body{color:#0042a0}\n", $this->filesystem->read('theme/new/css/all.css'));
     }
 
     public function testCopyScriptFilesToTheme(): void
@@ -767,9 +591,6 @@ PHP_EOL,
         $this->filesystem->createDirectory($distLocation);
         $this->filesystem->write($distLocation . '/test-theme.js', '');
 
-        $scssPhpCompiler = $this->createMock(ScssPhpCompiler::class);
-        $scssPhpCompiler->expects($this->once())->method('compileString')->willReturn('');
-
         $logger = $this->createMock(LoggerInterface::class);
         $logger->expects($this->once())->method('error');
 
@@ -782,13 +603,13 @@ PHP_EOL,
         $compiler = $this->getThemeCompiler(
             themeFilesystemResolver: $themeFilesystemResolver,
             logger: $logger,
-            scssPhpCompiler: $scssPhpCompiler,
         );
 
         $filesystems = [
             'AsyncPlugin' => new ThemeFilesystem(__DIR__ . '/fixtures/ThemeAndPlugin/AsyncPlugin'),
             'TestTheme' => new ThemeFilesystem(__DIR__ . '/fixtures/ThemeAndPlugin/TestTheme'),
             'NotFoundPlugin' => new ThemeFilesystem(__DIR__ . '/fixtures/ThemeAndPlugin/NotFoundPlugin'),
+            'Storefront' => $this->storefrontFilesystem,
         ];
 
         $sourceResolver = new StaticSourceResolver($filesystems);

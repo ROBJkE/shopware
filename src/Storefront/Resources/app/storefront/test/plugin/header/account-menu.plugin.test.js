@@ -1,4 +1,16 @@
+import Menu from 'bootstrap/js/dist/menu.js';
 import OffCanvasAccountMenu from 'src/plugin/header/account-menu.plugin';
+
+jest.mock('bootstrap/js/dist/menu.js', () => {
+    const Menu = jest.fn();
+    Menu.getInstance = jest.fn();
+    Menu.Default = { offset: [0, 0] };
+
+    return {
+        __esModule: true,
+        default: Menu,
+    };
+});
 
 describe('OffCanvasAccountMenuPlugin tests', () => {
     let plugin;
@@ -7,24 +19,24 @@ describe('OffCanvasAccountMenuPlugin tests', () => {
         document.body.innerHTML = `
         <div class="account-menu">
             <div class="dropdown">
-                <button class="btn account-menu-btn header-actions-btn show" type="button" id="accountWidget" data-offcanvas-account-menu="true" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="true" aria-label="Your account" title="Your account">
+                <button class="btn account-menu-btn header-actions-btn show" type="button" id="accountWidget" data-offcanvas-account-menu="true" data-bs-toggle="menu" aria-haspopup="true" aria-expanded="true" aria-label="Your account" title="Your account">
                     <span class="icon icon-avatar"></span>
                 </button>
 
-                <div class="dropdown-menu dropdown-menu-right account-menu-dropdown js-account-menu-dropdown" aria-labelledby="accountWidget">
-                    <div class="offcanvas-header p-0">
-                        <button class="btn btn-light offcanvas-close js-offcanvas-close">
+                <div class="menu account-menu-dropdown js-account-menu-dropdown" aria-labelledby="accountWidget">
+                    <div class="drawer-header p-0">
+                        <button class="btn btn-solid theme-light offcanvas-close js-offcanvas-close">
                             <span class="icon icon-x icon-sm"></span>
                             Close menu
                         </button>
                     </div>
 
-                    <div class="offcanvas-body">
+                    <div class="drawer-body">
                         <div class="account-menu">
-                            <div class="dropdown-header account-menu-header">Your account</div>
+                            <div class="menu-header account-menu-header">Your account</div>
 
                             <div class="account-menu-login">
-                                <a href="/account/login" title="Log in" class="btn btn-primary account-menu-login-button">Log in</a>
+                                <a href="/account/login" title="Log in" class="btn btn-solid theme-primary account-menu-login-button">Log in</a>
                                 <div class="account-menu-register">or <a href="/account/login" title="Sign up">sign up</a></div>
                             </div>
 
@@ -91,7 +103,7 @@ describe('OffCanvasAccountMenuPlugin tests', () => {
         jest.runAllTimers();
 
         // Ensure OffCanvas exists with account menu HTML
-        expect(document.querySelector('.offcanvas.account-menu-offcanvas .account-menu-inner')).toBeTruthy();
+        expect(document.querySelector('.drawer.account-menu-offcanvas .account-menu-inner')).toBeTruthy();
     });
 
     test('Does not open OffCanvas on desktop viewports', () => {
@@ -114,7 +126,7 @@ describe('OffCanvasAccountMenuPlugin tests', () => {
         jest.runAllTimers();
 
         // Ensure no OffCanvas exists on desktop viewport
-        expect(document.querySelector('.offcanvas.account-menu-offcanvas')).toBeFalsy();
+        expect(document.querySelector('.drawer.account-menu-offcanvas')).toBeFalsy();
     });
 
     test('Closes the dropdown when the viewport changes to allowed viewports', () => {
@@ -131,11 +143,7 @@ describe('OffCanvasAccountMenuPlugin tests', () => {
             show: jest.fn(),
             hide: jest.fn(),
         };
-        window.bootstrap = {
-            Dropdown: {
-                getInstance: jest.fn().mockReturnValue(mockDropdown),
-            },
-        };
+        Menu.getInstance.mockReturnValue(mockDropdown);
 
         const event = new Event('click', { bubbles: true });
 

@@ -19,7 +19,7 @@ describe('ScrollUpPlugin', () => {
 
             <footer></footer>
             <div class="scroll-up-container" data-scroll-up="true">
-                <button class="js-scroll-up-button btn btn-primary" aria-label="Go up">
+                <button class="js-scroll-up-button btn btn-solid theme-primary" aria-label="Go up">
                     <svg></svg>
                 </button>
             </div>

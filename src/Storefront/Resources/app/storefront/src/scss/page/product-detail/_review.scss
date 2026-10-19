@@ -1,3 +1,4 @@
+@use 'abstract/bootstrap-mixins' as *;
 // review widget
 .product-detail-review-widget {
     margin-bottom: $spacer;
@@ -109,8 +110,8 @@
     margin-right: 5px;
 }
 
-// review offcanvas
-.offcanvas {
+// review drawer
+.drawer {
     .product-detail-review-widget {
         position: static;
     }

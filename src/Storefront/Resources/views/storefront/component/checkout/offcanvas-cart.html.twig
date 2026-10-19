@@ -59,8 +59,8 @@
                         {% for lineItem in page.cart.lineItems %}
                             {% block component_offcanvas_cart_item %}
                                 {% sw_include '@Storefront/storefront/component/line-item/line-item.html.twig' with {
-                                    displayMode: 'offcanvas',
-                                    redirectTo: 'frontend.cart.offcanvas'
+                                    displayMode: 'drawer',
+                                    redirectTo: 'frontend.cart.drawer'
                                 } %}
                             {% endblock %}
                         {% endfor %}
@@ -93,7 +93,7 @@
                                         {% block component_offcanvas_cart_actions_promotion_redirect %}
                                             <input type="hidden"
                                                    name="redirectTo"
-                                                   value="frontend.cart.offcanvas">
+                                                   value="frontend.cart.drawer">
                                         {% endblock %}
 
                                         {% block component_offcanvas_cart_actions_promotion_label %}
@@ -114,7 +114,7 @@
                                                 {% endblock %}
 
                                                 {% block component_offcanvas_cart_actions_promotion_submit %}
-                                                    <button class="btn btn-outline-secondary offcanvas-cart-promotion-button"
+                                                    <button class="btn btn-outline theme-secondary offcanvas-cart-promotion-button"
                                                             type="submit"
                                                             id="addPromotionOffcanvasCart"
                                                             aria-label="{{ 'checkout.addPromotionApplyAction'|trans|striptags }}">
@@ -132,7 +132,7 @@
                     {% block component_offcanvas_cart_actions_checkout %}
                         <div class="d-grid">
                             <a href="{{ path('frontend.checkout.confirm.page') }}"
-                               class="btn begin-checkout-btn mb-2{% if isCartNotEmpty %} btn-primary{% else %} btn-light disabled{% endif %}"
+                               class="btn begin-checkout-btn mb-2{% if isCartNotEmpty %} btn-solid theme-primary{% else %} btn-solid theme-light disabled{% endif %}"
                                title="{{ 'checkout.proceedToCheckout'|trans|striptags }}">
                                 {{ 'checkout.proceedToCheckout'|trans|sw_sanitize }}
                             </a>

@@ -18,10 +18,10 @@
 {% block single_cms_page_body %}
     {# @deprecated tag:v6.8.0 - CSS classes `is-ctl-*` and `is-act-*` will be removed, use `is-active-route-*` instead. #}
     <body class="{% block single_cms_page_body_classes %}
-        {%- if controllerName is not empty -%}is-ctl-{{ controllerName|lower }} {% endif -%}
-        {%- if controllerAction is not empty -%}is-act-{{ controllerAction|lower }} {% endif -%}
-        {%- if activeRoute is not empty -%}is-active-route-{{ activeRoute|replace({'.': '-'}) }}{%- endif -%}
-    {%- endblock %}">
+ {%- if controllerName is not empty -%}is-ctl-{{ controllerName|lower }} {% endif -%}
+ {%- if controllerAction is not empty -%}is-act-{{ controllerAction|lower }} {% endif -%}
+ {%- if activeRoute is not empty -%}is-active-route-{{ activeRoute|replace({'.': '-'}) }}{%- endif -%}
+ {%- endblock %}">
         {% block single_cms_page_body_inner %}
             {% block single_cms_page_noscript %}
                 <noscript class="noscript-main">
@@ -38,7 +38,7 @@
                     {% block single_cms_page_header_inner %}
                         <div class="container">
                             <div class="row align-items-center header-row">
-                                <div class="col-12 col-lg-auto header-logo-col">
+                                <div class="col-12 lg:col-auto header-logo-col">
                                     {% sw_include '@Storefront/storefront/layout/header/logo.html.twig' %}
                                 </div>
                             </div>

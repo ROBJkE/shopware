@@ -2,7 +2,7 @@ const FOCUS_TRAP_GUARD_CLASS = 'js-focus-trap-guard';
 
 /**
  * This class is used to make it easier to preserve the focus state.
- * It is used to set the focus back to a given element after displaying content in a modal.
+ * It is used to set the focus back to a given element after displaying content in a dialog.
  *
  * @sw-package framework
  */
@@ -179,12 +179,12 @@ export default class FocusHandler {
 
     /**
      * Inserts a temporary focusable element directly after the given element to keep the Bootstrap
-     * focus-trap working when a modal/offcanvas is the last focusable markup before `</body>`.
-     * Without it, tabbing forward escapes the modal/offcanvas and the focus is lost.
+     * focus-trap working when a dialog/drawer is the last focusable markup before `</body>`.
+     * Without it, tabbing forward escapes the dialog/drawer and the focus is lost.
      *
      * @internal
      * @todo: Remove when upstream issue https://github.com/twbs/bootstrap/issues/42503 is resolved.
-     * @param {HTMLElement} afterEl The element the focus-trap is applied to (e.g. modal or offcanvas).
+     * @param {HTMLElement} afterEl The element the focus-trap is applied to (e.g. dialog or drawer).
      * @return {HTMLElement|null}
      */
     _addFocusTrapGuard(afterEl) {

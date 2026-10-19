@@ -1,3 +1,4 @@
+import Menu from 'bootstrap/js/dist/menu.js';
 import Plugin from 'src/plugin-system/plugin.class';
 import OffCanvas from 'src/plugin/offcanvas/offcanvas.plugin';
 import ViewportDetection from 'src/helper/viewport-detection.helper';
@@ -6,17 +7,17 @@ export default class OffCanvasAccountMenu extends Plugin {
 
     static options = {
         /**
-         * selector for the dropdown menu content which is inserted into the offcanvas
+         * selector for the dropdown menu content which is inserted into the drawer
          */
         dropdownMenuSelector: 'js-account-menu-dropdown',
 
         /**
-         * additional class for the offcanvas
+         * additional class for the drawer
          */
         additionalClass: 'account-menu-offcanvas',
 
         /**
-         * from which direction the offcanvas opens
+         * from which direction the drawer opens
          */
         offcanvasPostion: 'left',
     };
@@ -35,7 +36,7 @@ export default class OffCanvasAccountMenu extends Plugin {
      */
     _registerEventListeners() {
         this.el.addEventListener('click', this._onClickAccountMenuTrigger.bind(this, this.el));
-        this._dropdownWrapper.addEventListener('show.bs.dropdown', this._onClickPreventDropdown.bind(this));
+        this._dropdownWrapper.addEventListener('show.bs.menu', this._onClickPreventDropdown.bind(this));
 
         document.addEventListener('Viewport/hasChanged', this._onViewportHasChanged.bind(this));
     }
@@ -71,7 +72,7 @@ export default class OffCanvasAccountMenu extends Plugin {
 
     /**
      * If viewport has changed verify whether to close
-     * an already open account menu offcanvas/dropwdown or not
+     * an already open account menu drawer/dropwdown or not
      * @private
      */
     _onViewportHasChanged() {
@@ -84,7 +85,7 @@ export default class OffCanvasAccountMenu extends Plugin {
         }
 
         if (this._dropdown) {
-            const bsDropdownInstance = bootstrap.Dropdown.getInstance(this.el);
+            const bsDropdownInstance = Menu.getInstance(this.el);
 
             if (this._isInAllowedViewports() === true) {
                 if (bsDropdownInstance) {

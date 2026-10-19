@@ -99,7 +99,7 @@ describe('plugin/google-analytics/events/add-to-cart.event', () => {
         event.execute();
 
         const formData = new FormData();
-        formData.append('redirectTo', 'frontend.cart.offcanvas');
+        formData.append('redirectTo', 'frontend.cart.drawer');
 
         addToCartInstance.$emitter.publish('beforeFormSubmit', formData);
 

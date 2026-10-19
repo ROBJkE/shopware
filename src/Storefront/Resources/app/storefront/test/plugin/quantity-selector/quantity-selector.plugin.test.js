@@ -36,7 +36,7 @@ describe('QuantitySelectorPlugin tests', () => {
               method="post"
         >
             <div class="input-group line-item-quantity-group" data-quantity-selector="true">
-                <button type="button" class="btn btn-light image-plus-btn js-btn-minus">
+                <button type="button" class="btn btn-solid theme-light image-plus-btn js-btn-minus">
                         <svg></svg>
                 </button>
                 <input
@@ -48,7 +48,7 @@ describe('QuantitySelectorPlugin tests', () => {
                     step="1"
                     value="20"
                 />
-                <button type="button" class="btn btn-light image-plus-btn js-btn-plus">
+                <button type="button" class="btn btn-solid theme-light image-plus-btn js-btn-plus">
                         <svg></svg>
                 </button>
                 <span class="input-group-text js-quantity-selector-unit" data-unit-singular="box" data-unit-plural="boxes">boxes</span>

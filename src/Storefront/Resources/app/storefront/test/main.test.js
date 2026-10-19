@@ -15,8 +15,7 @@ describe('Storefront main entry point', () => {
     });
 
     it('should have all needed window properties', () => {
-        expect(window.bootstrap).toBeDefined();
-        expect(typeof window.bootstrap).toBe('object');
+        expect(window.bootstrap).toBeUndefined();
 
         expect(window.eventEmitter).toBeInstanceOf(NativeEventEmitter);
 

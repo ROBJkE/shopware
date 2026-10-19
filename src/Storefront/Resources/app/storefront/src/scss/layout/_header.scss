@@ -2,8 +2,9 @@
 Header
 ==================================================
 Contains custom styles for the header at the top of the page.
-The header contains the shop logo, the search form and various actions like the offcanvas cart button.
+The header contains the shop logo, the search form and various actions like the drawer cart button.
 */
+@use 'abstract/bootstrap-mixins' as *;
 
 .header-row {
     padding: $spacer-sm 0;

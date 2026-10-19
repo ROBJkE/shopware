@@ -12,7 +12,7 @@
             {% set requiresTermsOfService = requiresTermsOfService ?? true %}
             {% set showLegalGuaranteeNotice = requiresTermsOfService and config('core.cart.showLegalGuaranteeNotice') %}
             {% set legalGuaranteeNoticeModalId = 'legalGuaranteeNoticeModal' %}
-            {% set legalGuaranteeNoticeModalTagOpen = '<button type="button" class="btn btn-link-inline" aria-haspopup="dialog" data-bs-toggle="modal" data-bs-target="#' ~ legalGuaranteeNoticeModalId ~ '">' %}
+            {% set legalGuaranteeNoticeModalTagOpen = '<button type="button" class="btn btn-link-inline" aria-haspopup="dialog" data-bs-toggle="dialog" data-bs-target="#' ~ legalGuaranteeNoticeModalId ~ '">' %}
             {% set legalGuaranteeNoticeModalTagClose = '</button>' %}
 
             {% block component_privacy_legal_guarantee_notice_paragraph %}
@@ -61,30 +61,30 @@
 
             {% block component_privacy_legal_guarantee_notice_modal %}
                 {% if showLegalGuaranteeNotice %}
-                    <div class="modal modal-lg fade"
+                    <dialog class="dialog dialog-lg fade"
                          id="{{ legalGuaranteeNoticeModalId }}"
                          tabindex="-1"
                          role="dialog"
                          aria-modal="true"
                          aria-hidden="true"
                          aria-labelledby="{{ legalGuaranteeNoticeModalId }}-header">
-                        <div class="modal-dialog modal-dialog-centered">
-                            <div class="modal-content">
+                        <div>
+                            <div>
                                 {% block component_privacy_legal_guarantee_notice_modal_header %}
-                                    <div class="modal-header">
-                                        <div id="{{ legalGuaranteeNoticeModalId }}-header" class="modal-title js-pseudo-modal-template-title-element h5">
+                                    <div class="dialog-header">
+                                        <div id="{{ legalGuaranteeNoticeModalId }}-header" class="dialog-title js-pseudo-modal-template-title-element h5">
                                             {{ 'checkout.confirmLegalGuaranteeNoticeLink'|trans|sw_sanitize }}
                                         </div>
                                         <button class="btn-close close"
                                                 type="button"
-                                                data-bs-dismiss="modal"
+                                                data-bs-dismiss="dialog"
                                                 aria-label="{{ 'global.default.close'|trans|striptags }}">
                                         </button>
                                     </div>
                                 {% endblock %}
 
                                 {% block component_privacy_legal_guarantee_notice_modal_body %}
-                                    <div class="modal-body confirm-legal-guarantee-notice">
+                                    <div class="dialog-body confirm-legal-guarantee-notice">
                                         <a href="{{ context.languageId|sw_legal_guarantee_notice_link }}"
                                            target="_blank"
                                            rel="noopener">
@@ -94,7 +94,7 @@
                                 {% endblock %}
                             </div>
                         </div>
-                    </div>
+                    </dialog>
                 {% endif %}
             {% endblock %}
         {% endblock %}

@@ -10,7 +10,7 @@ let fireRequestSpy;
 describe('OffCanvasCartPlugin tests', () => {
     const offCanvasCartTemplate = `
         <button class="offcanvas-close js-offcanvas-close">Continue shopping</button>
-        <div class="offcanvas-body">
+        <div class="drawer-body">
             <div class="cart-item cart-item-product js-cart-item">
                 <a class="cart-item-label" href="#">Kek product</a>
 
@@ -42,7 +42,7 @@ describe('OffCanvasCartPlugin tests', () => {
             // Of we see a request body, we have a POST request.
             if (init.body) {
                 return Promise.resolve({
-                    text: () => Promise.resolve('<div class="offcanvas-body">Content after update</div>'),
+                    text: () => Promise.resolve('<div class="drawer-body">Content after update</div>'),
                 });
             }
             return Promise.resolve({
@@ -51,7 +51,7 @@ describe('OffCanvasCartPlugin tests', () => {
         });
 
         window.router = {
-            'frontend.cart.offcanvas': '/checkout/offcanvas',
+            'frontend.cart.drawer': '/checkout/drawer',
         };
 
         window.focusHandler = {
@@ -101,22 +101,22 @@ describe('OffCanvasCartPlugin tests', () => {
         expect(typeof plugin).toBe('object');
     });
 
-    test('open offcanvas cart', async () => {
+    test('open drawer cart', async () => {
         const el = document.querySelector('.header-cart');
 
-        // Open offcanvas cart with click
+        // Open drawer cart with click
         el.dispatchEvent(new Event('click', { bubbles: true }));
         await new Promise(process.nextTick);
 
         expect(plugin.$emitter.publish).toHaveBeenCalledWith('offCanvasOpened', { response: expect.any(String) });
-        expect(document.querySelector('.offcanvas.cart-offcanvas')).toBeTruthy();
+        expect(document.querySelector('.drawer.cart-offcanvas')).toBeTruthy();
         expect(document.querySelector('.cart-item-product')).toBeTruthy();
     });
 
     test('change product quantity using select', async () => {
         const el = document.querySelector('.header-cart');
 
-        // Open offcanvas cart with click
+        // Open drawer cart with click
         el.dispatchEvent(new Event('click', { bubbles: true }));
         await new Promise(process.nextTick);
 
@@ -130,13 +130,13 @@ describe('OffCanvasCartPlugin tests', () => {
         expect(fireRequestSpy).toHaveBeenCalledTimes(1);
 
         // Verify updated content after quantity change
-        expect(document.querySelector('.offcanvas-body').textContent).toBe('Content after update');
+        expect(document.querySelector('.drawer-body').textContent).toBe('Content after update');
     });
 
     test('change product quantity using number input', async () => {
         const el = document.querySelector('.header-cart');
 
-        // Open offcanvas cart with click
+        // Open drawer cart with click
         el.dispatchEvent(new Event('click', {
             bubbles: true,
         }));
@@ -156,7 +156,7 @@ describe('OffCanvasCartPlugin tests', () => {
         expect(fireRequestSpy).toHaveBeenCalledTimes(1);
 
         // Verify updated content after quantity change
-        expect(document.querySelector('.offcanvas-body').textContent).toBe('Content after update');
+        expect(document.querySelector('.drawer-body').textContent).toBe('Content after update');
     });
 
     test('restores the focus to the element focused when the delayed request fires', async () => {
@@ -164,7 +164,7 @@ describe('OffCanvasCartPlugin tests', () => {
 
         document.querySelector('.header-cart').dispatchEvent(new Event('click', { bubbles: true }));
         await new Promise(process.nextTick);
-        // Let the opened offcanvas take the initial focus before the user interacts.
+        // Let the opened drawer take the initial focus before the user interacts.
         jest.runOnlyPendingTimers();
 
         const quantityInput = document.querySelector('.js-offcanvas-cart-change-quantity-number');
@@ -192,7 +192,7 @@ describe('OffCanvasCartPlugin tests', () => {
                     serverCart.b = Number(init.body.get('quantity'));
                 }
 
-                resolve({ text: () => Promise.resolve(`<div class="offcanvas-body">${JSON.stringify(serverCart)}</div>`) });
+                resolve({ text: () => Promise.resolve(`<div class="drawer-body">${JSON.stringify(serverCart)}</div>`) });
             });
         }));
 
@@ -215,13 +215,13 @@ describe('OffCanvasCartPlugin tests', () => {
 
         responses.shift()();
         await new Promise(process.nextTick);
-        expect(document.querySelector('.offcanvas-body').textContent).toBe('{"b":1}');
+        expect(document.querySelector('.drawer-body').textContent).toBe('{"b":1}');
         expect(global.fetch).toHaveBeenCalledTimes(2);
 
         responses.shift()();
         await new Promise(process.nextTick);
         expect(serverCart).toEqual({ b: 2 });
-        expect(document.querySelector('.offcanvas-body').textContent).toBe(JSON.stringify(serverCart));
+        expect(document.querySelector('.drawer-body').textContent).toBe(JSON.stringify(serverCart));
     });
 
     test('continues with queued mutations after a failed request', async () => {
@@ -232,7 +232,7 @@ describe('OffCanvasCartPlugin tests', () => {
         const warn = jest.spyOn(console, 'warn').mockImplementation(() => {});
         global.fetch = jest.fn()
             .mockRejectedValueOnce(error)
-            .mockResolvedValueOnce({ text: () => Promise.resolve('<div class="offcanvas-body">Recovered</div>') });
+            .mockResolvedValueOnce({ text: () => Promise.resolve('<div class="drawer-body">Recovered</div>') });
         const forms = document.querySelectorAll('form');
         plugin._fireRequest(forms[0], '.js-cart-item');
         plugin._fireRequest(forms[1], '.js-cart-item');
@@ -240,7 +240,7 @@ describe('OffCanvasCartPlugin tests', () => {
 
         expect(warn).toHaveBeenCalledWith('Unable to update the off-canvas cart.', error);
         expect(global.fetch).toHaveBeenCalledTimes(2);
-        expect(document.querySelector('.offcanvas-body').textContent).toBe('Recovered');
+        expect(document.querySelector('.drawer-body').textContent).toBe('Recovered');
     });
 
     test('waits for the shipping refresh before sending the next mutation', async () => {
@@ -264,22 +264,22 @@ describe('OffCanvasCartPlugin tests', () => {
         responses.shift()({ text: () => Promise.resolve('') });
         await new Promise(process.nextTick);
         expect(global.fetch).toHaveBeenCalledTimes(2);
-        expect(global.fetch.mock.calls[1][0]).toBe('/checkout/offcanvas');
+        expect(global.fetch.mock.calls[1][0]).toBe('/checkout/drawer');
 
-        responses.shift()({ text: () => Promise.resolve('<div class="offcanvas-body">Shipping updated</div>') });
+        responses.shift()({ text: () => Promise.resolve('<div class="drawer-body">Shipping updated</div>') });
         await new Promise(process.nextTick);
         expect(global.fetch).toHaveBeenCalledTimes(3);
         expect(global.fetch.mock.calls[2][1].method).toBe('POST');
 
-        responses.shift()({ text: () => Promise.resolve('<div class="offcanvas-body">Quantity updated</div>') });
+        responses.shift()({ text: () => Promise.resolve('<div class="drawer-body">Quantity updated</div>') });
         await new Promise(process.nextTick);
-        expect(document.querySelector('.offcanvas-body').textContent).toBe('Quantity updated');
+        expect(document.querySelector('.drawer-body').textContent).toBe('Quantity updated');
     });
 
     test('does not fire a request for a change the quantity selector withholds', async () => {
         const el = document.querySelector('.header-cart');
 
-        // Open offcanvas cart with click
+        // Open drawer cart with click
         el.dispatchEvent(new Event('click', {
             bubbles: true,
         }));
@@ -302,7 +302,7 @@ describe('OffCanvasCartPlugin tests', () => {
     test('change product quantity should not send too many requests when spamming the number input', async () => {
         const el = document.querySelector('.header-cart');
 
-        // Open offcanvas cart with click
+        // Open drawer cart with click
         el.dispatchEvent(new Event('click', {
             bubbles: true,
         }));

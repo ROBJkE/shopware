@@ -440,7 +440,7 @@ export default class MagnifierPlugin extends Plugin {
             return this._overlay;
         }
 
-        const html = `<div class="magnifier-overlay  ${this.options.overlayClass}">&nbsp;</div>`;
+        const html = `<div class="magnifier-overlay ${this.options.overlayClass}">&nbsp;</div>`;
         container.insertAdjacentHTML('beforeend', html);
         this._overlay = container.querySelector(`.${this.options.overlayClass}`);
 
@@ -476,7 +476,7 @@ export default class MagnifierPlugin extends Plugin {
         }
 
         this._zoomImageContainer.style.position = 'relative';
-        const html = `<div class="magnifier-zoom-image  ${this.options.zoomImageClass}">&nbsp;</div>`;
+        const html = `<div class="magnifier-zoom-image ${this.options.zoomImageClass}">&nbsp;</div>`;
         this._zoomImageContainer.insertAdjacentHTML('beforeend', html);
         this._zoomImage = this._zoomImageContainer.querySelector(`.${this.options.zoomImageClass}`);
 

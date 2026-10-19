@@ -78,7 +78,7 @@
                                             autocomplete: 'section-personal email',
                                             violationPath: '/email',
                                             validationRules: 'required,email',
-                                            additionalClass: 'col-sm-6',
+                                            additionalClass: 'sm:col-6',
                                         } %}
                                     {% endblock %}
                                 {% endset %}
@@ -94,7 +94,7 @@
                                             autocomplete: 'section-personal email',
                                             violationPath: '/email',
                                             validationRules: 'confirmation,required,email',
-                                            additionalClass: 'col-sm-6',
+                                            additionalClass: 'sm:col-6',
                                         } %}
                                     {% endblock %}
                                 {% endset %}
@@ -120,7 +120,7 @@
                                                 violationPath: '/password',
                                                 validationRules: 'required,minLength',
                                                 minlength: config('core.loginRegistration.passwordMinLength'),
-                                                additionalClass: 'col-sm-6 js-form-field-toggle-guest-mode',
+                                                additionalClass: 'sm:col-6 js-form-field-toggle-guest-mode',
                                             } %}
                                         {% endblock %}
                                     {% endblock %}
@@ -136,7 +136,7 @@
                                             autocomplete: 'new-password',
                                             violationPath: '/passwordConfirmation',
                                             validationRules: 'required,confirmation',
-                                            additionalClass: 'col-sm-6 js-form-field-toggle-guest-mode',
+                                            additionalClass: 'sm:col-6 js-form-field-toggle-guest-mode',
                                         } %}
                                     {% endblock %}
                                 {% endset %}
@@ -149,7 +149,7 @@
                                             {{ formGroupMailConfirmation }}
                                         {% elseif config('core.loginRegistration.requirePasswordConfirmation') %}
                                             {# If password has a confirmation field, render them in a speparate line next to each other. #}
-                                            <div class="form-group col-sm-6"></div>
+                                            <div class="form-group sm:col-6"></div>
                                         {% endif %}
 
                                         {{ formGroupPassword }}
@@ -271,9 +271,9 @@
                     {% endblock %}
 
                     {% block component_account_register_submit %}
-                        <div class="register-submit d-grid col-md-6 offset-md-6">
+                        <div class="register-submit d-grid md:col-6 md:offset-6">
                             <button type="submit"
-                                    class="btn btn-primary btn-lg">
+                                    class="btn btn-solid theme-primary btn-lg">
                                 {% if activeRoute === 'frontend.checkout.register.page' %}
                                     {{ 'checkout.registerSubmit'|trans|sw_sanitize }}
                                 {% else %}

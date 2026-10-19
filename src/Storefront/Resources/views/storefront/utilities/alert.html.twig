@@ -110,7 +110,7 @@ The role="alert" and aria-live attributes are then set by JavaScript to trigger 
         {% endif %}
         role="alert"
         aria-live="{{ ariaLive }}"
-        class="alert {% if type %}alert-{{ type }}{% endif %}{% if dismissible %} alert-dismissible fade show{% endif %}{% if icon != 'error' %} d-flex align-items-center{% endif %}"
+        class="alert {% if type %}theme-{{ type }}{% endif %}{% if dismissible %} alert-dismissible fade show{% endif %}{% if icon != 'error' %} d-flex align-items-center{% endif %}"
     >
         {% block utilities_alert_icon %}
             {% if icon != 'false' %}

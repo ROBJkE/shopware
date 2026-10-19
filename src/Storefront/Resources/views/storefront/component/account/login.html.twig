@@ -67,7 +67,7 @@
                                     autocomplete: 'username webauthn',
                                     error: loginError,
                                     validationRules: 'required,email',
-                                    additionalClass: 'col-sm-6 col-lg-12',
+                                    additionalClass: 'sm:col-6 lg:col-12',
                                 } %}
                             {% endblock %}
 
@@ -80,7 +80,7 @@
                                     autocomplete: 'current-password',
                                     error: loginError,
                                     validationRules: 'required',
-                                    additionalClass: 'col-sm-6 col-lg-12',
+                                    additionalClass: 'sm:col-6 lg:col-12',
                                 } %}
                             {% endblock %}
                         </div>
@@ -99,7 +99,7 @@
                     {% block component_account_login_submit %}
                         <div class="login-submit">
                             <button type="submit"
-                                    class="btn btn-primary">
+                                    class="btn btn-solid theme-primary">
                                 {{ 'account.loginSubmit'|trans|sw_sanitize }}
                             </button>
                         </div>

@@ -60,7 +60,7 @@
                         {% for lineItem in page.cart.lineItems %}
                             {% block page_checkout_address_product_summary_item %}
                                 {% sw_include '@Storefront/storefront/component/line-item/line-item.html.twig' with {
-                                    displayMode: 'offcanvas',
+                                    displayMode: 'drawer',
                                     showQuantitySelect: false
                                 } %}
                             {% endblock %}

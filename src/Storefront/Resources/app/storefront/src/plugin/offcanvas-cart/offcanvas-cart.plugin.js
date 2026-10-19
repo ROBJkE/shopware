@@ -79,7 +79,7 @@ export default class OffCanvasCartPlugin extends Plugin {
     _onOpenOffCanvasCart(event) {
         event.preventDefault();
 
-        this.openOffCanvas(window.router['frontend.cart.offcanvas'], false);
+        this.openOffCanvas(window.router['frontend.cart.drawer'], false);
     }
 
     /**
@@ -186,7 +186,7 @@ export default class OffCanvasCartPlugin extends Plugin {
     }
 
     /**
-     * default callback when the offcanvas has opened
+     * default callback when the drawer has opened
      *
      * @param {function|null} callback
      * @param {string} response
@@ -332,7 +332,7 @@ export default class OffCanvasCartPlugin extends Plugin {
         event.preventDefault();
 
         this.$emitter.publish('onShippingMethodChange');
-        const url = window.router['frontend.cart.offcanvas'];
+        const url = window.router['frontend.cart.drawer'];
 
         const _callback = () => {
             return fetch(url, {

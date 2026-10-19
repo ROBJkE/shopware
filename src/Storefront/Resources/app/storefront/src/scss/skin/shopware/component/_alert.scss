@@ -18,9 +18,9 @@ https://getbootstrap.com/docs/5.2/components/alerts
 }
 
 @each $state, $value in $theme-colors {
-    .alert-#{$state} {
-        --#{$prefix}alert-border-color: #{$value};
-        --#{$prefix}alert-bg: #{saturate(tint-color($value, 90%), 40%)};
-        --#{$prefix}alert-color: #{$body-color};
+    .alert.theme-#{$state} {
+        --alert-border-color: #{$value};
+        --alert-bg: #{$value};
+        --alert-color: #{$body-color};
     }
 }

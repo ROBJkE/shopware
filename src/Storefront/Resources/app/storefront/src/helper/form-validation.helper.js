@@ -35,7 +35,7 @@ import CookieStorageHelper from './storage/cookie-storage.helper';
  *     autocomplete: 'section-personal given-name',
  *     violationPath: violationPath,
  *     validationRules: 'required',
- *     additionalClass: 'col-sm-6',
+ *     additionalClass: 'sm:col-6',
  * } %}
  */
 export default class FormValidation {

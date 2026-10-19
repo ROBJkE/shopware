@@ -60,7 +60,7 @@
                         {% block cms_form_newsletter_select_salutation %}
                             {% sw_include '@Storefront/storefront/element/cms-element-form/form-components/cms-element-form-select-salutation.html.twig'
                                 with {
-                                additionalClass: 'col-md-4'
+                                additionalClass: 'md:col-4'
                             }
                             %}
                         {% endblock %}
@@ -70,7 +70,7 @@
                                 with {
                                 fieldName: 'firstName',
                                 autocomplete: 'section-personal given-name',
-                                additionalClass: 'col-md-4',
+                                additionalClass: 'md:col-4',
                                 label: 'newsletter.labelFirstName',
                             }
                             %}
@@ -81,7 +81,7 @@
                                 with {
                                 fieldName: 'lastName',
                                 autocomplete: 'section-personal family-name',
-                                additionalClass: 'col-md-4',
+                                additionalClass: 'md:col-4',
                                 label: 'newsletter.labelLastName',
                             }
                             %}

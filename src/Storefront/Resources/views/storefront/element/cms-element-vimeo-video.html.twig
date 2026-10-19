@@ -56,7 +56,7 @@
                             href="https://vimeo.com/{{ config.videoID.value }}"
                             target="_blank"
                             rel="noopener noreferrer"
-                            class="btn btn-dark btn-sm">
+                            class="btn btn-solid theme-dark btn-sm">
                             {{ 'component.cms.vimeo.watchUrlLabel'|trans|sw_sanitize }}
                         </a>
                     </div>
@@ -67,7 +67,7 @@
                     videoUrl: videoUrl,
                     iframeClasses: [ iframeClass ],
                     iframeTitle: config.iframeTitle.value,
-                    btnClasses: [ 'btn', 'btn-outline-secondary' ],
+                    btnClasses: [ 'btn', 'btn-outline theme-secondary' ],
                     backdropClasses: [ 'cms-element-vimeo-video__backdrop' ],
                     confirmButtonText: 'component.cms.vimeo.acceptButtonLabel'|trans,
                     overlayText: 'component.cms.vimeo.privacyNoticeText'|trans({

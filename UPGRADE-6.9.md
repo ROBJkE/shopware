@@ -129,6 +129,38 @@ The `seoUrl` property is only available on `SalesChannelCategoryEntity`. If a te
 -   {% if category_linknewtab(item) %}target="_blank"{% endif %}
 +   {% if item.shouldOpenInNewTab %}target="_blank"{% endif %}
 </a>
+```
+
+## Storefront CSS is compiled by Webpack
+
+`theme:compile` copies the Webpack stylesheet `dist/css/storefront.css` to `theme/{prefix}/css/all.css`.
+It no longer compiles theme or plugin SCSS with scssphp.
+The storefront URL stays `/css/all.css`, including while the Vite dev server is running.
+A missing Webpack file fails the compile and tells you to run `bin/build-storefront.sh` or `composer build:js:storefront`.
+`ThemeCompilerEnrichScssVariablesEvent` and `ThemeCompilerConcatenatedStylesEvent` are no longer dispatched during theme compilation.
+Runtime theme colors remain `:root` custom properties from `theme_css_vars()`.
+They are not fed back into Sass.
+Plugin `@Plugins` style entries in `theme.json` are no longer compiled.
+Single theme-field values can still be validated with scssphp.
+
+## Bootstrap 6 class and JavaScript names
+
+Storefront markup, SCSS, and JavaScript use Bootstrap 6.0.0-alpha.1 names.
+Responsive utilities use the breakpoint as a prefix, for example `md:d-none` and `2xl` instead of `xxl`.
+Color utilities use `fg-*` and `theme-*`.
+Buttons use `btn-solid` or `btn-outline` together with `theme-*`.
+Dialogs use the `<dialog>` element and `dialog` classes.
+Drawers use `<dialog class="drawer">` and `drawer-*` classes.
+Menus use `menu` and `menu-item`.
+`data-bs-toggle` and `data-bs-dismiss` use `dialog`, `drawer`, and `menu`.
+JavaScript imports `Dialog`, `Drawer`, and `Menu` from Bootstrap.
+`window.bootstrap` is no longer assigned.
+Events use the `.bs.dialog`, `.bs.drawer`, and `.bs.menu` suffixes.
+The `ajaxModalOpen` event payload key is `dialog`.
+`media-breakpoint-down(sm)` matches widths below `576px`.
+`$enable-important-utilities` was removed in Bootstrap 6, so utilities are not `!important` by default.
+There is no Bootstrap 5 class shim.
+
 ## `$tc` and the vue-i18n 8 argument order removed
 
 The deprecated translation helpers `$tc()` and `Shopware.Snippet.tc()` were removed. Use `$t()` and `Shopware.Snippet.t()` instead, which handle pluralization natively.

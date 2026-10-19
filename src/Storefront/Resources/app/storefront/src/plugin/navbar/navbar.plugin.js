@@ -1,3 +1,4 @@
+import Menu from 'bootstrap/js/dist/menu.js';
 import DeviceDetection from 'src/helper/device-detection.helper';
 import Plugin from 'src/plugin-system/plugin.class';
 
@@ -57,7 +58,7 @@ export default class NavbarPlugin extends Plugin {
     }
 
     _toggleNavbar(topLevelLink, event) {
-        const currentDropdown = window.bootstrap.Dropdown.getOrCreateInstance(topLevelLink);
+        const currentDropdown = Menu.getOrCreateInstance(topLevelLink);
         if (event.type === 'mouseenter') {
             this._isMouseOver = true;
             this._debounce(() => {
@@ -78,7 +79,7 @@ export default class NavbarPlugin extends Plugin {
     }
 
     _closeAllDropdowns() {
-        const dropdowns = Array.from(this._topLevelLinks).map(link => window.bootstrap.Dropdown.getInstance(link));
+        const dropdowns = Array.from(this._topLevelLinks).map(link => Menu.getInstance(link));
         dropdowns.forEach(dropdown => {
             if (dropdown?._menu && dropdown._menu.classList.contains('show')) {
                 dropdown.hide();
@@ -102,7 +103,7 @@ export default class NavbarPlugin extends Plugin {
     _navigateToLinkOnClick(topLevelLink, event) {
         if (event.type === 'click' && event.pageX !== 0) {
             // Only dropdown links lose their native navigation; plain links are handled by the browser.
-            if (!topLevelLink.classList.contains('dropdown-toggle')) {
+            if (topLevelLink.getAttribute('data-bs-toggle') !== 'menu') {
                 return;
             }
 

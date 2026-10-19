@@ -5,7 +5,7 @@
                     type="button"
                     id="accountWidget"
                     data-account-menu="true"
-                    data-bs-toggle="dropdown"
+                    data-bs-toggle="menu" data-bs-placement="bottom-end"
                     aria-expanded="false"
                     aria-label="{{ 'account.myAccount'|trans|striptags }}"
                     title="{{ 'account.myAccount'|trans|striptags }}">
@@ -14,7 +14,7 @@
         {% endblock %}
 
         {% block layout_header_actions_account_widget_dropdown_menu %}
-            <div class="dropdown-menu dropdown-menu-end account-menu-dropdown js-account-menu-dropdown"
+            <div class="menu account-menu-dropdown js-account-menu-dropdown"
                  aria-labelledby="accountWidget">
                 {% sw_include '@Storefront/storefront/layout/header/account-menu.html.twig' %}
             </div>

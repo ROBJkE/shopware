@@ -4,9 +4,9 @@
     {% set actionUrl = path(redirectTo, redirectParameters) %}
 
     {% block page_account_guest_auth %}
-        <div class="account-guest-auth row justify-content-md-center">
+        <div class="account-guest-auth row md:justify-content-center">
             {% block page_account_guest_auth_inner %}
-                <div class="col-md-8 col-lg-6">
+                <div class="md:col-8 lg:col-6">
                     {% block page_account_guest_auth_form %}
                         <form method="post"
                               class="account-guest-auth-form card"
@@ -36,7 +36,7 @@
                                                 autocomplete: 'section-personal email',
                                                 violationPath: '/email',
                                                 validationRules: 'required,email',
-                                                additionalClass: 'col-md-8',
+                                                additionalClass: 'md:col-8',
                                             } %}
                                         {% endblock %}
 
@@ -49,7 +49,7 @@
                                                 autocomplete: 'section-personal zipcode',
                                                 violationPath: '/zipcode',
                                                 validationRules: 'required',
-                                                additionalClass: 'col-md-4',
+                                                additionalClass: 'md:col-4',
                                             } %}
                                         {% endblock %}
                                     </div>
@@ -58,7 +58,7 @@
                                         <div class="account-guest-auth-form-actions">
                                             {% block page_account_guest_auth_action_send %}
                                                 <button type="submit"
-                                                        class="account-guest-auth-submit btn btn-primary"
+                                                        class="account-guest-auth-submit btn btn-solid theme-primary"
                                                         title="{{ 'checkout.registerSubmit'|trans|striptags }}">
                                                     {{ 'checkout.registerSubmit'|trans }}
                                                 </button>

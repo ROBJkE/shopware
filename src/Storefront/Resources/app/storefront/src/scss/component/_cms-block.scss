@@ -4,6 +4,7 @@ CMS blocks
 General styling for cms blocks and
 specific styling for elements dependent on their parent block
 */
+@use 'abstract/bootstrap-mixins' as *;
 
 .cms-block {
     &.bg-image {

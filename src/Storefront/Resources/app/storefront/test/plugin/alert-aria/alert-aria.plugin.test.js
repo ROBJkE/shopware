@@ -2,7 +2,7 @@ import AlertAriaPlugin from 'src/plugin/alert-aria/alert-aria.plugin';
 
 describe('src/plugin/alert-aria/alert-aria.plugin', () => {
     const infoAlertTemplate = `
-        <div class="alert alert-info" role="alert" aria-live="polite">
+        <div class="alert theme-info" role="alert" aria-live="polite">
             <div class="alert-content-container">
                 An info message on initial page load
             </div>
@@ -10,7 +10,7 @@ describe('src/plugin/alert-aria/alert-aria.plugin', () => {
     `;
 
     const dangerAlertTemplate = `
-        <div class="alert alert-danger" role="alert" aria-live="assertive">
+        <div class="alert theme-danger" role="alert" aria-live="assertive">
             <div class="alert-content-container">
                 An error message on initial page load
             </div>
@@ -18,13 +18,13 @@ describe('src/plugin/alert-aria/alert-aria.plugin', () => {
     `;
 
     const invalidAlertTemplate = `
-        <div class="alert alert-info" role="alert" aria-live="polite">
+        <div class="alert theme-info" role="alert" aria-live="polite">
             An invalid alert without container
         </div>
     `;
 
     const missingAriaTemplate = `
-        <div class="alert alert-danger" role="alert">
+        <div class="alert theme-danger" role="alert">
             <div class="alert-content-container">
                 Alert with missing aria-live attribute
             </div>

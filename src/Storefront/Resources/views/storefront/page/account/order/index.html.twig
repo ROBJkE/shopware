@@ -61,7 +61,7 @@
 {% endblock %}
 
 {% block page_checkout_confirm_payment %}
-    <div class="col-sm-6 confirm-payment">
+    <div class="sm:col-6 confirm-payment">
         {% sw_include '@Storefront/storefront/page/account/order/confirm-payment.html.twig' %}
     </div>
 {% endblock %}
@@ -76,7 +76,7 @@
     {% endif %}
 
     {% if hasPhysicalItem %}
-        <div class="col-sm-6 confirm-shipping">
+        <div class="sm:col-6 confirm-shipping">
             {% sw_include '@Storefront/storefront/page/account/order/confirm-shipping.html.twig' %}
         </div>
     {% endif %}
@@ -125,7 +125,7 @@
             {% block page_checkout_confirm_form_submit %}
                 <div class="d-grid">
                     <button
-                        class="btn btn-primary"
+                        class="btn btn-solid theme-primary"
                         {% if page.paymentChangeable == false or paymentMethodInvalid == true %}
                             disabled="disabled"
                         {% endif %}
@@ -139,8 +139,8 @@
         {% block page_checkout_aside_cancel_order_modal_toggle %}
             {% if allowOrderCancellation %}
                 <button type="button"
-                        class="btn btn-light btn-block edit-order-cancel-order-modal-toggle-btn mt-3"
-                        data-bs-toggle="modal"
+                        class="btn btn-solid theme-light btn-block edit-order-cancel-order-modal-toggle-btn mt-3"
+                        data-bs-toggle="dialog"
                         data-bs-target="#cancelOrderModal-{{ page.order.id }}">
                     {{ 'account.editOrderCancelOrderButton'|trans|sw_sanitize }}
                 </button>

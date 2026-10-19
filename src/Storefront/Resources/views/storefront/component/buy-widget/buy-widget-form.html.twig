@@ -50,7 +50,7 @@
                                          {% if quantitySelectorOptions is not empty %}data-quantity-selector-options="{{ quantitySelectorOptions|json_encode|e('html_attr') }}"{% endif %}>
                                         {% block buy_widget_buy_quantity_input_group_button_minus %}
                                             <button type="button"
-                                                    class="btn btn-outline-light btn-minus js-btn-minus"
+                                                    class="btn btn-outline theme-light btn-minus js-btn-minus"
                                                     aria-label="{{ 'component.product.quantitySelect.decrease'|trans|striptags }}">
                                                 {% sw_icon 'minus' style {size: 'xs'} %}
                                             </button>
@@ -69,7 +69,7 @@
 
                                         {% block buy_widget_buy_quantity_input_group_button_plus %}
                                             <button type="button"
-                                                    class="btn btn-outline-light btn-plus js-btn-plus"
+                                                    class="btn btn-outline theme-light btn-plus js-btn-plus"
                                                     aria-label="{{ 'component.product.quantitySelect.increase'|trans|striptags }}">
                                                 {% sw_icon 'plus' style {size: 'xs'} %}
                                             </button>
@@ -168,7 +168,7 @@
                         <div class="{% if showQuantitySelect %}col-8{% else %}col-12{% endif %}">
                             {% block buy_widget_buy_button %}
                                 <div class="d-grid">
-                                    <button class="btn btn-primary btn-buy"
+                                    <button class="btn btn-solid theme-primary btn-buy"
                                             type="submit"
                                             title="{{ 'detail.addProduct'|trans|striptags }}"
                                             aria-label="{{ 'detail.addProduct'|trans|striptags }}">

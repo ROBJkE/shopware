@@ -1,13 +1,13 @@
 /*
 Modal
 ==============================================
-Custom styling for bootstrap modal component.
+Custom styling for bootstrap dialog component.
 
 https://getbootstrap.com/docs/5.2/components/modal
 */
 
-.modal {
-    .modal-header {
+.dialog {
+    .dialog-header {
         &.only-close {
             border-bottom-color: transparent;
         }
@@ -22,8 +22,7 @@ https://getbootstrap.com/docs/5.2/components/modal
     }
 
     &.is-fullscreen {
-        .modal-dialog,
-        .modal-content {
+        .dialog {
             width: 100%;
             height: 100%;
             min-height: 100%;
@@ -34,20 +33,19 @@ https://getbootstrap.com/docs/5.2/components/modal
             margin: 0;
             overflow-y: scroll;
             box-shadow: none;
+            border-radius: 0;
         }
 
-        .modal-dialog,
-        .modal-content,
-        .modal-header,
-        .modal-body,
-        .modal-footer {
+        .dialog-header,
+        .dialog-body,
+        .dialog-footer {
             border-radius: 0;
         }
     }
 }
 
 /*
- * Temporary focusable element added via JS after a modal/offcanvas to keep the Bootstrap focus-trap
+ * Temporary focusable element added via JS after a dialog/drawer to keep the Bootstrap focus-trap
  * working when it is the last focusable element before `</body>`. Pinned inside the viewport so the
  * browser does not scroll to the bottom of the page while focus briefly bumps to it.
  *

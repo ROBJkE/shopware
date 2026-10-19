@@ -41,8 +41,8 @@
     {% block layout_navbar_content_row_content %}
         <div class="row navigation-flyout-content">
             {% block layout_navbar_content_row_content_categories %}
-                <div class="{% if category.media %}col-8 col-xl-9{% else %}col{% endif %}">
-                    <div class="">
+                <div class="{% if category.media %}col-8 xl:col-9{% else %}col{% endif %}">
+                    <div>
                         {% block layout_navbar_content_row_content_categories_recoursion %}
                             {% sw_include '@Storefront/storefront/layout/navbar/categories.html.twig' with {
                                 navigationTree: navigationTree.children,
@@ -56,7 +56,7 @@
 
             {% block layout_navbar_content_row_content_teaser %}
                 {% if category.media %}
-                    <div class="col-4 col-xl-3">
+                    <div class="col-4 xl:col-3">
                         <div class="navigation-flyout-teaser">
                             {% block layout_navbar_content_row_content_teaser_image %}
                                 <a class="navigation-flyout-teaser-image-container"

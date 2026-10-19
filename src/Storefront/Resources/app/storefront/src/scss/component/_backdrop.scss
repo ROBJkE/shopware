@@ -1,10 +1,11 @@
 /*
 Backdrop
 ==============================================
-Custom styling for backdrop used by bootstrap modal und custom offcanvas component.
+Custom styling for backdrop used by bootstrap dialog und custom drawer component.
 
 https://getbootstrap.com/docs/5.2/components/modal
 */
+@use 'abstract/bootstrap-mixins' as *;
 
 .modal-backdrop {
     opacity: 0;
