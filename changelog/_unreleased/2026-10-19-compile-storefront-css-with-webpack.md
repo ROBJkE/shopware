@@ -1,8 +1,8 @@
 ---
 title: Compile the storefront stylesheet with Webpack and Bootstrap 6
 issue: #21751
-author: Metthauptmeister
-author_github: Metthauptmeister
+author: Robert
+author_github: @ROBJkE
 ---
 # Storefront
 * Changed theme compilation to copy the Webpack stylesheet `dist/css/storefront.css` to `theme/{prefix}/css/all.css`
